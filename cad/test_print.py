@@ -14,7 +14,7 @@ import math
 
 import cadquery as cq
 
-from cad.common import ROOT, engrave, export_stl, load_config
+from cad.common import ROOT, engrave, export_stl, load_config, write_print_info
 
 
 def plate_layout(cfg):
@@ -140,6 +140,7 @@ def main():
     out = ROOT / cfg["test_print"]["out_dir"]
     p = export_stl(make_plate(cfg), out / "plate.stl", cfg)
     k = export_stl(make_key(cfg), out / "key.stl", cfg)
+    write_print_info(out, cfg, {"parts": ["plate.stl", "key.stl"]})
     print(f"wrote {p}\nwrote {k}")
 
 

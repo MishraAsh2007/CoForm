@@ -58,6 +58,13 @@ def rules(cfg, source=None, results=None):
 
     res = load_results() if results is None else results
     v = out["values"]
+    meta = res.get("meta") or {}
+    pr = cfg.get("print", {})
+    if meta.get("resin") and meta["resin"] != pr.get("material"):
+        out["notes"].append(f"WARNING: fit test was printed in {meta['resin']}, current material is {pr.get('material')}")
+    if meta.get("layer_thickness_mm") and float(meta["layer_thickness_mm"]) != float(pr.get("layer_thickness_mm", 0)):
+        out["notes"].append(f"WARNING: fit test layer {meta['layer_thickness_mm']} mm, current layer "
+                            f"{pr.get('layer_thickness_mm')} mm: measured clearances may not apply")
 
     def fallback(name, why):
         out["fallbacks"].append(name)
@@ -148,25 +155,27 @@ def check(spec, rules):
     c = spec["clearances"]
     fails = []
 
-    def need(what, have, want, why):
+    def need(what, have, want, why, key=None):
         if have < want - 1e-6:
-            fails.append({"code": "clearance", "msg": f"{what} {have} < {want} ({why})", "amount_mm": round(want - have, 3)})
+            fails.append({"code": "clearance", "msg": f"{what} {have} < {want} ({why})", "amount_mm": round(want - have, 3),
+                          "target": key or what, "need": want})
 
     src = rules["source"]
-    need("board gap", c["board_gap"], v["part_gap"], f"{src} part gap")
+    need("board gap", c["board_gap"], v["part_gap"], f"{src} part gap", "/clearances/board_gap")
     for side, g in spec["box"]["gap"].items():
-        need(f"{side} wall gap", g, v["part_gap"], f"{src} part gap")
-    need("port clearance", c["port"], v["port_cutout"], f"{src} port clearance")
-    need("lid fit per side", c["lid_fit"], round(v["lid_groove_extra"] / 2, 3), f"{src} lid groove")
-    need("M2.5 clearance hole", c["screw_hole"], v["m25_clearance_hole"], f"{src} M2.5 hole")
+        need(f"{side} wall gap", g, v["part_gap"], f"{src} part gap", f"/box/gap/{side}")
+    need("port clearance", c["port"], v["port_cutout"], f"{src} port clearance", "/clearances/port")
+    need("lid fit per side", c["lid_fit"], round(v["lid_groove_extra"] / 2, 3), f"{src} lid groove", "/clearances/lid_fit")
+    need("M2.5 clearance hole", c["screw_hole"], v["m25_clearance_hole"], f"{src} M2.5 hole", "/clearances/screw_hole")
 
     styles = {spec["fasteners"]["board"], spec["fasteners"]["lid"]}
     if "through_nut" in styles:
         if c["nut_pocket_af"] >= NUT_CORNERS:
             fails.append({"code": "nut", "msg": f"nut pocket {c['nut_pocket_af']} AF >= nut corner width "
-                                                f"{NUT_CORNERS:.2f}: the nut spins", "amount_mm": round(c["nut_pocket_af"] - NUT_CORNERS + 0.05, 3)})
+                                                f"{NUT_CORNERS:.2f}: the nut spins", "amount_mm": round(c["nut_pocket_af"] - NUT_CORNERS + 0.05, 3),
+                          "target": "/clearances/nut_pocket_af"})
         need("nut pocket AF", c["nut_pocket_af"], v["nut_pocket_af"] if v["nut_pocket_af"] < NUT_CORNERS else NUT_AF,
-             f"{src} nut pocket")
+             f"{src} nut pocket", "/clearances/nut_pocket_af")
     if "pilot" in styles:
         posts = []
         if spec["fasteners"]["board"] == "pilot":
@@ -177,10 +186,10 @@ def check(spec, rules):
         for name, od in posts:
             if v["fastener_style"] == "through_nut" or min_od is None:
                 fails.append({"code": "fastener", "msg": f"{name}: pilot-hole posts cracked in the fit test; "
-                                                         f"use through_nut", "amount_mm": 1.0})
+                                                         f"use through_nut", "amount_mm": 1.0, "target": name})
             else:
-                need(f"{name} OD for a pilot hole", od, min_od, f"{src}: smallest post that did not crack")
-    need("pilot hole", c["pilot_hole"], v["pilot_hole"], f"{src} pilot hole")
+                need(f"{name} OD for a pilot hole", od, min_od, f"{src}: smallest post that did not crack", name)
+    need("pilot hole", c["pilot_hole"], v["pilot_hole"], f"{src} pilot hole", "/clearances/pilot_hole")
 
     return {"name": "fit", "passed": not fails, "failures": fails,
             "metrics": {"rule_source": src, "fallbacks": rules["fallbacks"]}}

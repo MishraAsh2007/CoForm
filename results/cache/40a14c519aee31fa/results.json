@@ -1,0 +1,82 @@
+{
+ "key": "40a14c519aee31fa",
+ "dir": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\40a14c519aee31fa",
+ "paths": {
+  "base": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\40a14c519aee31fa\\base.stl",
+  "lid": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\40a14c519aee31fa\\lid.stl"
+ },
+ "pictures": {
+  "assembled": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\40a14c519aee31fa\\assembled.png",
+  "exploded": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\40a14c519aee31fa\\exploded.png",
+  "base_top": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\40a14c519aee31fa\\base_top.png",
+  "lid_bottom": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\40a14c519aee31fa\\lid_iso.png"
+ },
+ "results": {
+  "assembly": {
+   "name": "assembly",
+   "passed": false,
+   "failures": [
+    {
+     "code": "cable",
+     "msg": "required cable gpio_ribbon has no slot",
+     "amount_mm": 10.0,
+     "target": "gpio_ribbon",
+     "kind": "missing"
+    }
+   ],
+   "metrics": {
+    "board_edge_gap_mm": {
+     "-x": 0.5,
+     "+x": 0.5,
+     "-y": 0.5,
+     "+y": 1.5
+    },
+    "lid_gap_above_tallest_part_mm": 1.0,
+    "plugs_clear": "8/8",
+    "mount_tabs": 4,
+    "outer_size_mm": [
+     93.5,
+     78.0,
+     26.6
+    ],
+    "fan_intake_vented_fraction": 0.53
+   }
+  },
+  "printability": {
+   "name": "printability",
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "min_wall_rule_mm": 0.6,
+    "rule_source": "generic",
+    "mesh_thickness_p1_mm": {
+     "base": 1.698,
+     "lid": 1.499
+    }
+   }
+  },
+  "preform": {
+   "name": "preform",
+   "passed": true,
+   "failures": [],
+   "mocked": true,
+   "mock_reason": "mock requested (--mock)",
+   "metrics": {
+    "print_time_s": 13066,
+    "volume_ml": 41.33,
+    "warnings": 0,
+    "mocked": true
+   }
+  },
+  "fit": {
+   "name": "fit",
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "rule_source": "generic",
+    "fallbacks": []
+   }
+  }
+ },
+ "cached": false
+}

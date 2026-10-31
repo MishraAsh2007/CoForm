@@ -21,7 +21,7 @@ EDIT_RIGHTS = {
     "design": "*",
     "generalist": "*",
     "assembly": {"box", "standoffs", "ports", "lid", "lid_screws", "cable_slots", "mount_tabs", "vents"},
-    "manufacturing": {"walls", "ribs", "vents", "lid", "standoffs"},
+    "manufacturing": {"walls", "ribs", "vents", "lid", "standoffs", "drain_holes"},
     "fit": {"clearances", "fasteners", "standoffs", "lid"},
 }
 

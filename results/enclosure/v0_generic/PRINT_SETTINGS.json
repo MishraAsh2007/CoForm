@@ -1,0 +1,14 @@
+{
+ "printer": "Form Studio 1",
+ "machine_type": "CLRK-1-2",
+ "material": "Alpha Fast V1",
+ "material_code": "FLAPFA01",
+ "layer_thickness_mm": 0.15,
+ "print_setting": "DEFAULT",
+ "note": "Print with exactly this material and layer thickness: the fit-test results only apply to it.",
+ "parts": [
+  "base.stl",
+  "lid.stl"
+ ],
+ "clearance_source": "generic"
+}

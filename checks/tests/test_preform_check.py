@@ -13,11 +13,13 @@ def test_mock_is_labelled(cfg, tmp_path):
     assert 8.0 < r["volume_ml"] < 10.0          # 8 ml x 1.15 support factor
 
 
-def test_mock_when_server_codes_missing(cfg, tmp_path):
+def test_mock_when_server_down(cfg, tmp_path):
     p = tmp_path / "cube.stl"
     trimesh.creation.box((10, 10, 10)).export(p)
-    r = check(p, cfg)                            # codes are blank in config -> mock, not a crash
-    assert r["mocked"] and "material_code" in r["mock_reason"]
+    down = {**cfg, "preform": {**cfg["preform"], "base_url": "http://127.0.0.1:9"}}   # nothing listens there
+    r = check(p, down)
+    assert r["mocked"] and "not reachable" in r["mock_reason"]
+    assert r["print_settings"]["material"] == cfg["print"]["material"]
 
 
 def test_mock_flags_open_mesh(cfg, tmp_path):

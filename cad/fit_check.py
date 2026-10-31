@@ -7,7 +7,7 @@ Writes results/fit_check/fit_check_frame.stl and pictures.
 """
 import cadquery as cq
 
-from cad.common import ROOT, engrave, export_stl, load_config
+from cad.common import ROOT, engrave, export_stl, load_config, write_print_info
 from cad.components import SIDES, box_solid, load_bundle, port_opening
 from cad.render import render
 
@@ -105,6 +105,7 @@ def main():
     out = ROOT / cfg["fit_check"]["out_dir"]
     stl = export_stl(part, out / "fit_check_frame.stl", cfg)
     hits = drop_in_collisions(part, comp)
+    write_print_info(out, cfg, {"parts": ["fit_check_frame.stl"]})
     print("notches:", notches)
     print("drop-in collisions:", hits or "none")
     tmp = ROOT / "results" / "tmp"

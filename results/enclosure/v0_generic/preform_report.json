@@ -1,0 +1,35 @@
+{
+ "print_settings": {
+  "printer": "Form Studio 1",
+  "machine_type": "CLRK-1-2",
+  "material": "Alpha Fast V1",
+  "material_code": "FLAPFA01",
+  "layer_thickness_mm": 0.15,
+  "print_setting": "DEFAULT"
+ },
+ "parts": {
+  "base.stl": {
+   "mocked": false,
+   "mock_reason": null,
+   "print_time_s": 1852,
+   "volume_ml": 48.688539477347234,
+   "warnings": [
+    {
+     "type": "cups",
+     "description": "1 cup(s) that trap resin"
+    }
+   ],
+   "passed": false,
+   "form_path": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\enclosure\\v0_generic\\base.form"
+  },
+  "lid.stl": {
+   "mocked": false,
+   "mock_reason": null,
+   "print_time_s": 4023,
+   "volume_ml": 21.157615822848847,
+   "warnings": [],
+   "passed": true,
+   "form_path": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\enclosure\\v0_generic\\lid.form"
+  }
+ }
+}

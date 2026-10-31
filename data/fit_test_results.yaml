@@ -13,8 +13,8 @@
 
 meta:
   printer: Form Studio 1
-  resin: Rigid 10K
-  layer_thickness_mm: 0.1
+  resin: Alpha Fast V1          # must match config.yaml print.material
+  layer_thickness_mm: 0.15      # must match config.yaml print.layer_thickness_mm (checked by fit_rules)
   printed_on: ""        # date
   orientation: ""       # e.g. "PreForm auto-orient" or "flat, 45 deg"
   post_cure: ""         # e.g. "Form Cure 70 C, 60 min"

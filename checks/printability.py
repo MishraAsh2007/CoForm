@@ -17,13 +17,13 @@ from cad.components import SIDES
 from cad.enclosure import build
 
 
-def _fail(out, code, msg, amount):
-    out.append({"code": code, "msg": msg, "amount_mm": round(float(amount), 2)})
+def _fail(out, code, msg, amount, **info):
+    out.append({"code": code, "msg": msg, "amount_mm": round(float(amount), 2), **info})
 
 
-def _need(fails, what, value, limit, code="wall"):
+def _need(fails, what, value, limit, code="wall", **info):
     if value < limit - 1e-6:
-        _fail(fails, code, f"{what} {value:.2f} mm < {limit} mm", limit - value)
+        _fail(fails, code, f"{what} {value:.2f} mm < {limit} mm", limit - value, target=what, need=limit, **info)
 
 
 def check(spec, cfg, rules, built=None, mesh_paths=None):
@@ -54,11 +54,11 @@ def check(spec, cfg, rules, built=None, mesh_paths=None):
             # overlapping openings (gap < 0) just merge into one; touching the wall end cuts the corner
             if (0 <= gap < min_wall) or (gap < min_wall and prev_name == "wall end"):
                 _fail(fails, "sliver", f"{side} wall: {gap:.2f} mm of material between {prev_name} and {o['name']}",
-                      min_wall - gap)
+                      min_wall - gap, target=o["name"], other=prev_name, gap=round(gap, 3))
             prev_hi, prev_name = max(prev_hi, hi), o["name"]
         end_gap = span[1] - prev_hi
         if ops and end_gap < min_wall:
-            _fail(fails, "sliver", f"{side} wall: {end_gap:.2f} mm between {prev_name} and the wall end", min_wall - end_gap)
+            _fail(fails, "sliver", f"{side} wall: {end_gap:.2f} mm between {prev_name} and the wall end", min_wall - end_gap, target=prev_name, other="wall end", gap=round(end_gap, 3))
 
     # holes in posts, bosses, tabs
     board_hole = c["pilot_hole"] if spec["fasteners"]["board"] == "pilot" else c["screw_hole"]
@@ -71,7 +71,7 @@ def check(spec, cfg, rules, built=None, mesh_paths=None):
 
     # vents
     for i, vent in enumerate(spec["vents"]):
-        _need(fails, f"vent {i + 1} rib between slots", vent["pitch"] - vent["slot_width"], min_wall, "vent")
+        _need(fails, f"vent {i + 1} rib between slots", vent["pitch"] - vent["slot_width"], min_wall, "vent", index=i)
         _need(fails, f"vent {i + 1} slot width", vent["slot_width"], min_hole, "small_feature")
 
     for name, d in (("pilot hole", c["pilot_hole"]), ("screw hole", c["screw_hole"])):
@@ -88,10 +88,10 @@ def check(spec, cfg, rules, built=None, mesh_paths=None):
             boss_margin = spec["lid_screws"]["boss_diameter"] / 2 - corner_r
             m = max(margin, boss_margin)
             if m < min_wall:
-                _fail(fails, "nut_pocket", f"lid screw {i + 1}: nut pocket leaves {m:.2f} mm wall (breaks out)", min_wall - m)
+                _fail(fails, "nut_pocket", f"lid screw {i + 1}: nut pocket leaves {m:.2f} mm wall (breaks out)", min_wall - m, target="lid")
     if spec["fasteners"]["board"] == "through_nut":
         depth = spec["walls"]["floor"] + spec["standoffs"]["height"]
-        _need(fails, "material above board nut pocket", depth - c["nut_pocket_depth"], min_wall, "nut_pocket")
+        _need(fails, "material above board nut pocket", depth - c["nut_pocket_depth"], min_wall, "nut_pocket", which="board")
 
     # mesh-level safety net
     if mesh_paths:

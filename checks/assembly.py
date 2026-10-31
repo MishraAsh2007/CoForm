@@ -23,8 +23,8 @@ from cad.enclosure import build
 from checks.geom import bbox_of, cylinder, inflate, overlap
 
 
-def _fail(out, code, msg, amount=0.0):
-    out.append({"code": code, "msg": msg, "amount_mm": round(float(amount), 2)})
+def _fail(out, code, msg, amount=0.0, **info):
+    out.append({"code": code, "msg": msg, "amount_mm": round(float(amount), 2), **info})
 
 
 def _board_sweep(comp, z0, z1):
@@ -53,47 +53,47 @@ def check(spec, brief, cfg, built=None):
         for name, solid, bb in (("base", base, bb_base), ("lid", lid, bb_lid)):
             d = overlap(solid, inflate(k["box"], gap), bb)
             if d > 0:
-                _fail(fails, "collision", f"{name} within {gap} mm of {k['name']} (overlap {d} mm)", d)
+                _fail(fails, "collision", f"{name} within {gap} mm of {k['name']} (overlap {d} mm)", d, target=k["name"], part=name, box=k["box"])
     pcb = _board_sweep(comp, 0.0, comp["board"]["thickness"])
     for name, solid in (("base", base), ("lid", lid)):
         d = overlap(solid, pcb)
         if d > 0:
-            _fail(fails, "collision", f"{name} intersects the PCB by {d} mm", d)
+            _fail(fails, "collision", f"{name} intersects the PCB by {d} mm", d, target="pcb", part=name)
     ib = meta["inner_box"]
     b = comp["board"]
     edge_gaps = {"-x": -ib[0], "+x": ib[1] - b["length"], "-y": -ib[2], "+y": ib[3] - b["width"]}
     metrics["board_edge_gap_mm"] = {s: round(v, 2) for s, v in edge_gaps.items()}
     for s, v in edge_gaps.items():
         if v < gap:
-            _fail(fails, "collision", f"board edge to {s} wall gap {v:.2f} mm < {gap} mm", gap - v)
+            _fail(fails, "collision", f"board edge to {s} wall gap {v:.2f} mm < {gap} mm", gap - v, target="wall_gap", side=s)
 
     # --- drop-in: lower the board + parts straight down into the base ---
     top = lv["top"] + 40
     d = overlap(base, _board_sweep(comp, 0.0, top))
     if d > 0:
-        _fail(fails, "drop_in", f"board outline hits the base while lowering it in ({d} mm)", d)
+        _fail(fails, "drop_in", f"board outline hits the base while lowering it in ({d} mm)", d, target="pcb")
     for k in parts:
         x0, x1, y0, y1, z0, _ = k["box"]
         d = overlap(base, [x0, x1, y0, y1, z0, top], bb_base)
         if d > 0:
-            _fail(fails, "drop_in", f"{k['name']} hits the base while lowering the board in ({d} mm)", d)
+            _fail(fails, "drop_in", f"{k['name']} hits the base while lowering the board in ({d} mm)", d, target=k["name"], box=k["box"])
 
     # --- lid closes ---
     d = overlap(lid, base)
     if d > 0:
-        _fail(fails, "lid", f"lid collides with base by {d} mm (lip/fillers vs walls/bosses)", d)
+        _fail(fails, "lid", f"lid collides with base by {d} mm (lip/fillers vs walls/bosses)", d, target="lid_base")
     tallest = max(k["box"][5] for k in parts)
     lid_gap = round(lv["top"] - tallest, 2)
     metrics["lid_gap_above_tallest_part_mm"] = lid_gap
     if lid_gap < c["lid_min_gap"]:
         _fail(fails, "lid", f"lid underside only {lid_gap} mm above the tallest part (need {c['lid_min_gap']})",
-              c["lid_min_gap"] - lid_gap)
+              c["lid_min_gap"] - lid_gap, target="lid_gap")
 
     # --- ports: required openings and plug room ---
     required = set(brief.get("required_ports", [p["name"] for p in comp["ports"]]))
     enabled = {p["name"] for p in spec["ports"] if p["enabled"]}
     for name in sorted(required - enabled):
-        _fail(fails, "plug", f"required port {name} has no opening", 10.0)
+        _fail(fails, "plug", f"required port {name} has no opening", 10.0, target=name, kind="missing")
     plug_ok = 0
     for z in plug_zones(comp):
         if z["name"] not in required:
@@ -103,7 +103,7 @@ def check(spec, brief, cfg, built=None):
             d = overlap(solid, z["box"], bb)
             if d > 0:
                 worst = max(worst, d)
-                _fail(fails, "plug", f"{z['name']} plug zone hits the {name} by {d} mm", d)
+                _fail(fails, "plug", f"{z['name']} plug zone hits the {name} by {d} mm", d, target=z["name"], kind="zone", part=name)
         plug_ok += worst == 0
     metrics["plugs_clear"] = f"{plug_ok}/{len([z for z in plug_zones(comp) if z['name'] in required])}"
 
@@ -118,21 +118,21 @@ def check(spec, brief, cfg, built=None):
             for what, shape in (("screwdriver", reach), ("screw head", head)):
                 d = overlap(shape, k["box"])
                 if d > 0:
-                    _fail(fails, "screwdriver", f"{s['name']}: {what} blocked by {k['name']} ({d} mm)", d)
+                    _fail(fails, "screwdriver", f"{s['name']}: {what} blocked by {k['name']} ({d} mm)", d, target=s["name"], kind="blocked")
         # base never blocks the driver for a top-driven screw unless something hangs over it
         d = overlap(base, reach)
         if d > 0:
-            _fail(fails, "screwdriver", f"{s['name']}: screwdriver blocked by the base ({d} mm)", d)
+            _fail(fails, "screwdriver", f"{s['name']}: screwdriver blocked by the base ({d} mm)", d, target=s["name"], kind="blocked")
         ok, why = _screw_length(s, spec, comp, lv, lengths, c["min_screw_engagement"])
         if not ok:
-            _fail(fails, "screwdriver", f"{s['name']}: {why}", 2.0)
+            _fail(fails, "screwdriver", f"{s['name']}: {why}", 2.0, target=s["name"], kind="length")
 
     # --- cable slots ---
     slots = {o["name"]: o for o in meta["openings"] if o["kind"] == "cable"}
     cables = {a["name"]: a for a in comp["cable_access"]}
     for name in brief.get("required_cables", []):
         if name not in slots:
-            _fail(fails, "cable", f"required cable {name} has no slot", 10.0)
+            _fail(fails, "cable", f"required cable {name} has no slot", 10.0, target=name, kind="missing")
             continue
         a = cables[name]
         axis, sign = SIDES[a["side"]]
@@ -145,14 +145,14 @@ def check(spec, brief, cfg, built=None):
         for nm, solid, bb in (("base", base, bb_base), ("lid", lid, bb_lid)):
             d = overlap(solid, zone, bb)
             if d > 0:
-                _fail(fails, "cable", f"{name} cable path hits the {nm} by {d} mm", d)
+                _fail(fails, "cable", f"{name} cable path hits the {nm} by {d} mm", d, target=name, kind="path")
 
     # --- robot mounting tabs ---
     tabs = spec["mount_tabs"]
     need = brief.get("mount_tabs_min", 0)
     metrics["mount_tabs"] = len(tabs)
     if len(tabs) < need:
-        _fail(fails, "tabs", f"{len(tabs)} mounting tabs, brief needs {need}", float(need - len(tabs)))
+        _fail(fails, "tabs", f"{len(tabs)} mounting tabs, brief needs {need}", float(need - len(tabs)), kind="count", need=need)
     pz = plug_zones(comp)
     for i, t in enumerate(tabs):
         axis, sign = SIDES[t["side"]]
@@ -166,12 +166,12 @@ def check(spec, brief, cfg, built=None):
             for nm, solid in (("base", base), ("lid", lid)):
                 d = overlap(shape, solid)
                 if d > 0:
-                    _fail(fails, "tabs", f"tab {i + 1} ({t['side']} @ {t['offset']}): {what} hits the {nm} by {d} mm", d)
+                    _fail(fails, "tabs", f"tab {i + 1} ({t['side']} @ {t['offset']}): {what} hits the {nm} by {d} mm", d, kind="blocked", index=i)
             for z in pz:
                 if z["name"] in required:
                     d = overlap(shape, z["box"])
                     if d > 0:
-                        _fail(fails, "tabs", f"tab {i + 1}: {what} blocked by {z['name']} plug zone ({d} mm)", d)
+                        _fail(fails, "tabs", f"tab {i + 1}: {what} blocked by {z['name']} plug zone ({d} mm)", d, kind="blocked", index=i)
 
     # --- outer size ---
     full = [min(bb_base[0], bb_lid[0]), max(bb_base[1], bb_lid[1]), min(bb_base[2], bb_lid[2]),
@@ -181,17 +181,17 @@ def check(spec, brief, cfg, built=None):
     limit = brief.get("max_box", c["max_box"])
     for axis, s, m in zip("xyz", size, limit):
         if s > m:
-            _fail(fails, "box", f"outer size {axis} {s} mm > allowed {m} mm", s - m)
+            _fail(fails, "box", f"outer size {axis} {s} mm > allowed {m} mm", s - m, axis=axis)
 
     # --- openings only on allowed sides ---
     allowed = brief.get("allowed_opening_sides")
     if allowed:
         for o in meta["openings"]:
             if o["side"] not in allowed:
-                _fail(fails, "sides", f"opening {o['name']} on {o['side']} side; brief allows only {allowed}", 5.0)
+                _fail(fails, "sides", f"opening {o['name']} on {o['side']} side; brief allows only {allowed}", 5.0, target=o["name"], kind=o["kind"])
         for v in spec["vents"]:
             if v["face"] != "lid" and v["face"] not in allowed:
-                _fail(fails, "sides", f"vent on {v['face']} side; brief allows only {allowed}", 5.0)
+                _fail(fails, "sides", f"vent on {v['face']} side; brief allows only {allowed}", 5.0, target="vent", kind="vent")
 
     # --- airflow over the fan ---
     fan = next((a["fan"] for a in comp["addons"] if "fan" in a), None)

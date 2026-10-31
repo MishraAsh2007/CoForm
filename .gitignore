@@ -5,7 +5,7 @@ __pycache__/
 .pytest_cache/
 results/runs/
 results/tmp/
-*.form
+# .form files are kept (print-ready); big ones can be regenerated with cad.prepare_forms
 *.log
 
 # keep generated meshes used only for pictures

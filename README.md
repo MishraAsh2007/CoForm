@@ -1,7 +1,8 @@
 # Agents that design and physically validate small SLA assemblies
 
 First test case: a two-piece Raspberry Pi 5 + Active Cooler enclosure (base + lid, M2.5 lid screws,
-robot mounting tabs, port cutouts, cable access), printed on a Formlabs Form Studio 1 in Rigid 10K.
+robot mounting tabs, port cutouts, cable access), printed on a Formlabs Form Studio 1 in Alpha Fast resin
+(material and layer thickness: `print:` in config.yaml, used for every print).
 
 Setup (Windows PowerShell):
 

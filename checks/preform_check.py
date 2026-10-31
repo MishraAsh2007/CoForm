@@ -11,12 +11,17 @@ the mesh (volume, height); they are NOT PreForm results.
 import math
 from pathlib import Path
 
-from cad.common import load_config
+from cad.common import load_config, print_settings
+
+
+def preform_settings(cfg):
+    """PreForm client settings: server options from `preform:`, printer/material/layer from `print:`."""
+    return {**cfg["preform"], **print_settings(cfg)}
 
 
 def check(stl_path, cfg=None, form_path=None, force_mock=False):
     cfg = cfg or load_config()
-    pf = cfg["preform"]
+    pf = preform_settings(cfg)
     reason = None
     if force_mock:
         reason = "mock requested (--mock)"
@@ -30,8 +35,11 @@ def check(stl_path, cfg=None, form_path=None, force_mock=False):
         else:
             out = client.evaluate(stl_path, form_path)
             out["mocked"] = False
+            out["print_settings"] = print_settings(cfg)
             return _as_check(out)
-    return _as_check(mock(stl_path, pf, reason))
+    out = mock(stl_path, pf, reason)
+    out["print_settings"] = print_settings(cfg)
+    return _as_check(out)
 
 
 def mock(stl_path, pf, reason):
@@ -76,6 +84,8 @@ def check_parts(paths, cfg=None, out_dir=None, force_mock=False):
     mocked = any(r["mocked"] for r in results.values())
     return {"name": "preform", "passed": not fails, "failures": fails, "mocked": mocked,
             "mock_reason": next((r.get("mock_reason") for r in results.values() if r.get("mock_reason")), None),
+            "print_settings": print_settings(cfg or load_config()),
+            "form_paths": {n: r.get("form_path") for n, r in results.items()},
             "metrics": {"print_time_s": sum(r["print_time_s"] or 0 for r in results.values()),
                         "volume_ml": round(sum(r["volume_ml"] or 0 for r in results.values()), 2),
                         "warnings": sum(len(r["failures"]) for r in results.values()),

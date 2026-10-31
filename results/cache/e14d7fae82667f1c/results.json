@@ -1,0 +1,74 @@
+{
+ "key": "e14d7fae82667f1c",
+ "dir": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\e14d7fae82667f1c",
+ "paths": {
+  "base": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\e14d7fae82667f1c\\base.stl",
+  "lid": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\e14d7fae82667f1c\\lid.stl"
+ },
+ "pictures": {
+  "assembled": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\e14d7fae82667f1c\\assembled.png",
+  "exploded": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\e14d7fae82667f1c\\exploded.png",
+  "base_top": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\e14d7fae82667f1c\\base_top.png",
+  "lid_bottom": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\e14d7fae82667f1c\\lid_iso.png"
+ },
+ "results": {
+  "assembly": {
+   "name": "assembly",
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "board_edge_gap_mm": {
+     "-x": 0.5,
+     "+x": 0.5,
+     "-y": 0.5,
+     "+y": 1.5
+    },
+    "lid_gap_above_tallest_part_mm": 1.0,
+    "plugs_clear": "8/8",
+    "mount_tabs": 4,
+    "outer_size_mm": [
+     93.5,
+     78.0,
+     26.6
+    ],
+    "fan_intake_vented_fraction": 0.53
+   }
+  },
+  "printability": {
+   "name": "printability",
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "min_wall_rule_mm": 0.6,
+    "rule_source": "generic",
+    "mesh_thickness_p1_mm": {
+     "base": 1.698,
+     "lid": 1.499
+    }
+   }
+  },
+  "preform": {
+   "name": "preform",
+   "passed": true,
+   "failures": [],
+   "mocked": true,
+   "mock_reason": "mock requested (--mock)",
+   "metrics": {
+    "print_time_s": 13066,
+    "volume_ml": 40.84,
+    "warnings": 0,
+    "mocked": true
+   }
+  },
+  "fit": {
+   "name": "fit",
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "rule_source": "generic",
+    "fallbacks": []
+   }
+  }
+ },
+ "cached": false
+}

@@ -12,7 +12,7 @@ from pathlib import Path
 
 import cadquery as cq
 
-from cad.common import ROOT, export_stl, load_config
+from cad.common import ROOT, export_stl, load_config, write_print_info
 from cad.components import SIDES, board_solid, box_solid, load_bundle, port_opening
 from cad.render import render
 
@@ -161,6 +161,9 @@ def build(spec, comp=None):
             base = base.cut(_cyl(x, y, c["screw_hole"], lv["floor_bot"] - 1, lv["top"] + 1))
             base = base.cut(_hex(x, y, c["nut_pocket_af"], lv["floor_bot"] - 1, lv["floor_bot"] + c["nut_pocket_depth"]))
 
+    for x, y in spec["drain_holes"]["positions"]:
+        base = base.cut(_cyl(x, y, spec["drain_holes"]["diameter"], lv["floor_bot"] - 1, lv["floor_top"] + 0.5))
+
     ops = openings(spec, comp)
     for o in ops:
         base = base.cut(cq.Workplane("XY").add(box_solid(o["box"])))
@@ -260,6 +263,7 @@ def export(spec, out_dir, cfg=None, pictures=True, tag=""):
     paths = {"base": export_stl(built["base"], out / "base.stl", cfg),
              "lid": export_stl(built["lid"], out / "lid.stl", cfg)}
     (out / "spec.json").write_text(json.dumps(spec, indent=1, sort_keys=True), encoding="utf-8")
+    write_print_info(out, cfg, {"parts": ["base.stl", "lid.stl"], "clearance_source": spec.get("clearance_source")})
     if pictures:
         paths.update(render_views(built, out, cfg, tag))
     return paths, built

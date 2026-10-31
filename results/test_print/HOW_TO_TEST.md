@@ -3,6 +3,8 @@
 Parts: `plate.stl` (88 x 60 mm) and `key.stl` (46 x 12 mm, with a 5.00 mm peg and a 2.00 mm tongue).
 You also need: 2-3 M2.5 screws (6-10 mm long), 2-3 M2.5 hex nuts, a small screwdriver.
 
+**Print** both parts in the same material and layer thickness as everything else (`print:` in config.yaml: Alpha Fast V1, 0.15 mm; see `PRINT_SETTINGS.json`).
+
 **Before testing:** wash, dry fully, and post-cure **both parts the same way you will treat the enclosure**,
 and remove all support nubs. Don't sand any test feature. Fill in `data/fit_test_results.yaml` as you go.
 Write down the cure settings and orientation under `meta`.
@@ -20,7 +22,7 @@ Every feature has its value engraved below it. The row letter is on the left edg
 
 ## Row P: peg holes (5.0 to 5.5)
 1. Push the key's **peg** straight down into each hole, starting with the largest (5.5).
-2. Push it all the way through. Don't twist. Rigid 10K is brittle, so stop at firm thumb pressure.
+2. Push it all the way through. Don't twist. Stop at firm thumb pressure.
 3. Record the word. Expect `free` on the big holes and `snug`/`press`/`no_fit` going smaller.
 
 ## Row G: grooves (2.0 to 2.5, 3 mm deep)

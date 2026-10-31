@@ -1,0 +1,21 @@
+{
+ "print_settings": {
+  "printer": "Form Studio 1",
+  "machine_type": "CLRK-1-2",
+  "material": "Alpha Fast V1",
+  "material_code": "FLAPFA01",
+  "layer_thickness_mm": 0.15,
+  "print_setting": "DEFAULT"
+ },
+ "parts": {
+  "fit_check_frame.stl": {
+   "mocked": false,
+   "mock_reason": null,
+   "print_time_s": 3669,
+   "volume_ml": 20.996621032278245,
+   "warnings": [],
+   "passed": true,
+   "form_path": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\fit_check\\fit_check_frame.form"
+  }
+ }
+}

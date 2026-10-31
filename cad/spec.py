@@ -21,7 +21,8 @@ _xy = {"type": "array", "items": _num, "minItems": 2, "maxItems": 2}
 SCHEMA = {
     "type": "object",
     "required": ["bundle", "clearances", "fasteners", "walls", "box", "standoffs", "ports", "lid",
-                 "lid_screws", "vents", "cable_slots", "mount_tabs", "ribs"],
+                 "lid_screws", "vents", "cable_slots", "mount_tabs", "ribs",
+                 "drain_holes"],
     "additionalProperties": False,
     "properties": {
         "name": {"type": "string"},
@@ -66,6 +67,8 @@ SCHEMA = {
             "additionalProperties": False,
             "properties": {"side": {"enum": list(SIDES)}, "offset": _num, "width": _pos, "length": _pos,
                            "thickness": _pos, "hole": _pos}}},
+        "drain_holes": {"type": "object", "required": ["diameter", "positions"], "additionalProperties": False,
+                        "properties": {"diameter": _pos, "positions": {"type": "array", "items": _xy}}},
         "ribs": {"type": "array", "items": {
             "type": "object", "required": ["axis", "position", "height", "width"], "additionalProperties": False,
             "properties": {"axis": {"enum": ["x", "y"]}, "position": _num, "height": _pos, "width": _pos}}},
@@ -86,8 +89,15 @@ def clearances_from_rules(rules):
     }
 
 
-def default_spec(bundle, rules, cfg):
-    """v0 design: plain, symmetric, made only from component data and clearance rules."""
+def default_spec(bundle, rules, cfg, start="reference"):
+    """v0 design from component data and clearance rules.
+
+    start="reference": the hand-tuned v0 (Phase 3 print): open-top notches, tabs, fan vent, lid gap.
+    start="naive": the plain starting point every agent run begins from: a closed box with port cutouts,
+    no tabs, no vents, no cable slots, low lid, short standoffs. Agents have to find and fix the rest.
+    """
+    if start == "naive":
+        return naive_spec(bundle, rules, cfg)
     comp = load_bundle(bundle)
     c = clearances_from_rules(rules)
     style = rules["values"]["fastener_style"]
@@ -116,6 +126,8 @@ def default_spec(bundle, rules, cfg):
                         for a in comp["cable_access"]],
         "mount_tabs": [],
         "ribs": [],
+        # resin drain through the floor; Formlabs design guide: drain holes >= 3.5 mm (components/sources.md)
+        "drain_holes": {"diameter": 3.5, "positions": [[32.5, 28.0], [52.5, 28.0]]},
     }
     fan = next((a["fan"] for a in comp["addons"] if "fan" in a), None)
     if fan:
@@ -128,6 +140,27 @@ def default_spec(bundle, rules, cfg):
         {"side": "+y", "offset": 10.0, "width": 10.0, "length": 8.0, "thickness": 3.0, "hole": 3.4},
         {"side": "+y", "offset": 75.0, "width": 10.0, "length": 8.0, "thickness": 3.0, "hole": 3.4},
     ] if bundle.startswith("rpi5") else []
+    return spec
+
+
+def naive_spec(bundle, rules, cfg):
+    spec = default_spec(bundle, rules, cfg, start="reference")
+    comp = load_bundle(bundle)
+    gap = spec["clearances"]["board_gap"]
+    spec["box"]["gap"] = {s: gap for s in SIDES}
+    b = comp["board"]
+    w = spec["walls"]["wall"]
+    cx0, cx1 = -gap - w / 2, b["length"] + gap + w / 2
+    cy0, cy1 = -gap - w / 2, b["width"] + gap + w / 2
+    spec["lid_screws"]["positions"] = [[cx0, cy0], [cx1, cy0], [cx0, cy1], [cx1, cy1]]
+    spec["box"]["inner_top"] = round(envelope(comp)[5], 2)          # lid right on the tallest part
+    spec["standoffs"]["height"] = 1.5
+    for p in spec["ports"]:
+        p["open_top"] = False
+    spec["vents"], spec["mount_tabs"] = [], []
+    spec["drain_holes"]["positions"] = []
+    spec["lid"]["notch_fillers"] = False
+    spec["name"] = f"{bundle}_naive_v0"
     return spec
 
 

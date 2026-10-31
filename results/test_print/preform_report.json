@@ -1,0 +1,35 @@
+{
+ "print_settings": {
+  "printer": "Form Studio 1",
+  "machine_type": "CLRK-1-2",
+  "material": "Alpha Fast V1",
+  "material_code": "FLAPFA01",
+  "layer_thickness_mm": 0.15,
+  "print_setting": "DEFAULT"
+ },
+ "parts": {
+  "key.stl": {
+   "mocked": false,
+   "mock_reason": null,
+   "print_time_s": 1920,
+   "volume_ml": 5.3565729003292635,
+   "warnings": [],
+   "passed": true,
+   "form_path": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\test_print\\key.form"
+  },
+  "plate.stl": {
+   "mocked": false,
+   "mock_reason": null,
+   "print_time_s": 4243,
+   "volume_ml": 38.49467443379455,
+   "warnings": [
+    {
+     "type": "thin_walls",
+     "description": "1 region(s) < 0.5 mm, 15.1 mm3"
+    }
+   ],
+   "passed": false,
+   "form_path": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\test_print\\plate.form"
+  }
+ }
+}

@@ -27,9 +27,16 @@ Values marked **UNVERIFIED** are best documented or typical values. The fit-chec
 | M2.5 hex nut | ISO 4032 / DIN 934. Supplier listing: https://aspenfasteners.com/m2-5-0-45-din-934-iso-4032-metric-hex-finished-nuts-class-6-steel-zinc-plated | Across flats 5.00 max (4.82 min), height 2.00 max (1.75 min). |
 | M2.5 clearance hole | ISO 273 medium series (**UNVERIFIED** here, commonly quoted) | 2.9 mm medium clearance for M2.5. |
 
+## Material: Formlabs Alpha Fast (`config.yaml` print / material_properties)
+
+| Item | Source | What it says |
+|---|---|---|
+| Alpha Fast product page | https://formlabs.com/products/alpha-fast-resin/ (TDS: https://formlabs.com/materials/tds/alpha-fast-resin/) | Ultimate tensile strength 46 MPa, tensile modulus 2230 MPa, flexural strength 78 MPa, flexural modulus 2110 MPa, notched Izod 37 J/m, elongation at break 34 %, HDT @ 0.45 MPa 59 °C (post-cured at room temperature for 5 min, Form Studio Wash+Cure). Primary layer height 150 µm. "Alpha Fast Resin is only supported on the Form Studio 1." Post-cure "optional, but recommended". No accuracy, min wall or clearance values given (**UNVERIFIED** for design rules). |
+| PreFormServer 3.64.2 on this PC | `/v1/print-setting/list/` (saved: results/tmp/preform_materials.json, not committed) | Form Studio 1 = machine type CLRK-1-2. Alpha Fast V1 = material code FLAPFA01, layer settings 0.150 mm and 0.250 mm, both "Default settings". |
+
 ## Printing (Formlabs)
 
 | Item | Source | What it says |
 |---|---|---|
-| Formlabs Design Guide (Form 1+/Form 2, Clear resin, 100 µm) | https://pocc-techpark.media.uconn.edu/wp-content/uploads/sites/2880/2020/10/formlabs-design-guide.pdf (copy of Formlabs' guide) | Min supported wall 0.4. Min unsupported wall 0.6. Min clearance between parts 0.5 ("less than 0.5 mm may cause parts to fuse"). Min hole 0.5. Min engraved detail 0.4. Min embossed 0.1. Drain hole 3.5. Max overhang 1.0. Overhang angle ≥ 19°. The guide warns that other resins may vary. It does not cover the Form Studio 1 or Rigid 10K, so these are our **generic** rules. |
-| Formlabs Engineering Fit | https://formlabs.com/global/blog/3D-printing-tolerances-for-engineering-fit/ | Recommends printing a test coupon for the exact resin and printer, which is what Phase 1 does. Gives no numeric values for Rigid resins. |
+| Formlabs Design Guide (Form 1+/Form 2, Clear resin, 100 µm) | https://pocc-techpark.media.uconn.edu/wp-content/uploads/sites/2880/2020/10/formlabs-design-guide.pdf (copy of Formlabs' guide) | Min supported wall 0.4. Min unsupported wall 0.6. Min clearance between parts 0.5 ("less than 0.5 mm may cause parts to fuse"). Min hole 0.5. Min engraved detail 0.4. Min embossed 0.1. Drain hole 3.5. Max overhang 1.0. Overhang angle ≥ 19°. The guide warns that other resins may vary. It does not cover the Form Studio 1, Alpha Fast or 150 µm layers, so these are our **generic** rules (**UNVERIFIED** for Alpha Fast). |
+| Formlabs Engineering Fit | https://formlabs.com/global/blog/3D-printing-tolerances-for-engineering-fit/ | Recommends printing a test coupon for the exact resin and printer, which is what Phase 1 does. Gives no numeric values for Alpha resins. |

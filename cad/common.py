@@ -30,3 +30,22 @@ def export_stl(part, path, cfg):
     cq.exporters.export(part, str(path), tolerance=e["stl_tolerance_mm"],
                         angularTolerance=e["stl_angular_tolerance_rad"])
     return path
+
+
+def print_settings(cfg):
+    """The one printer + material + layer setting every print uses (config.yaml `print:`)."""
+    p = cfg["print"]
+    return {k: p[k] for k in ("printer", "machine_type", "material", "material_code", "layer_thickness_mm",
+                              "print_setting")}
+
+
+def write_print_info(out_dir, cfg, extra=None):
+    """PRINT_SETTINGS.json next to every set of STLs, so each output says how it must be printed."""
+    import json
+    info = {**print_settings(cfg),
+            "note": "Print with exactly this material and layer thickness: the fit-test results only apply to it.",
+            **(extra or {})}
+    p = Path(out_dir) / "PRINT_SETTINGS.json"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(json.dumps(info, indent=1), encoding="utf-8")
+    return p

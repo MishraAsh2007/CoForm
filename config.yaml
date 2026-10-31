@@ -1,5 +1,26 @@
 # All tunable numbers live here. Units: mm unless the key says otherwise.
 
+# ---------------- Printer + material: ONE setting used for every print ----------------
+# The fit-test results only apply to this exact printer + material + layer thickness. Every STL output
+# folder gets a PRINT_SETTINGS.json with these values, and every run log records them.
+print:
+  printer: Form Studio 1
+  machine_type: CLRK-1-2          # from PreFormServer 3.64.2 /v1/print-setting/list/ (2026-10-31)
+  material: Alpha Fast V1
+  material_code: FLAPFA01         # from PreFormServer 3.64.2 /v1/print-setting/list/ (2026-10-31)
+  layer_thickness_mm: 0.15        # PreForm offers 0.150 and 0.250 (both "Default settings") for Alpha Fast on
+                                  # Form Studio 1; Formlabs lists 150 um as Alpha Fast's primary layer height.
+                                  # PENDING confirmation by Formlabs staff. Change ONLY here.
+  print_setting: DEFAULT
+material_properties:              # Formlabs Alpha Fast product page (components/sources.md, "Material")
+  ultimate_tensile_strength_mpa: 46
+  tensile_modulus_mpa: 2230
+  flexural_strength_mpa: 78
+  flexural_modulus_mpa: 2110
+  elongation_at_break_pct: 34
+  notched_izod_j_per_m: 37
+  hdt_at_0_45_mpa_c: 59
+
 export:
   stl_tolerance_mm: 0.01
   stl_angular_tolerance_rad: 0.1
@@ -107,14 +128,10 @@ checks:
   tab_bolt_head_diameter: 6.0   # M3 head for the robot tabs
   max_box: [120, 90, 40]     # default allowed outer size (x, y, z); briefs can tighten this
 
-# PreFormServer Local API (same settings as the teammate's project). machine_type / material_code are
-# PLACEHOLDERS until confirmed with PreFormClient.list_materials() for Form Studio 1 + Rigid 10K.
+# PreFormServer Local API. machine_type / material_code / layer_thickness_mm / print_setting come from the
+# `print:` block above (one setting for everything); see checks/preform_check.py preform_settings().
 preform:
   base_url: http://127.0.0.1:44388
-  machine_type: ""            # TODO (teammate): Form Studio 1 machine type id
-  material_code: ""           # TODO (teammate): Rigid 10K material code
-  layer_thickness_mm: 0.1
-  print_setting: DEFAULT
   request_timeout_s: 60
   operation_timeout_s: 600
   poll_interval_s: 0.5
@@ -125,5 +142,23 @@ preform:
   mock:                       # used only when PreFormServer is not reachable; every output says "MOCK"
     support_volume_factor: 1.15     # resin = part volume x this (guess)
     seconds_per_layer: 6.0          # guess, not a Form Studio 1 figure
-    build_volume_mm: [200, 125, 210]  # UNVERIFIED placeholder (Form 4 size); Form Studio 1 size not confirmed
+    build_volume_mm: [200, 125, 210]  # UNVERIFIED placeholder; the real in-bounds check comes from PreForm
     tilt_deg: 30                    # typical auto-orient tilt for flat parts, used for the height estimate
+
+# ---------------- Phase 5: agents ----------------
+llm:
+  model: claude-haiku-5-5     # same model for every agent in every mode; may switch to claude-sonnet-5-5
+  effort: low                 # output_config.effort
+  max_tokens: 4000
+  send_images: true           # agents that own "renders" get the assembled picture
+  cost_cap_usd: 2.0           # per run; the runner stops when reached
+  prices_per_mtok:            # [input, output] USD per million tokens (Anthropic price list, 2026-10)
+    claude-haiku-5-5: [0.10, 0.50]
+    claude-sonnet-5-5: [2.00, 10.00]
+    claude-opus-5-5: [4.00, 20.00]
+run:
+  out_dir: results/runs
+  cache_dir: results/cache    # evaluations cached by spec hash (same spec = same results)
+  default_budget: 12          # full evaluations per run
+  max_rounds: 6
+  start_spec: naive           # naive | reference (see cad/spec.py default_spec)
