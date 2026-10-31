@@ -1,0 +1,318 @@
+Agent Collective for Physical Design and Experimental Model Correction
+ScienceClaw hackathon project proposal
+Prepared for the project team
+October 30 2026
+Project decision
+We propose a system that designs a lightweight physical support, tests it with a camera and known loads, investigates discrepancies between predicted and measured bending, and uses the resulting evidence to revise both its structural model and its design.
+
+The central technical question is whether specialist agents that exchange evidence can make better design and experiment decisions under a limited physical testing budget than a single agent or a conventional adaptive optimizer. A better object and a useful agent collective are separate claims. We will evaluate both.
+
+The default prototype is a small cantilever support made from folded cardstock or thin sheet material. This permits repeated fabrication without depending on a 3D printer or an MIT laboratory. The object represents a low-load sensor support or mounting arm. The demonstration establishes behavior for this specimen family and fixture; it does not establish an industrially qualified bracket.
+
+This document is an implementation and experimental plan. Numerical targets are planning targets or illustrative settings. No performance results have been obtained.
+1 The problem we are solving
+An optimizer can produce an excellent answer to an inaccurate physical model. A predicted lightweight design may bend too much when fabricated because the material is less stiff than assumed, the mounting fixture rotates, or fabrication introduces deformation that the model does not represent.
+
+Those explanations imply different actions. Increasing thickness might compensate for an error while leaving its cause unknown. Improving the fixture might solve a mounting problem without increasing the object's mass. Repeating an identical test might provide almost no new information when several explanations predict the same observation.
+
+We will build a system that treats these discrepancies as experimental questions. Its agents must propose explanations, choose measurements that distinguish them, revise numerical assumptions when the evidence supports a revision, and produce a design that passes a physical acceptance test.
+
+The intended practical use is rapid prototyping of small supports when material properties, fabrication quality, and mounting conditions are approximately known. The weekend experiment is a bounded investigation of that workflow. Broader manufacturing usefulness requires additional materials, fixtures, and independent validation.
+2 The proposed contribution
+The project combines three pieces of work that we can implement and inspect independently.
+
+First, we will build a measured connection between a parameterized design and a real specimen. Each candidate must have a reproducible template, a numerical prediction, a fabrication record, and a corresponding physical measurement.
+
+Second, we will implement experiment selection and model correction. The system must recognize when measurements cannot distinguish explanations and request a more informative test. It must also recognize observations outside its model, such as permanent deformation or clamp slip.
+
+Third, we will implement a protocol through which specialist agents propose, challenge, and agree on experiments and design changes. Their proposals must refer to recorded observations and tool outputs. Agreement in conversation does not establish that a design works.
+
+Existing tools will provide geometry generation, numerical optimization, marker tracking, and data storage. We will build the interfaces, experimental logic, coordination protocol, measurement pipeline, and comparison harness that connect them.
+Existing work and the boundary of our claim
+Multidisciplinary engineering optimization is established. OpenMDAO includes a worked example that optimizes a cantilever beam's thickness distribution using a structural model. Conventional optimization is therefore a necessary baseline. Balancing stiffness and material use is not our novelty claim. [2]
+
+LLM systems that orchestrate parametric CAD and engineering analysis have also been described in research. Connecting an LLM to CAD and structural analysis alone would not establish novelty. [3]
+
+Our proposed investigation concerns experimentally informed model correction and decentralized selection of scarce physical tests. We have not established that this combination is new. A broader literature review would be needed before making a research novelty claim. The hackathon contribution will be the implementation, physical evidence, and comparison against simpler methods.
+3 Research questions and hypotheses
+Primary question. Under the same physical testing and fabrication budgets, can a specialist collective produce a lighter support that passes a fixed deflection test more reliably than an adaptive numerical optimizer?
+
+Mechanism question. Does exchanging hypotheses and measurement evidence help agents choose tests that reduce uncertainty about material stiffness and mounting behavior?
+
+Architecture question. Does distributing decisions add useful capability compared with a single agent that can access the same tools and observations?
+Hypothesis	Supporting evidence	Evidence against it
+Diagnostic testing helps	Revised models predict reserved test conditions more accurately	Improvement appears only on conditions used for fitting
+Physical feedback improves the object	Less material is used while the same physical limits are met	Improvement depends on a changed fixture, weaker test, or uncounted material
+Peer coordination helps	Fewer tests to success or better final performance at an equal budget	A simpler method matches or exceeds performance at lower cost
+
+
+A negative result limits our claims about agent coordination. It does not justify changing the comparison after seeing its results.
+4 The physical object and design space
+Default specimen
+We will build a mounting arm that extends horizontally from a clamp and carries a downward load at a marked position. The arm will be cut and folded from one batch of sheet material. A folded U-shaped cross section provides a reproducible design space with a visible relationship between geometry and bending.
+
+Use the same stock, cutting method, fold procedure, clamp, load attachment, and measurement arrangement throughout each comparison. A drawing identifies the clamp line, load positions, fold locations, and observation points.
+
+The minimum version uses a uniform U-shaped section with two design variables: base width and side-wall height. Length and sheet thickness remain fixed. A flat strip can serve as a model check or reference specimen. Holes, root reinforcements, multiple materials, and arbitrary generated CAD are outside minimum scope.
+Quantity	Initial planning setting	How to fix it
+Total length	Approximately 140 to 180 mm	Choose after fitting fixture and camera view
+Load positions from clamp	Approximately 60, 90, and 120 mm	Mark and verify with a ruler
+Base width	Approximately 15 to 40 mm	Restrict to reproducibly fabricated widths
+Side-wall height	Approximately 5 to 15 mm	Exclude geometries with obvious twisting or collapse
+Material and thickness	One measured batch	Record batch and measurement method
+Proof load	Determined during pilot	Freeze before comparing search methods
+Maximum deflection	For example 2 mm at target position	Confirm it exceeds measurement noise and fits the model's usable range
+
+
+These are starting suggestions, not validated mechanical specifications. The pilot may narrow them. Methods receive identical fixed limits once comparison begins.
+Objective and constraints
+Minimize measured support mass while meeting the prescribed deflection, fabrication, and geometry limits. If the available scale cannot resolve specimen mass adequately, use developed sheet area as the primary material-use metric and label it accordingly. Do not present an area reduction as measured mass reduction.
+
+Feasibility requires a valid template, permitted dimensions, reproducible folds, a passing proof-load cycle, and no unacceptable permanent set. Freeze proof load, load position, dwell time, deflection limit, and permanent-set threshold before evaluation.
+
+This experiment evaluates stiffness and dimensional stability. It does not measure ultimate strength, fatigue life, or a certified safe working load. Less bending alone does not establish greater resistance to fracture.
+Fabrication alternatives
+If printer access and turnaround are confirmed early, connect the same interfaces to a small printed support. Record material, orientation, settings, and fabrication time. This extension should not delay the default experiment.
+
+Without a printer, generate SVG templates and transfer dimensions using a ruler. A human cuts, folds, mounts, and loads each specimen. The system generates instructions and records completion; fabrication is not autonomous.
+5 The diagnostic experiment
+Why one repeated test is insufficient
+Suppose measured bending exceeds the prediction. Two plausible explanations are lower effective material stiffness and rotation at the clamp. One measurement at one load position cannot uniquely determine both. More video frames of that same stationary condition do not resolve the ambiguity.
+
+Keep the specimen and fixture fixed, apply a centered load at different marked positions along the arm, and measure displacement at the load point. Moving the load instead of reclamping helps preserve the mounting condition during diagnosis.
+Initial structural model
+The proposed reduced model combines elastic beam bending and a rotationally compliant mount:
+\[
+\frac{\delta(a)}{F}=\frac{a^3}{3E_{\mathrm{eff}}I}+C_{\theta}a^2.
+\]
+Displacement is measured relative to the unloaded specimen at the same point. The loaded distance from the clamp is a, applied force is F, and cross-sectional second moment of area is I. The fitted quantities are effective stiffness E_eff and nonnegative rotational compliance C_theta. Computations use one consistent unit system.
+
+The first term is the usual small-deflection bending contribution for this loading arrangement. The second follows from root rotation under the moment F times a. This is our proposed approximation; it has not been validated on the folded specimens.
+
+The different dependence on load position provides a way to distinguish the two contributions. At least two distinct positions are necessary for fitting both parameters. Additional positions check the prediction. Closely spaced positions and noise can still make the fit poorly determined, so the code must report conditioning and uncertainty.
+
+Compute section properties from actual cross-sectional dimensions using the parallel-axis theorem and the shifted neutral axis. Do not treat a folded U section as a solid rectangular block. Effective stiffness is a calibrated parameter for the tested material and section family, not automatically a transferable intrinsic material property.
+Experiments that distinguish explanations
+Observation	Possible explanation	Useful next measurement
+Error grows with load distance	Incorrect stiffness or fixture compliance	Test at a well-separated position without reclamping
+Displacement is not proportional to force	Nonlinearity, slip, or damage	Apply another modest load and observe unloading
+Root moves relative to fixture	Mounting motion or slip	Track separate fixture and root references
+Specimen does not return after unloading	Permanent set or damage	Record residual motion and retire it from elastic fitting
+Tracking shows an abrupt jump	Occlusion, tracking loss, or actual movement	Inspect frames and a known reference displacement
+
+
+An agent can propose an explanation, but accepting it requires measurements. More hypotheses without a way to distinguish them add conversation without resolving uncertainty.
+Model limits
+The model assumes small deformation, approximately elastic response, a stable fixture, known geometry, and limited torsion. Folded sheet material can exhibit local buckling, fold-dependent stiffness, creep, and cross-sectional distortion.
+
+Restrict the pilot to approximately proportional force and displacement. A provisional screening limit is deflection below five percent of the loaded distance. This is not proof that the model is valid. If unloading reveals damage or residuals remain systematic, mark the model inadequate and narrow the task.
+
+Fixture translation is not represented by rotational compliance. Repair a translating fixture or use an identifiable additional model. Do not absorb all unexplained motion into an arbitrary material parameter.
+6 Agent responsibilities and decision authority
+Use three specialist agents, each with persistent local state, defined tools, and authority to propose actions. Numerical routines compute engineering quantities. LLMs may interpret evidence, formulate bounded hypotheses, and choose tool calls; they must not invent measurements or pass results.
+Agent	Evidence and tools	Decisions it owns
+Mechanics	Section calculations, structural model, parameter fitting, residual analysis	Propose model revisions, diagnose unresolved parameters, suggest geometry or load tests
+Fabrication	Templates, process limits, fabrication records, material-use calculation	Accept or reject templates with explicit reasons and suggest feasible changes
+Measurement	Camera tracking, calibration, load records, uncertainty checks	Accept measurement quality and propose tests that distinguish explanations
+
+
+An ordinary evaluation service calculates metrics and applies fixed acceptance rules. It is not a fourth conversational agent. Mass calculation and dimension checking do not need their own LLM personas.
+
+The mechanics agent may propose an informative test that is difficult to fabricate or measure. The fabrication agent may suggest a convenient but insufficiently stiff geometry. The measurement agent may reject apparent success because a reference moved. Their interaction is useful only if it changes actions and improves outcomes.
+
+No single LLM prescribes every agent's sequence. Each can open a proposal, challenge an assumption, request evidence, or reject an invalid result within its domain.
+
+Agents may run on one laptop with shared storage. This distributes scientific decision authority while retaining shared computing infrastructure. We will state that limitation rather than claim a fully decentralized network.
+7 Coordination protocol
+Shared evidence and immutable designs
+Exchange typed messages through an append-only event log. Each design is immutable. A change creates a new candidate with its parent, dimensions, template hash, material batch, model version, and proposing agent. Agents cannot silently overwrite one another's geometry.
+
+Messages include design proposal, experiment proposal, evidence request, constraint objection, measurement completed, model revision, and proposal closed. Every message records its identifier, timestamp, candidate and model references, supporting evidence, and expected outcome or unresolved question.
+Selecting the next action
+1. Any agent proposes a design evaluation or physical experiment with a cost and reason.
+2. Peers check feasibility, measurement validity, and usefulness. They may request a revision.
+3. Within bounded discussion rounds, each ranks valid proposals by resolving likely constraint violations, distinguishing explanations, and conserving the remaining budget.
+4. At least two agents must support execution, and applicable deterministic validity checks must pass. Resolve ties with a published rule such as lowest physical cost and then earliest identifier.
+5. A queue reserves the fixture and records execution. It does not choose scientific goals.
+6. Publish new evidence to all agents. Each updates its conclusions and may propose another action.
+Maximum rounds and token limits prevent endless negotiation. Failure to agree is recorded as failure to progress, not resolved through an unrecorded human decision.
+
+Objections require evidence: lost tracking, missing force metadata, a geometry limit, or a stated model-validity problem. The log separates measured violations from uncertain forecasts. Human operational assistance remains possible, but every intervention is recorded.
+8 Implementation architecture
+Recommended stack
+Use Python, NumPy, and SciPy for geometry calculations, parameter fitting, and numerical search. CadQuery is an optional CAD backend with parameterized modeling and standard file export. A small SVG template generator is sufficient for the default folded-sheet object. [4]
+
+OpenCV performs image tracking and calibration. Printed fiducials are convenient if available; high-contrast colored points and a ruler are alternatives. Marker detection does not remove the need to verify measurement geometry and scale. [5]
+
+Use SQLite for candidates, events, model versions, and experiment metadata. Store raw images and time series as files referenced by hashes. FastAPI can expose tools, and Streamlit can display the experiment state. A custom React interface comes after the physical and comparison loops work.
+
+Start with one model provider and model version. A simple message loop is sufficient. Multiple providers, a vector database, and a large agent framework are not requirements.
+Module	Inputs	Required outputs
+Design generator	Allowed dimensions, material identifier	Reproducible template, section geometry, material-use estimate
+Structural model	Geometry, force, load position, model version	Predicted displacement and validity flags
+Parameter estimator	Valid force and displacement observations	Estimates, residuals, uncertainty or identifiability warning
+Camera measurement	Frames, reference dimensions, tracked points	Displacement trace, quality flags, raw evidence
+Agent runtime	Events, local state, bounded tools	Typed proposals, objections, and evidence requests
+Experiment queue	Agreed proposal, fixture availability	Reservation, instructions, execution status
+Comparison harness	Frozen task, method, budget, seed	Comparable history and metrics
+Review interface	Artifacts and event records	Geometry, predictions, measurements, budget, decision history
+
+
+Tool contracts and records
+The following interfaces are illustrative contracts, not an implemented API.
+- generate_design accepts permitted dimensions and material identifier; returns candidate identifier and template.
+- predict_deflection accepts candidate, model, force in newtons, and load position in meters; returns a prediction and validity flags.
+- request_experiment accepts candidate, protocol, reason, and evidence references; returns a proposal.
+- record_observation accepts experiment, force, trace location, and quality flags; returns an immutable observation.
+- fit_model accepts validated observations and a model family; returns a versioned fit report.
+- evaluate_candidate accepts candidate and acceptance protocol; returns a physically measured or explicitly simulated result.
+Every observation records specimen identity, actual dimensions, material batch, force, load position, displacement, dwell time, residual displacement, and reference motion. Each model version records its source observations and assumptions.
+
+A final physical pass references an actual specimen and test record. Simulated pass and physical pass are different statuses. Failed calls return explicit failures and remain in the history.
+9 Measurement and physical test protocol
+Required materials
+Obtain a laptop, a phone or webcam in a fixed position, sheet stock from one batch, a ruler, scissors, a fold guide, a rigid mounting fixture, small measured loads, and visible reference points. A scale is needed to verify loads and measure mass. These are requirements, not confirmed available resources.
+
+A precision scale is preferable for lightweight specimens. With a coarse scale, weigh multiple identical blank strips together to estimate mass per area. Standardize and account for tape or attachments. If uncertainty approaches the claimed improvement, report material area or a mass interval instead of a precise mass reduction.
+Camera setup
+Place the camera approximately perpendicular to the plane of bending, with the calibration reference in that same plane. Track a fixed fixture reference, a specimen point near the root, and a point at the load station. Unloaded and loaded images use unchanged framing and scale.
+
+Validate tracking against known ruler displacements. Estimate stationary noise from a short image sequence and load-cycle repeatability from independent load and unload cycles. Frames are not independent specimens. Calibration, repeatability, and uncertainty are established requirements for understanding a measurement process. [6]
+
+Set acceptable tracking error from the pilot. It must be substantially below the difference that decides pass or fail. If the measurement cannot distinguish a candidate from the limit, classify it as uncertain and repeat or improve the measurement.
+One load cycle
+1. Verify specimen identity, dimensions, batch, clamp line, and protocol.
+2. Record an unloaded reference after settling.
+3. Apply the measured load centrally at the marked position using a consistent attachment.
+4. Wait the fixed pilot-selected dwell time, then record the displacement trace.
+5. Remove the load and measure residual displacement after a fixed recovery interval.
+6. Save force, position, timing, frames, quality flags, fixture motion, and human assistance.
+Include the load holder and attachment in the applied mass. Use one gravitational conversion consistently. Work with small bench loads appropriate to the specimen, with a catch surface below. Stop if a specimen slips, collapses, or leaves the usable deformation range.
+Shared initial observations and reserved checks
+Start with a reference geometry. Gather four shared initial cycles at one load position, using two modest load levels with independent repeats. Every method receives these same observations. These data check repeatability and approximate load proportionality, but intentionally leave stiffness and fixture compliance unresolved. A second load position remains an available diagnostic action within the search budget.
+
+Reserve a third load position to score a prediction before revealing the observation. Do not fit or choose the model using that reserved result beforehand. Once revealed, the observation is no longer held out; another independent prediction check requires a new reserved condition.
+
+Use separate physical copies for final acceptance. Repeated cycles on one specimen estimate repeatability; independent copies expose fabrication variability. Report the counts separately. Check that calibration cycles have not damaged a specimen before reusing it.
+10 Evaluation against serious baselines
+Comparison methods
+Method	Capabilities	Purpose
+Fixed optimizer	Search identical geometry bounds using initial assumptions	Show the cost of an unchanged inaccurate model
+Adaptive optimizer	Fit model parameters, choose diagnostic tests, and optimize geometry	Main conventional competitor
+Single agent	Use all specialist tools and shared observations	Test whether distributed decisions help
+Specialist collective	Propose, challenge, and agree through the protocol	Proposed system
+Specialists without evidence exchange	Use the same tools under a declared independent policy	Test the value of communication
+
+
+Implement the adaptive baseline competently. It can fit nonnegative compliance parameters with least squares, select a valid experiment using disagreement between models or estimated parameter uncertainty, and optimize geometry numerically. SciPy provides methods such as differential evolution; count their function evaluations. [7]
+
+Give the adaptive baseline the same model families, observations, geometry bounds, and experiment menu. Do not deny it information available to agents. Use the same rules for invalid measurements and model updates.
+Minimum physical comparison
+Prioritize the adaptive optimizer and specialist collective on the real fixture. Each receives four shared initial observations, eight additional search load cycles, and permission to fabricate at most three candidate designs. Record human fabrication time and apply the same process to both.
+
+Each method nominates a final design before seeing acceptance measurements. Fabricate three independent copies of each selected design and perform the fixed proof cycle. Test independent reference copies under the same protocol. Final acceptance cycles are outside the search budget and equal across methods.
+
+The full plan involves roughly a dozen to fifteen specimens and around thirty load cycles, depending on requested designs and reserved checks. Pilot timing determines whether this fits. Reduce geometry choices or conversation overhead before removing the main baseline.
+
+One physical search run per method supports a demonstration and case study. It does not establish a statistically reliable average advantage.
+Broader software comparisons
+If time permits, compare all methods on controlled simulated tasks with varied stiffness, mounting compliance, and noise. Use multiple seeds and separate policy-tuning tasks from evaluation conditions. Ten seeds can be an initial diagnostic target, not a guarantee of adequate statistical power.
+
+Simulation supplements physical evidence. It does not establish fabrication performance. Recorded replay cannot reveal an unobserved action's outcome. Restrict methods to a common recorded action set or use an explicitly labeled simulator.
+
+The single agent receives all tools, numerical checks, and observations. Match or report the collective's aggregate token budget rather than allocating each specialist an uncounted allowance. Report elapsed time, model calls, and numerical evaluations alongside physical tests.
+Metrics and success criteria
+Metric	Reporting rule
+Physical feasibility	Passing independent final specimens divided by final specimens tested
+Material use	Measured mass and uncertainty, or explicitly labeled developed sheet area
+Deflection	Individual observations, their range, and the fixed limit
+Prediction error	Difference between prediction and reserved-condition measurement
+Experimental efficiency	Search cycles and designs needed for first physically passing candidate
+Coordination cost	Tokens, rounds, unresolved decisions, and time
+Human effort	Fabrication time, operational help, and unplanned interventions
+
+
+Compare material use between passing designs. A lighter candidate that fails is not an improvement. Display individual results alongside summaries, particularly with only three independent specimens.
+
+A provisional practical target is at least 15 percent lower material use than the reference with all three final copies passing. This is an ambition, not a promised result or universal threshold. The difference must exceed relevant measurement uncertainty.
+
+Evidence for the collective requires another advantage over a simpler method: fewer tests to first success, better final feasibility, or better material use at equal budgets. Improving the object alone does not establish that distributing decision authority caused the improvement.
+11 Illustrative end to end run
+This sequence describes intended behavior, not experimental results.
+
+The system generates a reference design and predicts displacement using initial assumptions. A teammate fabricates and mounts it. Measurement reveals more bending than predicted.
+
+The mechanics agent publishes two explanations: lower effective stiffness or additional clamp rotation. The measurement agent notes that one observation cannot distinguish them and proposes another load position. The fabrication agent confirms that the test can use the existing specimen without changing its folds or mounting.
+
+The peers select the test. After measurement, parameter fitting produces an updated model and fit report. A reserved load position checks whether that revision predicts an observation excluded from fitting. If it fails, agents investigate or restrict the model before optimizing another design.
+
+Once the model is adequate for the bounded task, mechanics proposes geometry changes. Fabrication rejects an option outside the reproducible folding limits and suggests a nearby alternative. The system generates its template, records fabrication, and measures the candidate.
+
+The run ends at its budget limit or declared stopping rule. Independent copies of the nominated design undergo final acceptance. Compare their measurements and search costs with the adaptive optimizer and reference.
+12 Work plan and team ownership
+Plan approximately 24 to 30 productive team hours around the event schedule. These are elapsed work blocks, not a recommendation to skip sleep. The official site currently lists final slides due at 1 PM on Sunday, November 1. Confirm the live organizer announcement before scheduling the final test. [1]
+Work block	Deliverable	Completion check
+First 2 hours	Fixture, specimen, measurement pilot	Known displacement and repeat load cycles are measurable
+Hours 2 to 6	Templates, structural model, data schema	Geometry reproduces physically; reference calculation is checked
+Hours 6 to 10	Fitting and adaptive baseline	Reserved prediction and complete baseline run are recorded
+Hours 10 to 16	Specialist agents and coordination	Evidence-based proposal produces a physical test and model update
+Hours 16 to 23	Comparisons and independent final specimens	Equal budgets and complete acceptance measurements
+Remaining time	Reproducibility package and presentation	Every displayed result links to an actual record
+
+
+For three teammates, assign primary ownership of measurement and fixture, geometry and numerical modeling, and agent coordination and records. Integrate early through a shared schema. Everyone must understand acceptance rules before collecting comparison data.
+
+The team's computer vision and robotics experience supports measurement and physical integration. Statistics experience supports parameter identification and uncertainty analysis. A teammate or mentor should check the mechanics and fixture assumptions; software experience alone does not establish that the structural model is appropriate.
+13 Scope and early decisions
+Minimum complete project
+The minimum system contains one material batch, one folded section family, two geometry variables, a measured fixture, a two-parameter diagnostic model, three specialist agents, one adaptive baseline, and independently tested final specimens.
+
+It also needs raw evidence, immutable designs, recorded budgets and human actions, and a presentation separating prediction from measurement. Interface polish follows these components.
+Continuation criteria
+After the pilot, continue only if fabrication is repeatable, deflection is resolvable, and loads are measured. If camera tracking fails but a ruler provides adequate readings, record manual measurements and report the reduced automation.
+
+If stiffness and fixture compliance cannot be distinguished, improve measurement geometry or independently constrain fixture motion. Do not retain an ill-conditioned fit because its outputs look plausible.
+
+If modeling remains inadequate, restrict the geometry family and narrow the claim. If physical measurement is unavailable entirely, a simulation-only version no longer fulfills the intended real-world demonstration.
+
+If the adaptive baseline already makes every diagnostic decision efficiently, that is evidence against the need for a collective here. Finish the experiment honestly rather than adding more agents to create apparent complexity.
+Optional extensions
+Possible extensions include a second material batch with a reserved transfer test, a printed support with confirmed turnaround, improved root-rotation measurement, or comparison of coordination protocols. Each must answer a specific question.
+
+Free-form CAD, many manufacturing processes, and additional agents are outside the default scope. They increase integration work without guaranteeing better evidence.
+14 Risks and responses
+Risk	Consequence	Response
+Fabrication variability	Geometry effects become hard to separate	Use fold guides, record dimensions, test independent copies
+Camera noise	Unreliable pass decisions	Validate known displacements, improve framing, or measure manually
+Fixture motion	Misleading material estimates	Track separate references, reject invalid cycles, repair mounting
+Invalid beam assumptions	Optimizer exploits model error	Check proportionality and unloading; narrow the domain
+Poor transfer across geometry	Calibration fails on new candidates	Validate across bounds and retain family-specific uncertainty
+Endless agent discussion	Physical budget is wasted	Bound rounds, require evidence, count unresolved decisions
+One agent controls every action	Weak decentralized-agency claim	Inspect proposal origins and whether peers change decisions
+Simpler method wins	Unsupported collective advantage	Report the comparison and narrow conclusions
+No printer access	Fabrication schedule fails	Start with folded sheet material and ordinary tools
+
+
+15 Demonstration and deliverables
+Show the physical object and evidence before agent conversation. A short demonstration can show the reference prediction, measured discrepancy, chosen diagnostic test, model revision, and final object under the proof load.
+
+Use recorded measurements for steps that cannot fit into presentation time and label them as recorded. A live final proof cycle can link directly to its measurement record. Do not present an earlier observation as a fresh discovery.
+
+The interface should show geometry, model version, predicted and observed displacement, measurement quality, remaining budget, and the next proposed action. The comparison view includes the adaptive baseline, failures, and human assistance.
+
+ScienceClaw gives substantial weight to decentralized agency and collective capability. Identify a specific decision changed by peer interaction and show whether that interaction improved outcomes. The rubric is a reason to test collaboration, not to presume it beneficial. [1]
+
+Deliver source and setup instructions, all tested templates, fixed protocols, raw and processed measurements, model versions, complete histories, baseline configurations, and the comparison. Another team should be able to reconstruct decisions from the evidence and identify human fabrication and measurement steps.
+16 Proposed project description
+We are building a collective of agents that designs lightweight physical supports using feedback from real load tests. The system investigates why structural predictions disagree with measurements, chooses experiments that distinguish possible causes, and uses the evidence to revise its model and design. Mechanics, fabrication, and measurement agents propose and challenge actions through a shared evidence record. We evaluate objects on independently fabricated specimens and compare the collective with an adaptive optimizer under the same physical testing budget.
+
+The result we seek is a measured improvement in the object together with evidence about whether distributed decisions helped achieve it. Both remain hypotheses until the comparisons are complete.
+References
+Sources accessed October 30 2026. The architecture, experimental protocol, planning ranges, hypotheses, and targets are proposed project decisions. These sources establish prior work, tool capabilities, and evaluation context; they do not validate this proposed system.
+1. ScienceClaw Hackathon. Official brief, rubric, resource conditions, and schedule. https://scienceclawhack.ai/
+2. OpenMDAO documentation. Optimizing the Thickness Distribution of a Cantilever Beam Using the Adjoint Method. Beam optimization example using Euler–Bernoulli theory. https://openmdao.org/newdocs/versions/latest/examples/beam_optimization_example.html
+3. Guo and colleagues. A Multidisciplinary Design and Optimization MDO Agent Driven by Large Language Models. Research describing LLM orchestration of parametric CAD and engineering analysis. Preprint; related work rather than independent validation. https://arxiv.org/abs/2511.17511
+4. CadQuery documentation. Introduction. Parameterized modeling and export capabilities. https://cadquery.readthedocs.io/en/latest/intro.html
+5. OpenCV documentation. Detection of ArUco Markers. Marker detection, pose estimation, and camera calibration. https://docs.opencv.org/4.13.0/d5/dae/tutorial_aruco_detection.html
+6. NIST and SEMATECH. Engineering Statistics Handbook Chapter 2 Measurement Process Characterization. Calibration, repeatability, measurement control, and uncertainty. https://www.nist.gov/publications/nistsematech-engineering-statistics-handbook-chapter-2-measurement-process
+7. SciPy documentation. differential_evolution. Numerical optimization interface and evaluation considerations. https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.differential_evolution.html

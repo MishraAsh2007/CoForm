@@ -1,0 +1,198 @@
+solid scienceclaw_u_channel_mm
+  facet normal -1 0 0
+    outer loop
+      vertex 0 18.8 9.2
+      vertex 0 20 9.2
+      vertex 0 20 0
+    endloop
+  endfacet
+  facet normal -1 0 0
+    outer loop
+      vertex 0 18.8 1.2
+      vertex 0 18.8 9.2
+      vertex 0 20 0
+    endloop
+  endfacet
+  facet normal -1 0 -0
+    outer loop
+      vertex 0 18.8 1.2
+      vertex 0 20 0
+      vertex 0 0 0
+    endloop
+  endfacet
+  facet normal -1 0 -0
+    outer loop
+      vertex 0 1.2 1.2
+      vertex 0 18.8 1.2
+      vertex 0 0 0
+    endloop
+  endfacet
+  facet normal -1 -0 0
+    outer loop
+      vertex 0 1.2 1.2
+      vertex 0 0 0
+      vertex 0 0 9.2
+    endloop
+  endfacet
+  facet normal -1 0 0
+    outer loop
+      vertex 0 0 9.2
+      vertex 0 1.2 9.2
+      vertex 0 1.2 1.2
+    endloop
+  endfacet
+  facet normal 1 0 -0
+    outer loop
+      vertex 160 20 0
+      vertex 160 20 9.2
+      vertex 160 18.8 9.2
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 160 20 0
+      vertex 160 18.8 9.2
+      vertex 160 18.8 1.2
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 160 0 0
+      vertex 160 20 0
+      vertex 160 18.8 1.2
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 160 0 0
+      vertex 160 18.8 1.2
+      vertex 160 1.2 1.2
+    endloop
+  endfacet
+  facet normal 1 0 0
+    outer loop
+      vertex 160 0 9.2
+      vertex 160 0 0
+      vertex 160 1.2 1.2
+    endloop
+  endfacet
+  facet normal 1 0 -0
+    outer loop
+      vertex 160 1.2 1.2
+      vertex 160 1.2 9.2
+      vertex 160 0 9.2
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 0 0 0
+      vertex 0 20 0
+      vertex 160 20 0
+    endloop
+  endfacet
+  facet normal 0 0 -1
+    outer loop
+      vertex 0 0 0
+      vertex 160 20 0
+      vertex 160 0 0
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0 20 0
+      vertex 0 20 9.2
+      vertex 160 20 9.2
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0 20 0
+      vertex 160 20 9.2
+      vertex 160 20 0
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 0 20 9.2
+      vertex 0 18.8 9.2
+      vertex 160 18.8 9.2
+    endloop
+  endfacet
+  facet normal -0 0 1
+    outer loop
+      vertex 0 20 9.2
+      vertex 160 18.8 9.2
+      vertex 160 20 9.2
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex 0 18.8 9.2
+      vertex 0 18.8 1.2
+      vertex 160 18.8 1.2
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex 0 18.8 9.2
+      vertex 160 18.8 1.2
+      vertex 160 18.8 9.2
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 0 18.8 1.2
+      vertex 0 1.2 1.2
+      vertex 160 1.2 1.2
+    endloop
+  endfacet
+  facet normal -0 0 1
+    outer loop
+      vertex 0 18.8 1.2
+      vertex 160 1.2 1.2
+      vertex 160 18.8 1.2
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0 1.2 1.2
+      vertex 0 1.2 9.2
+      vertex 160 1.2 9.2
+    endloop
+  endfacet
+  facet normal 0 1 0
+    outer loop
+      vertex 0 1.2 1.2
+      vertex 160 1.2 9.2
+      vertex 160 1.2 1.2
+    endloop
+  endfacet
+  facet normal 0 0 1
+    outer loop
+      vertex 0 1.2 9.2
+      vertex 0 0 9.2
+      vertex 160 0 9.2
+    endloop
+  endfacet
+  facet normal -0 0 1
+    outer loop
+      vertex 0 1.2 9.2
+      vertex 160 0 9.2
+      vertex 160 1.2 9.2
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex 0 0 9.2
+      vertex 0 0 0
+      vertex 160 0 0
+    endloop
+  endfacet
+  facet normal 0 -1 0
+    outer loop
+      vertex 0 0 9.2
+      vertex 160 0 0
+      vertex 160 0 9.2
+    endloop
+  endfacet
+endsolid scienceclaw_u_channel_mm

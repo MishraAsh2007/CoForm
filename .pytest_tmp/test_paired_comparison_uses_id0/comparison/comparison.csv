@@ -1,0 +1,3 @@
+scenario,seed,method,policy,run_id,acceptance_status,passing_specimens,search_cycles_to_first_pass,independent_specimens_tested,nominated_volume_m3,volume_ratio_to_reference,reserved_mean_absolute_error_m,search_cycles_used,designs_used,numerical_evaluations,reported_tokens,model_calls,elapsed_s
+default,7,adaptive,adaptive_numerical,run_dae1ff3e487b481c,simulated_pass,3,3,3,5.952e-06,0.6888888888888889,3.2144715306038044e-05,8,1,1716,0,0,0.11210919986478984
+default,7,collective,offline_rule_based_specialists,run_e130831ba36b4a5e,simulated_pass,3,3,3,5.952e-06,0.6888888888888889,3.2144715306038044e-05,8,1,1716,0,0,0.1194015999790281

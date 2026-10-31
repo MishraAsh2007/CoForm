@@ -1,0 +1,9 @@
+scenario,seed,method,policy,run_id,acceptance_status,passing_specimens,search_cycles_to_first_pass,independent_specimens_tested,nominated_volume_m3,volume_ratio_to_reference,reserved_mean_absolute_error_m,search_cycles_used,designs_used,numerical_evaluations,reported_tokens,model_calls,elapsed_s
+nominal,7,adaptive,adaptive_numerical,run_20931c82aafa4a52,simulated_pass,3,3,3,5.952e-06,0.6888888888888889,3.2144715306038044e-05,8,1,1716,0,0,0.11616350011900067
+nominal,7,collective,offline_rule_based_specialists,run_eeb65c41e05c4336,simulated_pass,3,3,3,5.952e-06,0.6888888888888889,3.2144715306038044e-05,8,1,1716,0,0,0.1284662000834942
+nominal,7,single_agent,rule_based_single_agent,run_86db34c24bfe48a5,simulated_pass,3,3,3,5.952e-06,0.6888888888888889,3.2144715306038044e-05,8,1,1716,0,0,0.1134124998934567
+nominal,7,independent,rule_based_independent_specialists,run_4044259ec720464b,simulated_pass,3,3,3,5.952e-06,0.6888888888888889,3.2144715306038044e-05,8,1,1716,0,0,0.11928099999204278
+stiff_material_loose_mount,7,adaptive,adaptive_numerical,run_37c9c4f7ccf742ec,fail,0,,3,8.64e-06,1.0,,8,0,0,0,0,0.09863159991800785
+stiff_material_loose_mount,7,collective,offline_rule_based_specialists,run_7b523c794a824663,fail,0,,3,8.64e-06,1.0,,8,0,0,0,0,0.13562810001894832
+stiff_material_loose_mount,7,single_agent,rule_based_single_agent,run_bc4088bc52604bdb,fail,0,,3,8.64e-06,1.0,,8,0,0,0,0,0.12083450006321073
+stiff_material_loose_mount,7,independent,rule_based_independent_specialists,run_67431891c5f54a69,fail,0,,3,8.64e-06,1.0,,8,0,0,0,0,0.12320679984986782

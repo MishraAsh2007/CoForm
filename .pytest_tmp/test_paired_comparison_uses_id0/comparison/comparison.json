@@ -1,0 +1,256 @@
+{
+  "comparison": "adaptive vs collective (offline rule-based agents)",
+  "created_at": "2026-10-31T19:42:07.890271+00:00",
+  "limits": [
+    "No API calls or real LLM decisions occur in this comparison.",
+    "This checks software policies and accounting; it cannot establish an advantage from LLM coordination.",
+    "Simulation is not fabrication or physical validation; volume is nominal geometry, not measured mass.",
+    "Simulator material and fixture parameters are fixed; seeds vary measurement noise and final-copy variation.",
+    "Final reference copies are not independently tested here; volume ratios alone are not performance improvements."
+  ],
+  "live_agents": false,
+  "methods": [
+    "adaptive",
+    "collective"
+  ],
+  "mode": "simulated",
+  "pairs": [
+    {
+      "scenario": "default",
+      "seed": 7,
+      "shared_initial_cycles": 4,
+      "shared_initial_sha256": "7f90ef46a54e3aae9a2bc89bb8014e63f9519974a72be78389ff255490cf0d03"
+    }
+  ],
+  "protocol": {
+    "base_width_max_m": 0.04,
+    "base_width_min_m": 0.015,
+    "diagnostic_positions_m": [
+      0.06,
+      0.12
+    ],
+    "dwell_s": 3.0,
+    "final_copies": 3,
+    "geometry_step_m": 0.001,
+    "max_deflection_m": 0.002,
+    "max_deflection_ratio": 0.05,
+    "max_designs": 3,
+    "max_fixture_motion_m": 0.0001,
+    "max_residual_m": 0.0002,
+    "max_root_stress_pa": null,
+    "max_rounds": 3,
+    "max_uncertainty_m": 0.00015,
+    "max_volume_m3": null,
+    "proof_force_n": 0.3,
+    "proof_position_m": 0.12,
+    "recovery_s": 3.0,
+    "reserved_position_m": 0.09,
+    "search_cycles": 8,
+    "token_budget": 200000,
+    "wall_height_max_m": 0.015,
+    "wall_height_min_m": 0.005
+  },
+  "reference_geometry": {
+    "base_width_m": 0.025,
+    "clamp_length_m": 0.025,
+    "length_m": 0.16,
+    "material_batch": "pilot-resin",
+    "section_family": "u_channel",
+    "thickness_m": 0.0012,
+    "wall_height_m": 0.01
+  },
+  "results": [
+    {
+      "acceptance_observations": [
+        {
+          "displacement_m": 0.00157139259494981,
+          "id": "obs_8a3e72c5ac164b13",
+          "specimen_id": "final-1-candidate_7e35bb9378c04b4e",
+          "status": "simulated_pass",
+          "uncertainty_m": 1.5e-05
+        },
+        {
+          "displacement_m": 0.0015513171762010652,
+          "id": "obs_08b7164e31d54213",
+          "specimen_id": "final-2-candidate_7e35bb9378c04b4e",
+          "status": "simulated_pass",
+          "uncertainty_m": 1.5e-05
+        },
+        {
+          "displacement_m": 0.0014974833186899143,
+          "id": "obs_3335a1b39a3346d0",
+          "specimen_id": "final-3-candidate_7e35bb9378c04b4e",
+          "status": "simulated_pass",
+          "uncertainty_m": 1.5e-05
+        }
+      ],
+      "acceptance_status": "simulated_pass",
+      "budget": {
+        "cycles_remaining": 0,
+        "cycles_used": 8,
+        "designs_remaining": 2,
+        "designs_used": 1,
+        "tokens_remaining": 200000,
+        "tokens_used": 0
+      },
+      "candidate_id": "candidate_7e35bb9378c04b4e",
+      "charged_or_reserved_tokens": 0,
+      "decision_policies": [
+        "adaptive_numerical"
+      ],
+      "discussion_rounds": 0,
+      "elapsed_s": 0.11210919986478984,
+      "event_chain_verified": true,
+      "evidence_archive": "evidence\\run_dae1ff3e487b481c.zip",
+      "human_fabrication_time_s": 0,
+      "independent_specimens_tested": 3,
+      "material_metric": "nominal_geometry_volume_m3",
+      "measured_mass_kg": null,
+      "method": "adaptive",
+      "mode": "simulated",
+      "model_calls": 0,
+      "nominated_volume_m3": 5.952e-06,
+      "numerical_evaluations": 1716,
+      "passing_fraction": 1.0,
+      "passing_specimens": 3,
+      "policy": "adaptive_numerical",
+      "reference_volume_m3": 8.64e-06,
+      "reported_tokens": 0,
+      "reserved_mean_absolute_error_m": 3.2144715306038044e-05,
+      "reserved_predictions": [
+        {
+          "absolute_error_m": 3.2144715306038044e-05,
+          "model_id": "model_959504c0b2bf4c50",
+          "observation_id": "obs_75d3b50ff364403e",
+          "observed_m": 0.0007093945321193757,
+          "predicted_m": 0.0006772498168133377
+        }
+      ],
+      "run_id": "run_dae1ff3e487b481c",
+      "scenario": "default",
+      "search_cycles_to_first_pass": 3,
+      "seed": 7,
+      "unresolved_decisions": 0,
+      "volume_ratio_to_reference": 0.6888888888888889
+    },
+    {
+      "acceptance_observations": [
+        {
+          "displacement_m": 0.00157139259494981,
+          "id": "obs_0c6c4cf0496d440f",
+          "specimen_id": "final-1-candidate_cae451c1768645e3",
+          "status": "simulated_pass",
+          "uncertainty_m": 1.5e-05
+        },
+        {
+          "displacement_m": 0.0015513171762010652,
+          "id": "obs_60d95d43ff624b14",
+          "specimen_id": "final-2-candidate_cae451c1768645e3",
+          "status": "simulated_pass",
+          "uncertainty_m": 1.5e-05
+        },
+        {
+          "displacement_m": 0.0014974833186899143,
+          "id": "obs_a5b13e687291456e",
+          "specimen_id": "final-3-candidate_cae451c1768645e3",
+          "status": "simulated_pass",
+          "uncertainty_m": 1.5e-05
+        }
+      ],
+      "acceptance_status": "simulated_pass",
+      "budget": {
+        "cycles_remaining": 0,
+        "cycles_used": 8,
+        "designs_remaining": 2,
+        "designs_used": 1,
+        "tokens_remaining": 200000,
+        "tokens_used": 0
+      },
+      "candidate_id": "candidate_cae451c1768645e3",
+      "charged_or_reserved_tokens": 0,
+      "decision_policies": [
+        "rule_based_specialist_demo"
+      ],
+      "discussion_rounds": 7,
+      "elapsed_s": 0.1194015999790281,
+      "event_chain_verified": true,
+      "evidence_archive": "evidence\\run_e130831ba36b4a5e.zip",
+      "human_fabrication_time_s": 0,
+      "independent_specimens_tested": 3,
+      "material_metric": "nominal_geometry_volume_m3",
+      "measured_mass_kg": null,
+      "method": "collective",
+      "mode": "simulated",
+      "model_calls": 0,
+      "nominated_volume_m3": 5.952e-06,
+      "numerical_evaluations": 1716,
+      "passing_fraction": 1.0,
+      "passing_specimens": 3,
+      "policy": "offline_rule_based_specialists",
+      "reference_volume_m3": 8.64e-06,
+      "reported_tokens": 0,
+      "reserved_mean_absolute_error_m": 3.2144715306038044e-05,
+      "reserved_predictions": [
+        {
+          "absolute_error_m": 3.2144715306038044e-05,
+          "model_id": "model_53b3af6aa40c4630",
+          "observation_id": "obs_8138c11d0e08495f",
+          "observed_m": 0.0007093945321193757,
+          "predicted_m": 0.0006772498168133377
+        }
+      ],
+      "run_id": "run_e130831ba36b4a5e",
+      "scenario": "default",
+      "search_cycles_to_first_pass": 3,
+      "seed": 7,
+      "unresolved_decisions": 0,
+      "volume_ratio_to_reference": 0.6888888888888889
+    }
+  ],
+  "scenarios": [
+    {
+      "cure_fraction": null,
+      "fixture": "printed_jaws",
+      "fixture_motion_m": 0.0,
+      "material": "alpha_fast",
+      "name": "default",
+      "noise_std_m": 1.5e-05,
+      "nonlinear_force_coefficient": 0,
+      "physics": "beam",
+      "protocol_overrides": {},
+      "residual_m": 0.0,
+      "rotational_compliance_rad_per_nm": 0.25,
+      "youngs_modulus_pa": 1300000000.0
+    }
+  ],
+  "schema_version": 1,
+  "seeds": [
+    7
+  ],
+  "summary": {
+    "adaptive": {
+      "all_copies_passed_runs": 1,
+      "mean_cycles_to_first_pass": 3,
+      "mean_passing_fraction": 1.0,
+      "mean_reserved_error_m": 3.2144715306038044e-05,
+      "mean_volume_ratio_when_passing": 0.6888888888888889,
+      "runs": 1,
+      "runs_reaching_a_passing_new_design": 1,
+      "total_model_calls": 0,
+      "total_reported_tokens": 0,
+      "unresolved_decisions": 0
+    },
+    "collective": {
+      "all_copies_passed_runs": 1,
+      "mean_cycles_to_first_pass": 3,
+      "mean_passing_fraction": 1.0,
+      "mean_reserved_error_m": 3.2144715306038044e-05,
+      "mean_volume_ratio_when_passing": 0.6888888888888889,
+      "runs": 1,
+      "runs_reaching_a_passing_new_design": 1,
+      "total_model_calls": 0,
+      "total_reported_tokens": 0,
+      "unresolved_decisions": 0
+    }
+  }
+}

@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ScienceClaw · Design Lab</title><link rel="stylesheet" href="/static/style.css"><script src="/static/charts.js" defer></script><script src="/static/app.js" defer></script></head>
+<body>
+<header class="top">
+  <a class="brand" href="/">◈ <span>SCIENCECLAW</span></a>
+  <nav class="modes"><a href="/designer">Part designer</a><a class="active" href="/">Support studies</a></nav>
+  <label class="top-field">Study<select id="run-picker"><option value="">No studies yet</option></select></label>
+  <button id="new-study" class="secondary">+ New study</button>
+  <span id="source-badge" class="pill">No study</span>
+  <span class="spacer"></span>
+  <label class="top-field">Agents<select id="agent-mode"><option value="offline">Rule-based (free, instant)</option><option value="live">Live AI models</option></select></label>
+  <span id="cad-status" class="pill" title="Where designs are built">CAD: checking…</span>
+  <span id="preform-pill" class="pill" title="Formlabs PreForm, for printing">PreForm: not connected</span>
+</header>
+
+<div id="notice" role="status" aria-live="polite" hidden></div>
+
+<section id="setup" class="sheet" hidden>
+  <div class="sheet-top"><div><h2>New design study</h2><p>Say what the part must do. The agents then design, print, test and refine it. Requirements are frozen once the study starts.</p></div><button id="close-setup" class="text-button">Close ✕</button></div>
+  <form id="create-form">
+    <h3>1 · What it must do</h3>
+    <div class="form-grid">
+      <label>Load (N)<input type="number" name="force" value="0.3" min="0.01" max="10" step="0.01" required></label>
+      <label>Applied at, from the clamp (mm)<input type="number" name="position" value="120" min="10" max="275" step="1" required></label>
+      <label>Maximum bend (mm)<input type="number" name="limit" value="2" min="0.01" max="10" step="0.01" required></label>
+      <label>Max resin (cm³, optional)<input type="number" name="volume" min="0.1" step="0.1" placeholder="No limit"></label>
+    </div>
+    <h3>2 · Starting design</h3>
+    <div class="form-grid">
+      <label>Shape<select name="family"><option value="u_channel">U-channel</option><option value="solid_bar">Solid bar</option><option value="rectangular_tube">Rectangular tube</option></select></label>
+      <label>Length (mm)<input type="number" name="length" value="160" min="145" max="300" step="1" required></label>
+      <label>Base width (mm)<input type="number" name="width" value="25" min="1" step="1" required></label>
+      <label>Wall height (mm)<input type="number" name="height" value="10" min="0" step="1" required></label>
+      <label>Wall thickness (mm)<input type="number" name="thickness" value="1.2" min="0.8" max="5" step="0.1" required></label>
+    </div>
+    <h3>3 · How to run it</h3>
+    <div class="form-grid">
+      <label>Measurements from<select name="mode"><option value="physical">Real prints, measured by you</option><option value="simulated">Simulation (no printer needed)</option></select></label>
+      <label id="scenario-field">Simulated test rig<select name="scenario" id="scenario-picker"></select></label>
+      <label>Who decides<select name="method"><option value="collective">Three specialist agents</option><option value="single_agent">One agent alone (baseline)</option><option value="independent">Three agents, no discussion (baseline)</option><option value="adaptive">Numerical optimizer, no AI (baseline)</option></select></label>
+      <label>AI model for the agents<select name="team" id="team-preset"><option value="env">As set in .env</option></select></label>
+    </div>
+    <details class="more"><summary>More options</summary>
+      <div class="form-grid">
+        <label>Study name<input name="name" value="Resin support study" required maxlength="120"></label>
+        <label>Allowed base width (mm)<span class="range"><input type="number" name="width_min" value="15" min="2" step="1" required aria-label="Minimum base width"><input type="number" name="width_max" value="40" min="2" step="1" required aria-label="Maximum base width"></span></label>
+        <label>Allowed wall height (mm)<span class="range"><input type="number" name="height_min" value="5" min="0" step="1" required aria-label="Minimum wall height"><input type="number" name="height_max" value="15" min="1" step="1" required aria-label="Maximum wall height"></span></label>
+        <label>Allowable stress (MPa, optional)<input type="number" name="stress" min="0.01" step="0.01" placeholder="With safety factor"></label>
+        <label>Resin batch label<input name="material" value="alpha-fast" required></label>
+        <label>Model override (optional)<input name="team_model" placeholder="e.g. nvidia/nemotron-3.5-lightning-30b-a3b"></label>
+        <label>AI token budget<input type="number" name="tokens" value="200000" min="1000" max="1000000" step="1000" required></label>
+        <label>Simulation seed<input type="number" name="seed" value="7" min="0" max="1000000" required></label>
+      </div>
+    </details>
+    <div class="form-end"><button type="submit">Create study →</button></div>
+  </form>
+</section>
+
+<section id="empty" class="empty" hidden><h2>Start your first study</h2><p>Click <b>+ New study</b> to say what the part must do.</p></section>
+
+<main id="workspace" hidden>
+  <section class="goal">
+    <div><small>GOAL</small><p id="goal-text"></p></div>
+    <div><small>BUDGET USED</small><p id="budget-text"></p></div>
+    <div><small>BEST SO FAR</small><p id="best-text"></p></div>
+  </section>
+
+  <div class="layout">
+    <div class="loop-col">
+      <ol class="stages" id="stages">
+        <li class="stage" data-stage="design">
+          <button class="stage-head" aria-expanded="false"><span class="num">1</span><span class="stage-title">Design<small>Build it in CAD and check it against the requirements</small></span><span class="stage-summary" id="sum-design"></span><span class="state"></span></button>
+          <div class="stage-body">
+            <div class="row"><label class="inline">Design<select id="candidate-picker" aria-label="Design"></select></label><span id="candidate-origin" class="muted"></span></div>
+            <div id="geometry-info" class="facts"></div>
+            <div class="split-2">
+              <div>
+                <h4>Requirements (predicted until measured)</h4>
+                <table class="facts-table"><tbody id="requirements"></tbody></table>
+                <div id="issues"></div>
+              </div>
+              <div>
+                <h4>CAD</h4>
+                <div id="cad-report"></div>
+                <div class="actions"><button id="cad-build">Build CAD</button><button id="agents-fix" class="secondary">Let the agents fix it</button></div>
+                <div id="repair-report"></div>
+              </div>
+            </div>
+            <details><summary>Why it bends: the physics</summary><div id="physics"></div></details>
+            <details id="space-details"><summary>Map of every allowed design</summary><p class="sub">Each cell is one allowed width × wall height, shaded by predicted bend as a share of the limit. Click a dot to open that design.</p><div id="chart-space" class="chart"></div></details>
+          </div>
+        </li>
+        <li class="stage" data-stage="print">
+          <button class="stage-head" aria-expanded="false"><span class="num">2</span><span class="stage-title">Print<small>Prepare in PreForm, agents review, you start the printer</small></span><span class="stage-summary" id="sum-print"></span><span class="state"></span></button>
+          <div class="stage-body">
+            <div id="print-sim" class="callout" hidden>In a simulation nothing is printed: the virtual test rig tests the exact CAD geometry.</div>
+            <div id="print-physical">
+              <p class="sub" id="print-design"></p>
+              <div class="steps-inline">
+                <div><b>a. Connect PreForm</b><p class="muted" id="preform-status">In PreForm: File › Start PreForm Server, then connect.</p><button id="preform-connect" class="secondary">Connect PreForm</button><p id="material-status" class="muted"></p></div>
+                <div><b>b. Prepare &amp; get the agents' review</b>
+                  <label>Printer / resin / layer<select id="print-preset"><option value="">Connect PreForm first</option></select></label>
+                  <label>Minimum wall for this resin (mm)<input id="minimum-wall" type="number" min="0.01" max="10" step="any" placeholder="From the material guide"></label>
+                  <button id="pipeline-button">Prepare &amp; review</button><p class="hint" id="print-hint"></p></div>
+                <form id="preform-queue"><b>c. Send to the printer queue</b>
+                  <label>Prepared project<select id="print-project"><option value="">Nothing prepared yet</option></select></label>
+                  <label>Printer<select id="print-printer"><option value="">Connect PreForm to find printers</option></select></label>
+                  <label>Your review notes<input id="print-review" minlength="3" placeholder="Checked orientation, supports, resin"></label>
+                  <button id="queue-button">Send to queue</button><p class="muted">Nothing prints until you press start at the printer.</p></form>
+              </div>
+              <div id="pipeline-report"></div><div id="print-report"></div>
+            </div>
+          </div>
+        </li>
+        <li class="stage" data-stage="test">
+          <button class="stage-head" aria-expanded="false"><span class="num">3</span><span class="stage-title">Test<small>Load the part and measure how far it bends</small></span><span class="stage-summary" id="sum-test"></span><span class="state"></span></button>
+          <div class="stage-body">
+            <div id="test-sim" class="callout" hidden></div>
+            <div id="test-physical" hidden>
+              <p class="lead" id="test-instruction"></p>
+              <form id="fabrication-form" class="subcard"><b>First: the printed part's real dimensions</b><p class="muted" id="specimen-id"></p>
+                <div class="form-grid"><label>Base width (mm)<input name="width" type="number" step="0.01" required></label><label>Wall height (mm)<input name="height" type="number" step="0.01" required></label><label>Wall thickness (mm)<input name="thickness" type="number" step="0.01" required></label></div>
+                <label>Notes<input name="notes" value="Printed and post-cured as prepared in PreForm" required></label>
+                <button class="secondary">Save dimensions</button></form>
+              <form id="measurement-form" class="subcard"><b>Then: the measurement</b>
+                <div class="form-grid"><label>Measured bend (mm)<input name="displacement" type="number" step="any" required></label><label>± uncertainty (mm)<input name="uncertainty" type="number" min="0.001" step="any" value="0.02" required></label></div>
+                <details><summary>Details (pre-filled from the test plan)</summary><div class="form-grid">
+                  <label>Force actually applied (N)<input name="force" type="number" step="any" min="0.001" required></label><label>Distance from clamp (mm)<input name="position" type="number" step="any" min="1" required></label>
+                  <label>Bend left after unloading (mm)<input name="residual" type="number" step="any" value="0" required></label><label>Clamp movement (mm)<input name="fixture" type="number" step="any" value="0" required></label>
+                  <label>Wait before reading (s)<input name="dwell" type="number" min="0.1" step="any" required></label><label>Recovery time (s)<input name="recovery" type="number" min="0.1" step="any" required></label>
+                  <label>Problems seen (comma separated)<input name="flags" placeholder="Leave blank if fine"></label><label>How you measured<input name="notes" placeholder="Dial gauge, ruler, camera…"></label></div></details>
+                <button>Save measurement</button></form>
+            </div>
+            <details><summary>All measurements</summary><div class="table-scroll"><table><thead><tr><th>#</th><th>Kind</th><th>Design</th><th>From clamp</th><th>Force</th><th>Bend ± σ</th><th>Result</th></tr></thead><tbody id="observations"></tbody></table></div><p id="fit-warning" class="muted"></p></details>
+          </div>
+        </li>
+        <li class="stage" data-stage="decide">
+          <button class="stage-head" aria-expanded="false"><span class="num">4</span><span class="stage-title">Agents decide<small>Next test or a new design, agreed by the specialists</small></span><span class="stage-summary" id="sum-decide"></span><span class="state"></span></button>
+          <div class="stage-body">
+            <p class="lead" id="decide-lead"></p>
+            <div class="actions"><button id="agent-round">Ask the agents for the next step</button><button id="demo" class="secondary">Run the whole study automatically</button></div>
+            <p class="hint" id="test-hint"></p>
+            <div id="decision-summary"></div>
+          </div>
+        </li>
+        <li class="loop-back" aria-hidden="true">↺ repeat until a light design passes, then finish</li>
+        <li class="stage" data-stage="finish">
+          <button class="stage-head" aria-expanded="false"><span class="num">✓</span><span class="stage-title">Finish<small>Prove it: a prediction check, then independent copies</small></span><span class="stage-summary" id="sum-finish"></span><span class="state"></span></button>
+          <div class="stage-body">
+            <ol class="finish-steps">
+              <li><b>Check a prediction</b> at a spot no test has used, to show the model really learned. <button id="reserved" class="secondary small">Check prediction</button></li>
+              <li><b>Freeze the final design</b> (the one selected under Design). <button id="nominate" class="secondary small">Freeze selected design</button></li>
+              <li><b>Test independent copies</b> of it. <span id="acceptance"></span> <button id="accept" class="secondary small">Test a copy</button></li>
+            </ol>
+          </div>
+        </li>
+      </ol>
+
+      <section class="card" id="progress">
+        <h3>Progress</h3>
+        <p id="progress-empty" class="muted">Charts appear after the first measurements.</p>
+        <div class="split-2" id="progress-charts">
+          <div><h4>Each tested design vs the limit</h4><div id="chart-designs" class="chart"></div></div>
+          <div><h4>Does the model explain the bend?</h4><p class="sub">Starting design, every load test against the model.</p><div id="chart-model" class="chart"></div></div>
+        </div>
+        <details><summary>What the model learned after each refit</summary><div class="split-2"><div id="chart-e" class="chart"></div><div id="chart-c" class="chart"></div></div></details>
+      </section>
+
+      <details class="card" id="history-card"><summary><h3>Full lab notebook</h3></summary><p class="sub">Everything proposed, objected to, tested and learned, newest first.</p><div id="timeline" class="timeline"></div></details>
+
+      <details class="card"><summary><h3>Evidence &amp; advanced</h3></summary>
+        <div class="advanced-grid">
+          <div><h4>Evidence</h4><p id="integrity" class="muted"></p><a id="export">Download all evidence (ZIP) ↗</a><details><summary>Raw event log</summary><div id="history"></div></details></div>
+          <div><h4>CAD tool</h4><label>Build CAD with<select id="cad-source"><option value="auto">Automatic: Fusion if open, else FreeCAD</option><option value="fusion">Autodesk Fusion only</option><option value="freecad">FreeCAD only</option><option value="local_fixture">ScienceClaw mesh (no CAD)</option><option value="uploaded">Uploaded export</option><option value="onshape">Onshape API (needs keys)</option></select></label>
+            <form id="cad-upload" class="inline-form"><input id="cad-file" type="file" accept=".stl" required aria-label="STL in millimeters"><button class="secondary small">Upload STL &amp; check</button></form><a id="stl">Download ScienceClaw's mesh</a></div>
+          <div><h4>Print a part outside the study</h4><form id="mesh-upload" class="inline-form"><input id="mesh-file" type="file" accept=".stl" required aria-label="STL in millimeters"><button class="secondary small">Import STL</button></form><form id="preform-prepare" class="inline-form"><select id="print-asset" aria-label="Imported model"><option value="">Import a model first</option></select><button id="prepare-button" class="secondary small">Prepare in PreForm</button></form></div>
+          <div><h4>Onshape</h4><div class="row"><button id="onshape-check" class="text-button">Check Onshape</button><button id="onshape-bootstrap" class="text-button">Create Onshape variables</button></div><p class="muted" id="token-note"></p><a href="/docs" target="_blank" rel="noopener">API docs ↗</a></div>
+        </div>
+      </details>
+    </div>
+
+    <aside class="agents-col">
+      <h3>The agents</h3>
+      <div id="agents"></div>
+      <div id="last-decision"></div>
+    </aside>
+  </div>
+</main>
+</body></html>
