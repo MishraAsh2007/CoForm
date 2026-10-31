@@ -29,9 +29,21 @@ def evaluate(spec, brief, cfg, rules, mock_preform=True, pictures=True):
         out["cached"] = True
         return out
     d.mkdir(parents=True, exist_ok=True)
-    built = build(spec)
-    paths = {"base": str(export_stl(built["base"], d / "base.stl", cfg)),
-             "lid": str(export_stl(built["lid"], d / "lid.stl", cfg))}
+    try:
+        built = build(spec)
+        paths = {"base": str(export_stl(built["base"], d / "base.stl", cfg)),
+                 "lid": str(export_stl(built["lid"], d / "lid.stl", cfg))}
+        import trimesh
+        empty = [n for n, p in paths.items() if len(trimesh.load(p).vertices) == 0]
+        if empty:
+            raise ValueError(f"empty geometry for {empty}")
+    except Exception as e:  # a spec that cannot be built is a failed evaluation, not a crash
+        bad = {"passed": False, "failures": [{"code": "build", "msg": f"geometry build failed: {e}"[:300],
+                                              "amount_mm": 10.0}], "metrics": {}}
+        results = {n: dict(bad, name=n) for n in ("assembly", "printability", "preform", "fit")}
+        out = {"key": k, "dir": str(d), "paths": {}, "pictures": {}, "results": results, "cached": False}
+        f.write_text(json.dumps(out, indent=1, default=str), encoding="utf-8")
+        return out
     results = {
         "assembly": assembly.check(spec, brief, cfg, built),
         "printability": printability.check(spec, cfg, rules, built, mesh_paths=paths),

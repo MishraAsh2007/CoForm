@@ -59,6 +59,7 @@ def main():
     ap.add_argument("--clearances", default="generic")
     ap.add_argument("--briefs", nargs="*", default=None)
     ap.add_argument("--skip-final-preform", action="store_true")
+    ap.add_argument("--resume", action="store_true", help="skip runs that already have a summary.json")
     a = ap.parse_args()
     cfg = load_config()
     briefs = a.briefs or sorted(str(p) for p in (ROOT / "benchmark" / "briefs").glob("*.yaml"))
@@ -66,6 +67,13 @@ def main():
     out_root.mkdir(parents=True, exist_ok=True)
     jobs = [(m, b, s, a.mock, a.budget, a.clearances, str(out_root)) for b in briefs for m in MODES
             for s in range(a.seeds)]
+    if a.resume:
+        import yaml
+        def done(j):
+            name = yaml.safe_load(Path(j[1]).read_text(encoding="utf-8"))["name"]
+            tag = f"{name}__{j[0]}__{a.clearances}__s{j[2]}{'__mock' if a.mock else ''}"
+            return (out_root / tag / "summary.json").exists()
+        jobs = [j for j in jobs if not done(j)]
     print(f"{len(jobs)} runs, model {'MOCK' if a.mock else cfg['llm']['model']}, PreForm in loop: MOCK", flush=True)
     with ProcessPoolExecutor(max_workers=a.workers) as ex:
         futs = [ex.submit(_one, j) for j in jobs]
