@@ -7,3 +7,6 @@ results/runs/
 results/tmp/
 *.form
 *.log
+
+# keep generated meshes used only for pictures
+results/**/_mesh/

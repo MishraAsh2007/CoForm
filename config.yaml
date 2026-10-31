@@ -89,3 +89,9 @@ fit_check:
   wall_margin_above_ports: 2.0   # each wall rises this far above its highest port opening
   port_sides: ["-y", "+x", "-x"]
   label_strip: 7.0           # extra plate along +y for the engraved label
+
+# ---------------- Phase 3: enclosure ----------------
+enclosure:
+  out_dir: results/enclosure
+  default_bundle: rpi5_cooler
+  lid_gap_above_parts: 1.0     # v0: lid underside this far above the tallest part
