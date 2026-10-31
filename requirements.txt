@@ -1,0 +1,15 @@
+cadquery>=2.4
+pyyaml
+numpy
+trimesh
+manifold3d
+rtree
+pyvista
+jsonpatch
+jsonschema
+pytest
+anthropic
+python-dotenv
+matplotlib
+streamlit
+requests

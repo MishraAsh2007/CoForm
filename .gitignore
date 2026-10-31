@@ -1,0 +1,9 @@
+.venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+results/runs/
+results/tmp/
+*.form
+*.log

@@ -1,0 +1,64 @@
+# Fill this in by hand after printing results/test_print/plate.stl and key.stl.
+# How to test each feature: results/test_print/HOW_TO_TEST.md
+#
+# Allowed results (one per feature, replace null):
+#   free            goes in / through with no force, can wobble
+#   snug            goes in with light finger force, no wobble, comes out by hand
+#   press           needs firm pressure (thumb or a tap), stays put
+#   no_fit          will not go in
+#   cracked         part cracked or split during the test
+#   failed_to_print feature missing, closed over, or broken off the print
+#
+# Keys are the engraved labels (nominal mm). Leave null if not tested.
+
+meta:
+  printer: Form Studio 1
+  resin: Rigid 10K
+  layer_thickness_mm: 0.1
+  printed_on: ""        # date
+  orientation: ""       # e.g. "PreForm auto-orient" or "flat, 45 deg"
+  post_cure: ""         # e.g. "Form Cure 70 C, 60 min"
+  notes: ""
+
+peg_holes:            # row P: the 5.00 mm key peg into each round hole
+  "5.0": null
+  "5.1": null
+  "5.2": null
+  "5.3": null
+  "5.4": null
+  "5.5": null
+
+grooves:              # row G: the 2.00 mm key tongue into each 3 mm deep groove
+  "2.0": null
+  "2.1": null
+  "2.2": null
+  "2.3": null
+  "2.4": null
+  "2.5": null
+
+m25_holes:            # row H: an M2.5 screw through each hole (no threading)
+  "2.5": null
+  "2.6": null
+  "2.7": null
+  "2.8": null
+  "2.9": null
+  "3.0": null
+
+nut_pockets:          # row N: an M2.5 hex nut pressed flat into each pocket
+  "5.0": null
+  "5.1": null
+  "5.2": null
+  "5.3": null
+  "5.4": null
+
+screw_posts:          # row T: drive an M2.5 screw into each post's pilot hole (outer diameter label)
+  "5": null           # use: snug (threads cut fine), press (very hard to drive), cracked
+  "6": null
+  "7": null
+
+thin_walls:           # row W: use free = printed whole and stiff, cracked = broke with a light fingernail push,
+  "0.4": null         #   failed_to_print = missing or partial
+  "0.6": null
+  "0.8": null
+  "1.0": null
+  "1.2": null

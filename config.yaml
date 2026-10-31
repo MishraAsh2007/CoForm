@@ -1,0 +1,55 @@
+# All tunable numbers live here. Units: mm unless the key says otherwise.
+
+export:
+  stl_tolerance_mm: 0.01
+  stl_angular_tolerance_rad: 0.1
+
+labels:
+  size_mm: 2.5        # engraved text height; bold so strokes are >= 0.4 mm (Formlabs min engraved detail 0.4 mm)
+  depth_mm: 0.6       # engraving depth (Formlabs min engraved detail 0.4 mm)
+  font: Arial
+  kind: bold
+
+# ---------------- Phase 1: tolerance test print ----------------
+test_print:
+  out_dir: results/test_print
+  plate:
+    width: 88.0
+    height: 60.0
+    thickness: 5.0
+    margin: 3.0
+    first_column_x: 14.0     # x of first feature column (row letter sits left of it)
+    column_pitch: 12.5
+    row_letter_x: 5.0
+    label_gap: 1.0           # gap between feature and its label below
+    row_gap: 1.5             # gap between a label and the next row
+  peg_holes_mm: [5.00, 5.10, 5.20, 5.30, 5.40, 5.50]     # for the 5.00 mm key peg
+  grooves:
+    widths_mm: [2.00, 2.10, 2.20, 2.30, 2.40, 2.50]      # for the 2.00 mm key tongue
+    length: 9.0
+    depth: 3.0
+  m25_holes_mm: [2.5, 2.6, 2.7, 2.8, 2.9, 3.0]
+  nut_pockets:
+    across_flats_mm: [5.0, 5.1, 5.2, 5.3, 5.4]           # standard M2.5 nut: 5.0 AF, 2.0 thick (see components/sources.md)
+    depth: 2.2
+    through_hole: 2.8        # so a screw can go through the nut
+  screw_posts:
+    outer_diameters_mm: [5.0, 6.0, 7.0]
+    height: 6.0
+    pilot_hole: 2.1          # through the post and plate so resin drains
+  thin_walls:
+    thicknesses_mm: [0.4, 0.6, 0.8, 1.0, 1.2]
+    length: 7.0
+    height: 6.0
+    first_x: 50.0
+    pitch: 7.5
+  key:
+    handle: [46.0, 12.0, 4.0]   # x, y, z
+    peg_diameter: 5.00
+    peg_length: 8.0              # longer than the plate is thick, so it passes through
+    peg_x: 8.0
+    tongue_width: 2.00
+    tongue_length: 7.0           # shorter than the groove length
+    tongue_height: 4.0           # taller than the groove depth
+    tongue_x: 38.0
+    tip_chamfer: 0.3             # eases entry; does not change the tested width
