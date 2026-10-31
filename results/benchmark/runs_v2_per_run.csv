@@ -1,0 +1,12 @@
+run,brief,mode,seed,model,mocked_llm,mocked_preform,clearances,material,layer_mm,passed,quality,all_failures,requirement_failures,evaluations_used,evals_to_pass,edits_proposed,edits_accepted,preform_warnings,print_time_min,resin_ml,seconds,cost_usd
+a_pi5_standard__collective__generic__s0__claude-haiku-5-5,a_pi5_standard,collective,0,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,45.45,1,0,12,12,11,11,1,93.3,65.76,1710.3,0.0301
+a_pi5_standard__collective__generic__s1__claude-haiku-5-5,a_pi5_standard,collective,1,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,48.92,4,3,12,,11,7,1,92.4,63.3,901.2,0.0368
+a_pi5_standard__collective__generic__s2__claude-haiku-5-5,a_pi5_standard,collective,2,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,49.15,7,6,12,,11,9,1,93.2,62.94,775.9,0.0293
+a_pi5_standard__generalist__generic__s0__claude-haiku-5-5,a_pi5_standard,generalist,0,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,55.42,6,6,12,,11,10,0,91.7,58.6,402.9,0.0186
+a_pi5_standard__generalist__generic__s1__claude-haiku-5-5,a_pi5_standard,generalist,1,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,48.71,7,6,12,,11,10,1,91.8,62.7,440.2,0.0186
+a_pi5_standard__generalist__generic__s2__claude-haiku-5-5,a_pi5_standard,generalist,2,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,53.38,5,5,12,,11,11,0,91.9,65.27,574.9,0.0187
+a_pi5_standard__one_shot__generic__s0__claude-haiku-5-5,a_pi5_standard,one_shot,0,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,52.76,20,20,0,,0,0,0,91.1,63.76,11.0,0.0015
+a_pi5_standard__one_shot__generic__s1__claude-haiku-5-5,a_pi5_standard,one_shot,1,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,52.76,20,20,0,,1,1,0,91.1,63.5,156.4,0.0009
+a_pi5_standard__one_shot__generic__s2__claude-haiku-5-5,a_pi5_standard,one_shot,2,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,52.76,20,20,0,,1,1,0,91.1,63.5,270.7,0.0014
+b_pi5_tight_robot__one_shot__generic__s0__claude-haiku-5-5,b_pi5_tight_robot,one_shot,0,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,50.76,25,25,0,,1,1,0,91.0,60.33,380.2,0.0016
+b_pi5_tight_robot__one_shot__generic__s1__claude-haiku-5-5,b_pi5_tight_robot,one_shot,1,claude-haiku-5-5,False,False,generic,Alpha Fast V1,0.15,False,50.76,25,25,0,,1,1,0,91.1,63.79,429.4,0.0016
