@@ -147,7 +147,7 @@ preform:
 
 # ---------------- Phase 5: agents ----------------
 llm:
-  model: claude-haiku-5-5     # same model for every agent in every mode; may switch to claude-sonnet-5-5
+  model: claude-haiku-5-5     # same model for every agent in every mode; chosen by progress per dollar (see README)
   effort: low                 # output_config.effort
   max_tokens: 4000
   send_images: true           # agents that own "renders" get the assembled picture
@@ -162,3 +162,20 @@ run:
   default_budget: 12          # full evaluations per run
   max_rounds: 30              # safety cap; the evaluation budget normally ends a run
   start_spec: naive           # naive | reference (see cad/spec.py default_spec)
+
+# ---------------- Quality score (reported for every run next to pass/fail) ----------------
+# quality = base - w_volume*volume_ml - w_height*print_height_mm - w_warning*preform_warnings
+#           + w_clearance*clearance_margin_mm + w_assembly*assembly_margin_mm - w_feature*extra_features
+# Higher is better. Every term is computed by code from logged data (core/quality.py). Margins are capped.
+quality:
+  base: 100.0
+  w_volume: 0.5               # per ml of part volume (base + lid, from the STL meshes)
+  w_height: 0.3               # per mm of print height after a typical tilt (SLA print time ~ height)
+  w_warning: 5.0              # per REAL PreForm warning (only counted when real PreForm ran on that design)
+  w_clearance: 20.0           # per mm that clearances exceed the rule values (cap below)
+  w_assembly: 10.0            # per mm of extra room: board-to-wall gaps and lid gap above the minimums (cap below)
+  w_feature: 1.0              # per opening/tab/vent/drain/rib beyond what the brief requires
+  clearance_margin_cap_mm: 0.5
+  assembly_margin_cap_mm: 1.0
+  tilt_deg: 30
+preform_requests_per_run: 2   # real PreForm runs the Manufacturing agent / generalist may ask for in a run

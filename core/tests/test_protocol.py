@@ -14,7 +14,31 @@ def test_ownership():
     assert protocol.can_edit("fit", [{"op": "replace", "path": "/clearances/lid_fit", "value": 0.3}])
     assert not protocol.can_edit("fit", [{"op": "replace", "path": "/walls/wall", "value": 3}])
     assert protocol.forbidden_keys("assembly", [{"op": "replace", "path": "/fasteners/lid", "value": "pilot"}]) == ["fasteners"]
-    assert protocol.can_edit("design", [{"op": "replace", "path": "/anything", "value": 1}])
+    assert not protocol.can_edit("design", [{"op": "replace", "path": "/walls/wall", "value": 3}])
+    assert protocol.can_edit("generalist", [{"op": "replace", "path": "/walls/wall", "value": 3}])
+    assert protocol.owners_needed("assembly", [{"op": "replace", "path": "/standoffs/height", "value": 3}]) == ["fit"]
+
+
+def test_improve_phase_needs_quality_gain():
+    ok = {"a": R(0), "b": R(0)}
+    assert protocol.decide(ok, ok, ["x"], [], 50.0, 51.0)[0] == "accepted"
+    assert protocol.decide(ok, ok, ["x"], [], 50.0, 49.0)[0] == "rejected"
+    assert protocol.decide(ok, {"a": R(1), "b": R(0)}, ["x"], [], 50.0, 60.0)[0] == "rejected"
+
+
+def test_failure_diff():
+    old = {"assembly": {"passed": False, "failures": [{"code": "lid", "msg": "lid gap", "amount_mm": 0.3, "target": "lid_gap"},
+                                                       {"code": "tabs", "msg": "0 tabs", "amount_mm": 4, "kind": "count"}]}}
+    new = {"assembly": {"passed": False, "failures": [{"code": "tabs", "msg": "1 tabs", "amount_mm": 3, "kind": "count"},
+                                                       {"code": "plug", "msg": "hdmi0 zone", "amount_mm": 1, "target": "hdmi0"}]}}
+    d = protocol.failure_diff(old, new)
+    assert d["fixed"] == ["assembly: lid gap"] and d["new"] == ["assembly: hdmi0 zone"] and len(d["better"]) == 1
+
+
+def test_open_needs_biggest_first():
+    needs = [{"to": "fit", "status": "open", "amount_mm": 1}, {"to": "fit", "status": "open", "amount_mm": 5},
+             {"to": "fit", "status": "done", "amount_mm": 9}, {"to": "assembly", "status": "open", "amount_mm": 7}]
+    assert [n["amount_mm"] for n in protocol.open_needs(needs, "fit")] == [5, 1]
 
 
 def test_accept_when_nothing_worse():
@@ -53,6 +77,7 @@ def test_budget():
     b = protocol.Budget(1, 1.0)
     b.spend()
     assert b.stop_reason({"a": R(1)}, 0.0, 0) == "evaluation budget exhausted"
+    assert protocol.Budget(3, 1.0).stop_reason({"a": R(0)}, 0.0, 0) is None    # passing does not stop a run
     with pytest.raises(RuntimeError):
         b.spend()
     assert "cost cap" in protocol.Budget(5, 1.0).stop_reason({"a": R(1)}, 1.5, 0)

@@ -14,6 +14,32 @@ from pathlib import Path
 from cad.common import load_config, print_settings
 
 
+class server_lock:
+    """One PreForm job at a time across ALL processes on this PC (parallel benchmark workers)."""
+
+    def __init__(self, path=None):
+        from cad.common import ROOT
+        self.path = Path(path or ROOT / "results" / "cache" / "preform.lock")
+
+    def __enter__(self):
+        import msvcrt
+        import time
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.f = open(self.path, "a+")
+        while True:
+            try:
+                msvcrt.locking(self.f.fileno(), msvcrt.LK_NBLCK, 1)
+                return self
+            except OSError:
+                time.sleep(1.0)
+
+    def __exit__(self, *exc):
+        import msvcrt
+        self.f.seek(0)
+        msvcrt.locking(self.f.fileno(), msvcrt.LK_UNLCK, 1)
+        self.f.close()
+
+
 def preform_settings(cfg):
     """PreForm client settings: server options from `preform:`, printer/material/layer from `print:`."""
     return {**cfg["preform"], **print_settings(cfg)}
@@ -33,7 +59,8 @@ def check(stl_path, cfg=None, form_path=None, force_mock=False):
         if not client.is_up():
             reason = f"PreFormServer not reachable at {pf['base_url']}"
         else:
-            out = client.evaluate(stl_path, form_path)
+            with server_lock():
+                out = client.evaluate(stl_path, form_path)
             out["mocked"] = False
             out["print_settings"] = print_settings(cfg)
             return _as_check(out)

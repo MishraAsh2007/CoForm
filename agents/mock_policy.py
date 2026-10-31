@@ -100,6 +100,13 @@ def fix(check, f, spec, ctx):
         if code == "plug":
             i = _idx(spec["ports"], t)
             return [_rep(f"/ports/{i}/extra", spec["ports"][i].get("extra", 0) + amt + 0.1)], why
+        if code == "screwdriver" and f.get("kind") == "length" and t.startswith("board")                 and spec["fasteners"]["board"] == "pilot":
+            grip = ctx["comp"]["board"]["thickness"]
+            lengths = cfgc["screw_lengths_available"]
+            L = min(x for x in lengths if x - grip >= cfgc["min_screw_engagement"])
+            h = round(L - grip - spec["walls"]["floor"] + 0.2, 2)
+            if h > spec["standoffs"]["height"]:
+                return [_rep("/standoffs/height", h)], why + f" (taller standoffs so an M2.5x{L} engages)"
         if code == "screwdriver" and f.get("kind") == "length":
             which = "board" if t.startswith("board") else "lid"
             other = "pilot" if spec["fasteners"][which] == "through_nut" else "through_nut"
@@ -268,44 +275,120 @@ def _new(patch, ctx):
     return json.dumps(patch, sort_keys=True) not in ctx["rejected"]
 
 
+def with_hints(results, state, cfg):
+    """Copy of the check results where each failure carries a hint: a suggested patch and the owner of its keys.
+    The hint comes from the same rule library as the mock model (the checks' own fix suggestions)."""
+    ctx = {"spec": state["spec"], "rules": state["rules"], "cfg": cfg, "comp": state["comp"], "brief": state["brief"]}
+    fam = state.get("family")
+    hint = fam.hint if fam is not None else (lambda c, f, s, x: fix(c, f, s, x))
+    out = {}
+    for check, r in (results or {}).items():
+        r = dict(r)
+        if "failures" in r:
+            fl = []
+            for f in r["failures"]:
+                got = hint(check, f, state["spec"], ctx)
+                f = dict(f)
+                if got:
+                    keys = protocol.keys_of(got[0])
+                    f["hint"] = {"patch": got[0], "owner": sorted({protocol.KEY_OWNER.get(k, "design") for k in keys})}
+                fl.append(f)
+            r["failures"] = fl
+        out[check] = r
+    return out
+
+
+def _improve(agent, ctx):
+    """Improve-phase moves (every check passes): each agent nudges its own quality goal terms."""
+    spec, rules = ctx["spec"], ctx["rules"]["values"]
+    c = spec["clearances"]
+    out = []
+    if agent in ("manufacturing", "generalist"):
+        w = spec["walls"]
+        for k in ("wall", "floor", "lid"):
+            if w[k] - 0.2 >= max(rules["min_wall"], 1.2):
+                out.append(([_rep(f"/walls/{k}", w[k] - 0.2)] + ([_rep("/walls/outer_fillet", min(w["outer_fillet"], w[k] - 0.3))]
+                            if k == "wall" else []), f"improve: thinner {k} (less resin)"))
+    if agent in ("fit", "generalist"):
+        for k, rk in (("port", "port_cutout"), ("board_gap", "part_gap")):
+            if c[k] < rules[rk] + 0.5:
+                out.append(([_rep(f"/clearances/{k}", c[k] + 0.1)], f"improve: {k} margin +0.1 mm"))
+        if 2 * c["lid_fit"] < rules["lid_groove_extra"] + 0.5:
+            out.append(([_rep("/clearances/lid_fit", c["lid_fit"] + 0.05)], "improve: lid fit margin +0.05 mm"))
+    if agent in ("assembly", "generalist"):
+        tallest = max(k["box"][5] for k in ctx["comp"]["keepouts"])
+        if spec["box"]["inner_top"] < tallest + 1.0:
+            out.append(([_rep("/box/inner_top", spec["box"]["inner_top"] + 0.2)], "improve: more lid room"))
+        for s_, g in spec["box"]["gap"].items():
+            if g < 1.0:
+                out.append(([_rep(f"/box/gap/{s_}", g + 0.2)], f"improve: more room on {s_}"))
+    return out
+
+
 def propose(agent, ctx, rng):
     spec = ctx["spec"]
+    if spec.get("family") == "freeform":                  # EXPERIMENTAL family: only the code can change
+        code = ctx["brief"].get("mock_code")
+        if agent in ("design", "generalist") and code and spec["code"] != code:
+            return {"action": "propose", "patch": [{"op": "replace", "path": "/code", "value": code}],
+                    "reason": "MOCK: brief's mock_code (the mock model cannot write CAD code)"}
+        return {"action": "pass", "reason": "free-form: nothing the mock can do"}
+    # 1. open needs addressed to me, biggest first
+    for n in ctx.get("needs_to_me", []):
+        patch = n.get("suggest_patch") or []
+        if patch and protocol.can_edit(agent, patch) and _new(patch, ctx):
+            return {"action": "propose", "patch": patch, "need_id": n["id"],
+                    "reason": f"handling need #{n['id']} from {n['frm']}: {n['failure']}"}
+        return {"action": "decline", "need_id": n["id"],
+                "reason": "suggested patch is not in my keys or was already rejected"}
+    if ctx.get("phase") == "improve":
+        rp = ctx.get("real_preform")
+        if agent in ("manufacturing", "generalist"):
+            if rp is None and ctx.get("preform_left", 0) > 0:
+                return {"action": "run_preform", "reason": "local checks pass: get real PreForm warnings"}
+            for f in (rp or {}).get("failures", []):
+                got = fix("preform", f, spec, ctx)
+                if got and _new(got[0], ctx) and protocol.can_edit(agent, got[0]):
+                    return {"action": "propose", "patch": got[0], "reason": got[1] + " (real PreForm)"}
+        moves = [m for m in _improve(agent, ctx) if _new(m[0], ctx)]
+        if moves:
+            patch, reason = moves[rng.randrange(len(moves))]
+            return {"action": "propose", "patch": patch, "reason": reason}
+        return {"action": "pass", "reason": "improve phase: no move left for my goals"}
     cands = []
-    # 1. requests other agents posted for keys this agent owns
-    for n in ctx.get("requests", []):
-        if protocol.can_edit(agent, n["patch"]):
-            cands.append((n["patch"], f"adopting request from {n['author']}: {n['text']}"))
-    # 2. the brief (design and the single agents read it directly)
     if agent in ("design", "generalist"):
         cands += brief_fixes(spec, ctx)
-    # 3. failures in checks this agent can see in full
     fails = []
     for check, r in ctx["results"].items():
-        if "failures" in r:
-            fails += [(check, f) for f in r["failures"]]
+        fails += [(check, f) for f in r.get("failures", []) if f.get("hint")]
     rng.shuffle(fails)
     fails.sort(key=lambda cf: -(cf[1].get("amount_mm") or 0))
-    for check, f in fails:
-        got = fix(check, f, spec, ctx)
-        if got:
-            cands.append(got)
-    notes = []
+    cands += [(f["hint"]["patch"], f"fix {check}: {f['msg']}") for check, f in fails]
+    asked = {json.dumps(n.get("suggest_patch"), sort_keys=True) for n in ctx.get("my_open_needs", [])}
+    mine, needs = None, []
     for patch, reason in cands:
         if not _new(patch, ctx):
             continue
         if protocol.can_edit(agent, patch):
-            return {"action": "propose", "patch": patch, "reason": reason}
-        notes.append((patch, reason))
-    for patch, reason in notes:
-        key = json.dumps(patch, sort_keys=True)
-        if key not in ctx.get("my_requests", set()):
-            keys = protocol.forbidden_keys(agent, patch)
-            return {"action": "note", "text": f"need an owner of {keys} to apply: {reason}", "suggest_patch": patch}
-    return {"action": "pass", "reason": "nothing I can fix"}
+            mine = mine or (patch, reason)
+        elif ctx.get("mode") == "collective" and json.dumps(patch, sort_keys=True) not in asked:
+            asked.add(json.dumps(patch, sort_keys=True))
+            owners = protocol.owners_needed(agent, patch)
+            needs.append({"to": owners[0], "failure": reason, "suggest_patch": patch,
+                          "reason": f"fix needs {protocol.forbidden_keys(agent, patch)}, owned by {owners[0]}"})
+    if mine:
+        return {"action": "propose", "patch": mine[0], "reason": mine[1], "needs": needs[:3]}
+    if needs:
+        return {"action": "pass", "reason": "posted needs for the owners", "needs": needs[:3]}
+    return {"action": "pass", "reason": "nothing I can fix or ask for"}
 
 
 def one_shot(ctx):
     """Design agent, once, no checks: apply every brief requirement it can read."""
+    if ctx["spec"].get("family") == "freeform":
+        code = ctx["brief"].get("mock_code", "")
+        return {"action": "propose", "patch": [{"op": "replace", "path": "/code", "value": code}],
+                "reason": "MOCK: brief's mock_code"}
     patch, reasons = [], []
     for p, r in brief_fixes(ctx["spec"], ctx):
         patch += p
@@ -313,8 +396,11 @@ def one_shot(ctx):
     return {"action": "propose", "patch": patch, "reason": "; ".join(reasons) or "v0 as is"}
 
 
-def vote(agent, ctx, proposal):
-    before, after = ctx["before_total"], ctx["after_total"]
-    if after < before:
-        return {"vote": "support", "reason": f"total failures {before} -> {after}"}
-    return {"vote": "object", "reason": f"total failures {before} -> {after}, no net gain"}
+def vote(agent, ctx, proposal, joint=False):
+    if joint:
+        return {"vote": "support", "reason": "joint edit: change to my keys is consistent with my rules"}
+    b = ctx.get("breakdown") or {}
+    fixed, new = len(b.get("fixed", [])), len(b.get("new", []))
+    if fixed > new:
+        return {"vote": "support", "reason": f"fixes {fixed} failures, breaks {new}"}
+    return {"vote": "object", "reason": f"fixes {fixed} failures, breaks {new}: no net gain"}

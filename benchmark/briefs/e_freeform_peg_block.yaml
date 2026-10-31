@@ -1,0 +1,13 @@
+name: e_freeform_peg_block
+family: freeform          # EXPERIMENTAL: not part of the benchmark
+description: >
+  A 40 x 30 x 10 mm block with a round 10 mm hole straight through its centre, and a separate cylindrical peg
+  (about 10 mm diameter, 20 mm long) that slides into the hole with printable clearance. Parts: block, peg,
+  in the assembled position (peg inside the hole).
+mating_pairs: [["block", "peg"]]
+# Used ONLY by the --mock fake model (it cannot write CAD code). Real models write their own code.
+mock_code: |
+  import cadquery as cq
+  block = cq.Workplane("XY").box(40, 30, 10).faces(">Z").workplane().hole(11.0)
+  peg = cq.Workplane("XY").circle(5.0).extrude(20).translate((0, 0, -10))
+  parts = {"block": block, "peg": peg}

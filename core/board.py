@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS usage (
   output_tokens INTEGER, cost_usd REAL, created_at TEXT);
 """
 
-MESSAGE_KINDS = ("propose", "object", "support", "note")
+MESSAGE_KINDS = ("propose", "object", "support", "note", "need", "decline", "breakdown")
 
 
 def now():

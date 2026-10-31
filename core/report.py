@@ -12,7 +12,7 @@ def _patch_lines(patch):
 
 def write_report(board, run_id, out_dir, summary):
     run = board.run(run_id)
-    lines = [f"# Run log: {summary['run']}", "",
+    lines = [f"# Run log: {summary['run']}" + (" (EXPERIMENTAL part family)" if summary.get("experimental") else ""), "",
              f"- mode **{run['mode']}**, brief **{run['brief']}**, seed {run['seed']}, budget {run['budget']} evaluations",
              f"- model `{run['model']}`{' (MOCK: rule-based fake model, no API calls)' if summary['mocked_llm'] else ''}",
              f"- print: **{summary['print_settings']['printer']}, {summary['print_settings']['material']}, "
@@ -25,6 +25,7 @@ def write_report(board, run_id, out_dir, summary):
              f"- stopped: {summary['stop_reason']}; evaluations used {summary['evaluations_used']}; "
              f"{summary['seconds']} s; tokens in/out {summary['usage']['input_tokens']}/"
              f"{summary['usage']['output_tokens']}; est. cost ${summary['usage']['cost_usd']:.4f}",
+             f"- quality score {summary['quality']['score']} ({', '.join(f'{k} {v}' for k, v in summary['quality'].items() if k != 'score')})",
              f"- final failures per check: {summary['final_failures']} -> "
              f"{'ALL PASS' if summary['final_passed'] else 'NOT all passing'}", ""]
     decisions = {d["version_id"]: d for d in board.decisions(run_id)}
@@ -42,8 +43,12 @@ def write_report(board, run_id, out_dir, summary):
         if v["id"] in checks:
             cs = checks[v["id"]]
             lines.append("Checks: " + ", ".join(f"{n} {'pass' if c['passed'] else str(c['failures']) + ' fail'}"
-                                               + (" (MOCK)" if c["mocked"] else "") for n, c in cs.items()))
-        msgs = [m for m in board.messages(run_id, v["id"]) if m["kind"] in ("object", "support", "note")]
+                                               + (" (MOCK)" if c["mocked"] else "") for n, c in cs.items()
+                                               if not n.startswith("quality")))
+            if "quality" in cs:
+                lines.append(f"Quality: {cs['quality']['details']['metrics'].get('score')}")
+        msgs = [m for m in board.messages(run_id, v["id"]) if m["kind"] in ("object", "support", "note", "need",
+                                                                            "decline", "breakdown")]
         for m in msgs:
             lines.append(f"- {m['kind']} by **{m['author']}**: {m['text']}")
         if d:

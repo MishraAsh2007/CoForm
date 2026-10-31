@@ -38,10 +38,23 @@ back to a MOCK that is labelled everywhere.
     .venv\Scripts\python.exe -m streamlit run app.py
     .venv\Scripts\python.exe -m pytest checks core
 
+## Fair comparison
+
+Every mode (one-shot, generalist, collective) starts from the **same naive spec** (`cad/spec.py naive_spec`:
+closed box, port cutouts, no tabs, vents or cable slots, low lid, short standoffs) with the same model, tools,
+brief and evaluation budget. Passing every check is the minimum: after that, agents keep improving the
+**quality score** (`config.yaml quality:`, computed in `core/quality.py` from logged data: part volume, print
+height, real PreForm warnings, clearance margin, assembly margin, extra features) until the budget runs out.
+Every run reports pass/fail and the quality score.
+
 ## How the agents coordinate (core/protocol.py)
 
-No boss. Agents post on a shared SQLite board. Each owns checks and data and may only patch its own top-level
-spec keys (enforced in code); otherwise it posts a request (`note` with `suggest_patch`) for the owner.
-An edit is accepted if no check gets worse. Otherwise owners of the worsened checks object with numbers, the
-others vote, and the edit passes only if total failures go down and supporters outnumber objectors.
-A budget of full evaluations ends each run. Agent runs start from a deliberately plain "naive" v0 spec.
+No boss. Agents post on a shared SQLite board. Each top-level spec key has one owner (enforced in code).
+A failure whose fix lies in another agent's keys becomes a **need** to that owner (agents post needs, and the
+protocol also routes them automatically); every agent handles its open needs first, biggest first.
+A patch touching another agent's keys is a **joint edit**, evaluated only if that owner supports it.
+Every proposal comes with a per-failure breakdown (fixed / broken / better / worse). An edit is accepted if no
+check gets worse; otherwise owners of worsened checks object with numbers, the others vote, and it passes only
+if total failures go down and supporters outnumber objectors. Once everything passes, an edit must keep every
+check passing and raise the quality score. A budget of full evaluations ends each run. Real PreForm runs only
+when the Manufacturing agent (or generalist) asks, and on every final design (cached by spec).

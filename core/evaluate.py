@@ -29,10 +29,11 @@ def evaluate(spec, brief, cfg, rules, mock_preform=True, pictures=True):
         out["cached"] = True
         return out
     d.mkdir(parents=True, exist_ok=True)
+    import families
+    fam = families.for_brief(brief)
     try:
-        built = build(spec)
-        paths = {"base": str(export_stl(built["base"], d / "base.stl", cfg)),
-                 "lid": str(export_stl(built["lid"], d / "lid.stl", cfg))}
+        built = fam.build(spec, brief, cfg, d)
+        paths = dict(built["parts"])
         import trimesh
         empty = [n for n, p in paths.items() if len(trimesh.load(p).vertices) == 0]
         if empty:
@@ -40,23 +41,34 @@ def evaluate(spec, brief, cfg, rules, mock_preform=True, pictures=True):
     except Exception as e:  # a spec that cannot be built is a failed evaluation, not a crash
         bad = {"passed": False, "failures": [{"code": "build", "msg": f"geometry build failed: {e}"[:300],
                                               "amount_mm": 10.0}], "metrics": {}}
-        results = {n: dict(bad, name=n) for n in ("assembly", "printability", "preform", "fit")}
+        results = {n: dict(bad, name=n) for n in fam.check_owners}
         out = {"key": k, "dir": str(d), "paths": {}, "pictures": {}, "results": results, "cached": False}
         f.write_text(json.dumps(out, indent=1, default=str), encoding="utf-8")
         return out
-    results = {
-        "assembly": assembly.check(spec, brief, cfg, built),
-        "printability": printability.check(spec, cfg, rules, built, mesh_paths=paths),
-        "preform": preform_check.check_parts(paths, cfg, out_dir=d, force_mock=mock_preform),
-        "fit": fit_rules.check(spec, rules),
-    }
-    results["preform"].pop("parts", None)
-    pics = {}
-    if pictures:
-        pics = {n: str(p) for n, p in render_views(built, d, cfg).items()}
-    out = {"key": k, "dir": str(d), "paths": paths, "pictures": pics, "results": results, "cached": False}
+    results = fam.checks(spec, brief, cfg, rules, built)
+    pics = fam.render(built, d, cfg) if pictures else {}
+    out = {"key": k, "dir": str(d), "paths": paths, "pictures": pics, "results": results, "cached": False,
+           "family": fam.name, "experimental": fam.experimental}
     f.write_text(json.dumps(out, indent=1, default=str), encoding="utf-8")
     return out
+
+
+def real_preform(ev, cfg):
+    """Real PreForm on an evaluated design (on request, and for every final design). Cached in the
+    evaluation folder, so the same spec never goes through PreForm twice. Falls back to MOCK (labelled)
+    if the server is down."""
+    d = Path(ev["dir"])
+    f = d / "preform_real.json"
+    if f.exists():
+        return json.loads(f.read_text(encoding="utf-8"))
+    if not ev.get("paths"):
+        return {"name": "preform", "passed": False, "failures": [{"code": "build", "msg": "no geometry",
+                                                                   "amount_mm": 10.0}], "mocked": True}
+    r = preform_check.check_parts(ev["paths"], cfg, out_dir=d, force_mock=False)
+    r.pop("parts", None)
+    if not r.get("mocked"):
+        f.write_text(json.dumps(r, indent=1, default=str), encoding="utf-8")
+    return r
 
 
 def summary(results):
