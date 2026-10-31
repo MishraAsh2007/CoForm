@@ -58,3 +58,31 @@ check gets worse; otherwise owners of worsened checks object with numbers, the o
 if total failures go down and supporters outnumber objectors. Once everything passes, an edit must keep every
 check passing and raise the quality score. A budget of full evaluations ends each run. Real PreForm runs only
 when the Manufacturing agent (or generalist) asks, and on every final design (cached by spec).
+
+## Model choice (step 1d, 2026-10-31)
+
+Same model for every agent in a run. Brief a, seed 0, budget 12, after the needs/joint-edit/improve-phase fixes:
+
+| run | local check failures | cost | failures fixed per $ |
+|---|---|---|---|
+| collective, claude-haiku-5-5 | 20 -> 0, then quality 51.4 -> 52.5 | $0.026 | ~760 |
+| collective, claude-sonnet-5-5 | 20 -> 0, stopped after 7 evaluations | $0.433 | ~46 |
+| generalist, claude-sonnet-5-5 | 20 -> 0, stopped after 3 evaluations | $0.103 | ~190 |
+| generalist, claude-haiku-5-5 (earlier prompt) | 20 -> 8 | $0.018 | ~690 |
+
+The benchmark uses **claude-haiku-5-5** (progress per dollar). Both collective finals still had 1 real PreForm cup.
+
+## Part families
+
+`families/` holds everything part-specific behind one interface (`families/base.py`): spec schema, default spec,
+generator, family checks, quality, fix hints, renders, key/check ownership. The board, protocol, agents, PreForm
+and fit code are shared. `enclosure` is the board enclosure; `freeform` (**EXPERIMENTAL**) lets the Design agent
+write CadQuery code from a text description (brief `e_freeform_peg_block.yaml`). Only general checks run:
+PreForm, wall thickness, interference between parts, fit clearances on mating pairs. Model-written code runs in
+a separate isolated process with a timeout after an AST check (cadquery/math imports only); this lowers the risk
+but is not a sandbox.
+
+## Tools (not used in the benchmark)
+
+- `checks/thickness_map.py` (Manufacturing): wall-thickness heat map image (app: Tools page).
+- `checks/orientations.py` (Manufacturing): compare 2-4 print orientations in PreForm (support volume, cups, time).
