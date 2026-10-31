@@ -10,3 +10,6 @@ results/tmp/
 
 # keep generated meshes used only for pictures
 results/**/_mesh/
+results/cache/
+results/benchmark/runs*/
+config.yaml.tmp

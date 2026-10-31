@@ -1,0 +1,10 @@
+name: d_rpi_pico
+description: >
+  Software-only case (M2 board holes; fastener rules are M2.5). Raspberry Pi Pico enclosure with the
+  micro-USB usable, a wire slot at the far end, 2 mounting tabs, small box.
+bundle: rpi_pico
+required_ports: [usb_micro]
+required_cables: [wire_bundle]
+mount_tabs_min: 2
+max_box: [80, 45, 25]
+vent_over_fan: false

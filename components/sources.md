@@ -20,6 +20,22 @@ Values marked **UNVERIFIED** are best documented or typical values. The fit-chec
 | PAGE | https://www.raspberrypi.com/products/active-cooler/ | "Heatsink-mounted, temperature-controlled blower fan", "Maximum airflow: 1.09 CFM", "Spring-loaded push pins", "four-pin fan header on Raspberry Pi 5". |
 | PIX | Measured from CDRW by pixel scaling (4.41 px/mm) | Pin positions relative to the footprint corners, fan opening centre and diameter, and the height of the base above the SoC (10.2). Each is ±1 mm and **UNVERIFIED**. The envelope top (z 14.0 in the board frame) is **UNVERIFIED**. |
 
+## Arduino UNO R3 (`arduino_uno.yaml`), software-only benchmark board
+
+| Key | Source | What it says |
+|---|---|---|
+| ADS | https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf, section 5.4 | "4 x Ø3.20mm" mounting holes. Holes 15.24 / 2.54 from the top-left corner, 66.04 from the left edge to the right-hand holes, 17.78 and 45.72 from the top edge, 50.80 from the top edge to the bottom-left hole. |
+| APIX | Same drawing, pixel scaling | Board outline 68.6 x 53.3; USB-B and DC jack positions and overhangs (**UNVERIFIED**). |
+| UNV | Typical | Heights of USB-B, jack and headers, PCB 1.6, plug sizes (**UNVERIFIED**). |
+
+## Raspberry Pi Pico (`rpi_pico.yaml`), software-only benchmark board
+
+| Key | Source | What it says |
+|---|---|---|
+| PDS | https://datasheets.raspberrypi.com/pico/pico-datasheet.pdf, section 2, Figure 3 | "single sided 51×21 mm 1 mm thick PCB with a micro-USB port overhanging the top edge", "4× 2.1 mm (± 0.05 mm) drilled mounting holes", holes 11.4 apart across the width, 4.8 from the side, 2 from the ends, USB overhang 1.3 (typ), USB 8 wide. |
+| UNV | Typical | Component heights, micro-USB height and plug size (**UNVERIFIED**). |
+| Why not ESP32 | Espressif ESP32-DevKitC boards have no mounting holes | The Pico replaces it as the second "other common board". |
+
 ## Fasteners
 
 | Item | Source | What it says |

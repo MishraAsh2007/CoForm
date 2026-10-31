@@ -160,5 +160,5 @@ run:
   out_dir: results/runs
   cache_dir: results/cache    # evaluations cached by spec hash (same spec = same results)
   default_budget: 12          # full evaluations per run
-  max_rounds: 6
+  max_rounds: 30              # safety cap; the evaluation budget normally ends a run
   start_spec: naive           # naive | reference (see cad/spec.py default_spec)

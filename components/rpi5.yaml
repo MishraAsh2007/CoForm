@@ -117,6 +117,10 @@ cable_access:
     side: +y
     centre: [32.5, 11.0]    # over the GPIO header (STEP x 7.1..57.9, pins to z 9.88)
     size: [52.0, 3.0]       # UNV: 40-way IDC ribbon ~ 51 mm wide
+  - name: gpio_power_lead
+    side: +x
+    centre: [19.75, 9.0]    # our choice: 2-wire 5 V lead from the GPIO header, routed inside to the +x wall
+    size: [6.0, 3.0]        # between the Ethernet and USB openings (UNV lead size)
   - name: cam_disp_ffc
     side: -y
     centre: [51.7, 6.5]     # between the two MIPI FFC connectors

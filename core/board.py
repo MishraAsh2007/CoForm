@@ -26,6 +26,8 @@ CREATE TABLE IF NOT EXISTS messages (
 CREATE TABLE IF NOT EXISTS decisions (
   id INTEGER PRIMARY KEY, run_id INTEGER, version_id INTEGER, decision TEXT, reason TEXT,
   created_at TEXT);
+CREATE TABLE IF NOT EXISTS artifacts (
+  id INTEGER PRIMARY KEY, run_id INTEGER, version_id INTEGER, kind TEXT, path TEXT, created_at TEXT);
 CREATE TABLE IF NOT EXISTS usage (
   id INTEGER PRIMARY KEY, run_id INTEGER, agent TEXT, input_tokens INTEGER,
   output_tokens INTEGER, cost_usd REAL, created_at TEXT);
@@ -136,6 +138,16 @@ class Board:
 
     def decisions(self, run_id):
         return [dict(r) for r in self.db.execute("SELECT * FROM decisions WHERE run_id=? ORDER BY id", (run_id,))]
+
+    def add_artifact(self, run_id, version_id, kind, path):
+        return self._insert("artifacts", run_id=run_id, version_id=version_id, kind=kind, path=str(path))
+
+    def artifacts(self, run_id, version_id=None):
+        q, args = "SELECT * FROM artifacts WHERE run_id=?", [run_id]
+        if version_id is not None:
+            q += " AND version_id=?"
+            args.append(version_id)
+        return [dict(r) for r in self.db.execute(q + " ORDER BY id", args)]
 
     def log_usage(self, run_id, agent, input_tokens, output_tokens, cost_usd):
         return self._insert("usage", run_id=run_id, agent=agent, input_tokens=input_tokens,

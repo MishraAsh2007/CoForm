@@ -1,0 +1,10 @@
+name: c_arduino_uno
+description: >
+  Software-only case (M3 board holes; fastener rules are M2.5). Arduino UNO R3 enclosure with USB-B and
+  DC jack usable, a slot for jumper wires over the digital header, 2 mounting tabs.
+bundle: arduino_uno
+required_ports: [usb_b, dc_jack]
+required_cables: [header_wires]
+mount_tabs_min: 2
+max_box: [100, 80, 40]
+vent_over_fan: false

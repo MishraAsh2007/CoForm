@@ -1,0 +1,13 @@
+name: b_pi5_tight_robot
+description: >
+  Raspberry Pi 5 + Active Cooler on a robot, tight space. Only Ethernet and the two USB stacks are used;
+  power comes in through a 2-wire lead from the GPIO header. Every cable must leave on ONE side (+x, the
+  Ethernet/USB side). At least 2 robot mounting tabs. Smaller allowed outer box. Lid vents over the fan.
+bundle: rpi5_cooler
+required_ports: [ethernet, usb_a_lower, usb_a_upper]
+required_cables: [gpio_power_lead]
+allowed_opening_sides: ["+x"]
+mount_tabs_min: 2
+max_box: [104, 66, 26]
+vent_over_fan: true
+min_vent_fraction: 0.25

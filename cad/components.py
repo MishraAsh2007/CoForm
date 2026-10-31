@@ -13,7 +13,7 @@ BUNDLES = {
     "rpi5_cooler": ["rpi5", "active_cooler"],
     "rpi5": ["rpi5"],
     "arduino_uno": ["arduino_uno"],
-    "esp32_devkitc": ["esp32_devkitc"],
+    "rpi_pico": ["rpi_pico"],   # used instead of an ESP32 DevKitC, which has no mounting holes
 }
 
 # Outward direction of each side: (axis index, sign)

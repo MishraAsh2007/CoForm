@@ -1,0 +1,33 @@
+# Raspberry Pi Pico (Rev3). Units: mm. Frame: x along the 51 mm length with the micro-USB end at +x,
+# y along the 21 mm width; z = 0 is the PCB bottom. Assumes NO pin headers fitted (castellated, wires soldered).
+# Sources (components/sources.md, "Raspberry Pi Pico"):
+#   PDS = official Pico datasheet, section 2 Mechanical specification, Figure 3
+#   UNV = typical value, UNVERIFIED
+# NOTE: holes are 2.1 mm (M2). Fastener rules here are calibrated for M2.5: SOFTWARE-ONLY benchmark case.
+name: Raspberry Pi Pico
+board:
+  length: 51.0            # PDS "51x21 mm"
+  width: 21.0             # PDS
+  thickness: 1.0          # PDS "1 mm thick PCB"
+  corner_radius: 0.5      # UNV
+mounting_holes:
+  diameter: 2.1           # PDS "4x 2.1 mm (± 0.05 mm)"
+  pad_diameter: 4.0       # UNV
+  positions: [[2.0, 4.8], [2.0, 16.2], [49.0, 4.8], [49.0, 16.2]]   # PDS 4.8 / 11.4 apart / 2 from the ends
+ports:
+  - name: usb_micro
+    side: +x
+    centre: [10.5, 2.3]   # PDS USB 8 wide, centred; z UNV 1.0..3.6
+    size: [8.0, 2.6]      # PDS width 8; UNV height
+    face: 52.3            # PDS overhang 1.3 (typ)
+    plug: {size: [10.5, 7.0], length: 25}   # UNV micro-USB overmold
+keepouts:
+  - {name: pcb, box: [0.0, 51.0, 0.0, 21.0, 0.0, 1.0]}
+  - {name: usb_micro, box: [46.5, 52.3, 6.5, 14.5, 1.0, 3.6]}   # PDS width/overhang, UNV length/height
+  - {name: bootsel, box: [38.0, 43.0, 7.0, 11.0, 1.0, 4.5]}     # UNV
+  - {name: components, box: [8.0, 40.0, 3.0, 18.0, 1.0, 2.2]}   # UNV RP2040, flash, regulator
+cable_access:
+  - name: wire_bundle
+    side: -x
+    centre: [10.5, 3.0]   # our choice: wires leave at the end opposite the USB
+    size: [12.0, 3.0]     # UNV

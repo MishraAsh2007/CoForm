@@ -60,11 +60,16 @@ def run(mode, brief_path, budget=None, seed=0, mock=False, clearances=None, out_
     for n in rules["notes"]:
         board.post(run_id, "fit" if mode == "collective" else "system", "note", n, current)
     state = {"spec": spec, "brief": brief, "comp": comp, "rules": rules, "results": None, "requests": [],
-             "rejected": set(), "pictures": {}}
+             "rejected": set(), "pictures": {}, "errors": {}}
+
+    def remember(who, patch, why):
+        state["errors"].setdefault(who, []).append({"patch": patch, "why": why[:300]})
 
     def store(version_id, ev):
         for cname, r in ev["results"].items():
             board.add_check(run_id, version_id, cname, protocol.CHECK_OWNERS[cname], r)
+        for kind, p in {**ev.get("pictures", {}), **ev.get("paths", {})}.items():
+            board.add_artifact(run_id, version_id, kind, p)
 
     stop = None
     if mode == "one_shot":
@@ -109,12 +114,15 @@ def run(mode, brief_path, budget=None, seed=0, mock=False, clearances=None, out_
                 key = json.dumps(patch, sort_keys=True)
                 if agent.propose_edit(current, patch, reason) is None:
                     state["rejected"].add(key)
+                    remember(who, patch, f"ownership: you may not edit {protocol.forbidden_keys(who, patch)}; "
+                                         f"post a note with suggest_patch for the owner instead")
                     continue
                 try:
                     new_spec = apply_patch(state["spec"], patch)
                 except Exception as e:
                     board.post(run_id, who, "note", f"invalid patch rejected without evaluation: {e}", current)
                     state["rejected"].add(key)
+                    remember(who, patch, f"invalid patch: {e}")
                     continue
                 proposed = True
                 vid = board.add_version(run_id, new_spec, who, reason, current, patch)
@@ -150,6 +158,7 @@ def run(mode, brief_path, budget=None, seed=0, mock=False, clearances=None, out_
                                          if json.dumps(r["patch"], sort_keys=True) != key]
                 else:
                     state["rejected"].add(key)
+                    remember(who, patch, f"rejected after evaluation: {why}")
             if stop:
                 break
             idle = 0 if proposed else idle + 1

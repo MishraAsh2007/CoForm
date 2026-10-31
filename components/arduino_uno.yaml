@@ -1,0 +1,44 @@
+# Arduino UNO R3 (A000066). Units: mm. Frame: origin = PCB bottom-left corner seen from the top with the
+# USB-B and DC jack on the left (-x) edge; z = 0 is the PCB bottom.
+# Sources (components/sources.md, "Arduino UNO R3"):
+#   ADS  = official datasheet A000066, 5.4 "Board Outline & Mounting Holes" (dims in mil and mm)
+#   APIX = measured off the ADS drawing by pixel scaling (6.39 px/mm), +-0.5 mm, UNVERIFIED
+#   UNV  = typical value, UNVERIFIED
+# NOTE: holes are 3.2 mm (M3). The fastener rules in this project are calibrated for M2.5, so this
+# board is a SOFTWARE-ONLY benchmark case. Do not print it without M3 rules.
+name: Arduino UNO R3
+board:
+  length: 68.58           # APIX (2700 mil); ADS gives 66.04 (2600 mil) to the right-hand hole centres
+  width: 53.34            # APIX (2100 mil); ADS gives 50.80 (2000 mil) from the top edge to the bottom-left hole
+  thickness: 1.6          # UNV standard PCB
+  corner_radius: 0.5      # UNV (the right-hand corners are chamfered on the real board)
+mounting_holes:
+  diameter: 3.2           # ADS "4 x Ø3.20mm"
+  pad_diameter: 6.0       # UNV
+  positions: [[13.97, 2.54], [15.24, 50.8], [66.04, 7.62], [66.04, 35.56]]   # ADS 15.24/2.54/66.04/17.78/45.72; 13.97 APIX
+ports:
+  - name: usb_b
+    side: -x
+    centre: [38.1, 7.05]  # APIX y 32.2..43.9; z UNV 1.6..12.5
+    size: [12.0, 10.9]    # UNV USB-B receptacle
+    face: -6.35           # APIX overhang about 6.3
+    plug: {size: [16.0, 14.0], length: 30}   # UNV USB-B overmold
+  - name: dc_jack
+    side: -x
+    centre: [8.1, 7.1]    # APIX y 3.7..12.5; z UNV 1.6..12.6
+    size: [9.0, 11.0]     # UNV 2.1 mm barrel jack
+    face: -1.6            # APIX
+    plug: {size: [10.0, 10.0], length: 30}   # UNV barrel plug
+keepouts:
+  - {name: pcb, box: [0.0, 68.58, 0.0, 53.34, 0.0, 1.6]}
+  - {name: usb_b, box: [-6.35, 9.9, 32.1, 44.1, 1.6, 12.5]}            # APIX + UNV height
+  - {name: dc_jack, box: [-1.6, 12.6, 3.6, 12.6, 1.6, 12.6]}           # APIX + UNV height
+  - {name: digital_headers, box: [18.5, 65.0, 49.5, 52.2, 1.6, 10.1]}  # UNV female headers 8.5 tall
+  - {name: power_analog_headers, box: [27.0, 65.0, 1.2, 3.9, 1.6, 10.1]}  # UNV
+  - {name: components, box: [12.0, 64.0, 6.0, 48.0, 1.6, 6.5]}         # UNV DIP ATmega + parts
+  - {name: underside_pins, box: [18.5, 65.0, 1.2, 52.2, -2.0, 0.0]}    # UNV through-hole pin ends
+cable_access:
+  - name: header_wires
+    side: +y
+    centre: [41.0, 11.5]  # over the digital header, our choice
+    size: [40.0, 3.0]     # UNV jumper-wire bundle

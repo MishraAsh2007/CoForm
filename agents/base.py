@@ -16,6 +16,10 @@ from core.llm import parse_json
 
 REPLY_FORMAT = """Reply with ONE JSON object and nothing else:
 {"action": "propose", "patch": [RFC 6902 JSON patch ops on the spec], "reason": "why, with numbers"}
+Patch paths start at the spec object itself (NOT "/spec/..."), e.g.
+  {"op": "replace", "path": "/cable_slots/1/enabled", "value": true}
+  {"op": "add", "path": "/mount_tabs/-", "value": {"side": "+y", "offset": 20, "width": 10, "length": 8, "thickness": 3, "hole": 3.4}}
+Every value must follow spec_schema exactly (field names, types).
 or {"action": "note", "text": "request for another agent", "suggest_patch": [ops]}
 or {"action": "pass", "reason": "..."}
 Only patch top-level spec keys you are allowed to edit. Keep patches small (one fix). Units are mm."""
@@ -57,7 +61,8 @@ class Agent:
         rights = protocol.EDIT_RIGHTS[self.name]
         rights = "all keys" if rights == "*" else ", ".join(sorted(rights))
         pr = self.cfg["print"]
-        return (f"You are the {self.name} agent in a team designing a 3D-printed (SLA, {material} resin, {layer} mm layers) enclosure.\n".format(material=pr["material"], layer=pr["layer_thickness_mm"]) +
+        return (f"You are the {self.name} agent in a team designing a 3D-printed enclosure (SLA, {pr['printer']}, "
+                f"{pr['material']} resin, {pr['layer_thickness_mm']} mm layers).\n"
                 f"Goal: {self.goal}\nYou own these checks: {', '.join(self.owns_checks) or 'none'}. "
                 f"Your data: {', '.join(self.owns_data) or 'none'}.\nYou may edit spec keys: {rights}.\n"
                 "There is no boss. An edit is accepted automatically if no check gets worse; otherwise agents vote "
@@ -72,14 +77,18 @@ class Agent:
                 "cfg": self.cfg, "results": results, "rejected": state["rejected"], "requests": requests,
                 "my_requests": {json.dumps(n["patch"], sort_keys=True) for n in state["requests"]
                                 if n["author"] == self.name},
-                "pictures": state.get("pictures", {})}
+                "pictures": state.get("pictures", {}),
+                "my_errors": state.get("errors", {}).get(self.name, [])}
 
     def prompt(self, ctx):
         comp = ctx["comp"]
         ports = [{"name": p["name"], "side": p["side"]} for p in comp["ports"]]
         cables = [{"name": a["name"], "side": a["side"]} for a in comp["cable_access"]]
+        from cad.spec import SCHEMA
         parts = {
             "brief": ctx["brief"],
+            "spec_schema": SCHEMA["properties"],
+            "your_rejected_attempts": ctx.get("my_errors", [])[-5:],
             "component": {"name": comp["name"], "board": comp["board"], "ports": ports, "cable_access": cables},
             "spec": ctx["spec"],
             "check_results": ctx["results"],
@@ -103,6 +112,12 @@ class Agent:
         reply = parse_json(text)
         if reply.get("action") == "propose" and not isinstance(reply.get("patch"), list):
             reply = {"action": "pass", "reason": "propose without a patch list"}
+        for key in ("patch", "suggest_patch"):          # tolerate "/spec/..." paths
+            for op in reply.get(key) or []:
+                if isinstance(op, dict) and str(op.get("path", "")).startswith("/spec/"):
+                    op["path"] = op["path"][5:]
+        if reply.get("action") == "pass":
+            self.board.post(self.run_id, self.name, "note", f"pass: {reply.get('reason', '')}"[:500])
         return reply
 
     def mock_act(self, ctx):
