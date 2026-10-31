@@ -53,3 +53,39 @@ test_print:
     tongue_height: 4.0           # taller than the groove depth
     tongue_x: 38.0
     tip_chamfer: 0.3             # eases entry; does not change the tested width
+
+# ---------------- Clearances ----------------
+# clearance_source: generic = Formlabs design guide values below (components/sources.md, "Printing").
+#                   measured = from data/fit_test_results.yaml via checks/fit_rules.py
+#                              (falls back to generic, and says so, until that file is filled in).
+clearance_source: generic
+clearances:
+  generic:
+    part_gap: 0.5            # board edge to wall, lid lip to groove, per side (Formlabs "min clearance 0.5")
+    port_cutout: 0.5         # per side around a connector / plug opening (same rule)
+    peg_hole_extra: 1.0      # hole = peg + 2 x 0.5
+    lid_groove_extra: 1.0    # groove = lip + 2 x 0.5
+    m25_clearance_hole: 2.9  # ISO 273 medium clearance for M2.5 (UNVERIFIED, see sources.md)
+    nut_pocket_af: 6.0       # 5.0 AF nut + 2 x 0.5
+    pilot_hole: 2.1          # common self-tapping pilot for M2.5 in plastic (UNVERIFIED rule of thumb)
+    min_wall: 0.6            # Formlabs min unsupported wall
+    min_supported_wall: 0.4  # Formlabs min supported wall
+    min_hole: 0.5            # Formlabs min hole
+    min_post_od_for_pilot: 5.0   # generic: assume a 5 mm post holds a self-tapping M2.5 (the test print checks this)
+    fastener_style: pilot    # pilot = self-tap into a post; through_nut = clearance hole + hex nut pocket
+
+# ---------------- Phase 2: fit-check frame ----------------
+fit_check:
+  out_dir: results/fit_check
+  bundle: rpi5_cooler
+  plate_thickness: 2.0
+  standoff_height: 4.0       # board bottom above the plate top; underside parts reach z -1.5
+  standoff_diameter: 5.5     # <= 6.0 pad on the board
+  locating_pin_diameter: 2.2 # into the 2.7 mounting holes
+  locating_pin_height: 2.0
+  wall_thickness: 1.2
+  wall_gap: 0.5              # board edge to inner wall face
+  wall_top_above_pcb: 8.5    # max wall top z (board frame). Low on purpose: shows port sides + bottom gaps, no tall slivers
+  wall_margin_above_ports: 2.0   # each wall rises this far above its highest port opening
+  port_sides: ["-y", "+x", "-x"]
+  label_strip: 7.0           # extra plate along +y for the engraved label

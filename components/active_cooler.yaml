@@ -1,0 +1,31 @@
+# Raspberry Pi Active Cooler (for Raspberry Pi 5), in the Pi 5 board frame (see rpi5.yaml).
+# Source keys (components/sources.md):
+#   CDRW = official Active Cooler mechanical drawing (raspberry-pi-active-cooler-mechanical-drawing.pdf)
+#   PAGE = official product page (raspberrypi.com/products/active-cooler)
+#   STEP = Pi 5 STEP model (push-pin holes in the PCB)
+#   PIX  = measured off CDRW by scaling pixels (+-1 mm), UNVERIFIED
+
+name: Raspberry Pi Active Cooler
+footprint: [63.5, 42.5]          # CDRW 63.50 x 42.50
+overall_height: 13.7             # CDRW 13.70 (top of fan/springs to push-pin tips)
+push_pins:
+  holes: [[3.5, 9.5], [61.5, 46.5]]   # STEP: two d 3.1 holes in the PCB
+  hole_diameter: 3.1                  # STEP
+  tip_below_pcb: 1.5                  # UNV: spring pin tips under the PCB
+# Envelope box in the board frame: [xmin, xmax, ymin, ymax, zmin, zmax]
+# x/y: pins sit ~3 mm in from the cooler's bottom-left and top-right corners (PIX).
+# z: base rests on the SoC (STEP SoC top z 3.65); top = 3.65 + 10.2 (PIX side view) ~ 13.9,
+#    rounded up to 14.0. UNVERIFIED: check with the fit-check frame and a ruler.
+envelope: [0.5, 64.0, 6.5, 49.0, 3.65, 14.0]
+fan:
+  type: blower                   # PAGE "temperature-controlled blower fan"
+  max_airflow_cfm: 1.09          # PAGE
+  intake_centre: [42.2, 33.3]    # PIX: 30 x 30 fan square at board x 27.3..57.2, y 18.3..48.3
+  intake_diameter: 21.5          # PIX
+  intake_side: top               # blower draws air in through the round opening on top
+  exhaust_region: [0.5, 27.0, 6.5, 49.0]   # PIX: fin block; air leaves through the fins (UNVERIFIED direction: -x and up)
+  connector: fan_header          # PAGE "four-pin fan header on Raspberry Pi 5" (see rpi5.yaml keepouts)
+keepouts:
+  - {name: active_cooler, box: [0.5, 64.0, 6.5, 49.0, 3.65, 14.0]}
+  - {name: cooler_pin_a_tip, box: [1.5, 5.5, 7.5, 11.5, -1.5, 0.0]}     # UNV tip size
+  - {name: cooler_pin_b_tip, box: [59.5, 63.5, 44.5, 48.5, -1.5, 0.0]}

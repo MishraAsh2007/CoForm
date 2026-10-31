@@ -1,0 +1,123 @@
+# Raspberry Pi 5 (Model B). Units: mm.
+# Frame (same as the official drawing and STEP model):
+#   origin = PCB bottom-left corner, x along the 85 mm edge, y along the 56 mm edge,
+#   y = 0 edge has USB-C + 2x micro HDMI, x = 85 edge has Ethernet + USB-A,
+#   x = 0 edge has power button, LEDs, microSD (underside), PCIe FFC.
+#   z = 0 is the PCB bottom face.
+# Source keys refer to components/sources.md:
+#   DRW  = official mechanical drawing (raspberry-pi-5-mechanical-drawing.pdf)
+#   STEP = official STEP model (RaspberryPi5-step.zip, rpi-5b_no_graphics.step), bounding boxes read with cad/inspect_step.py
+#   UNV  = UNVERIFIED typical value; the fit-check frame checks it physically
+
+name: Raspberry Pi 5
+board:
+  length: 85.0            # DRW "85"
+  width: 56.0             # DRW "56"
+  thickness: 1.3          # STEP: PCB solid z 0.03..1.31
+  corner_radius: 3.0      # STEP: corner arcs of d 6.0 at (1.09,1.09) etc.
+mounting_holes:
+  diameter: 2.7           # DRW "Ø2.7", STEP d 2.70
+  pad_diameter: 6.0       # DRW "6" around holes (keep standoff OD <= 6 on the board side)
+  positions: [[3.5, 3.5], [61.5, 3.5], [3.5, 52.5], [61.5, 52.5]]   # DRW 3.5 / 58 / 49; STEP centres
+
+# Ports that need a wall cutout. side = wall they face. centre = (along-edge coordinate, z).
+# size = (width along the edge, height) of the connector face. face = outward coordinate of
+# the connector front (y for -y side, x for +x/-x sides). plug = cable plug body that must fit
+# outside the connector: cross-section (w, h) centred on the connector, sticking out `length`.
+ports:
+  - name: usb_c_power
+    side: -y
+    centre: [11.2, 2.95]  # DRW 11.2; STEP x 6.73..15.67, z 1.31..4.60
+    size: [8.9, 3.3]      # STEP shell 8.94 x 3.29
+    face: -1.2            # STEP ymin -1.20
+    plug: {size: [12.4, 6.5], length: 25}   # UNV: USB-C overmold, typical max 12.35 x 6.5
+  - name: hdmi0
+    side: -y
+    centre: [25.8, 3.0]   # DRW 25.8; STEP x 22.2..29.4, z 1.31..4.68
+    size: [7.2, 3.4]      # STEP; DRW side view 3.4
+    face: -1.6            # STEP ymin -1.63
+    plug: {size: [11.0, 6.5], length: 25}   # UNV: micro-HDMI (type D) overmold, typical
+  - name: hdmi1
+    side: -y
+    centre: [39.2, 3.0]   # DRW 39.2; STEP x 35.6..42.8
+    size: [7.2, 3.4]
+    face: -1.6
+    plug: {size: [11.0, 6.5], length: 25}   # UNV
+  - name: ethernet
+    side: +x
+    centre: [10.25, 7.98] # DRW 10.2; STEP y 2.28..18.22, z 1.31..14.64
+    size: [15.9, 13.3]
+    face: 88.05           # STEP xmax 88.05 (DRW: 3 mm past the board edge)
+    plug: {size: [14.0, 13.5], length: 30}  # UNV: RJ45 plug + boot, typical; latch tab is on top
+  - name: usb_a_lower
+    side: +x
+    centre: [29.0, 9.72]  # DRW 29.1; STEP y 21.75..36.25, z 1.91..17.53 past the board edge (2 stacked ports)
+    size: [14.5, 15.6]
+    face: 88.0
+    plug: {size: [16.0, 16.5], length: 30}  # UNV: two stacked USB-A plugs, ~16 wide overmold
+  - name: usb_a_upper
+    side: +x
+    centre: [47.0, 9.64]  # DRW 47; STEP y 39.75..54.25, z 1.91..17.36 past the board edge
+    size: [14.5, 15.5]
+    face: 87.8
+    plug: {size: [16.0, 16.5], length: 30}  # UNV
+  - name: power_button
+    side: -x
+    centre: [18.4, 3.04]  # DRW 18.4; STEP plunger y 17.4..19.4, z 2.04..4.04
+    size: [2.0, 2.0]
+    face: -0.45           # STEP xmin -0.45
+    plug: {size: [5.0, 5.0], length: 8}     # finger / pen access, our choice
+  - name: status_leds
+    side: -x
+    centre: [13.3, 1.84]  # DRW 13.3; STEP y 11.7..14.9, z 1.34..2.34
+    size: [3.2, 1.0]
+    face: 0.16
+    plug: {size: [3.2, 1.0], length: 0}     # light window only
+  - name: microsd
+    side: -x
+    centre: [28.1, -0.7]  # STEP socket y 22.11..34.06, z -1.42..0 (underside)
+    size: [12.0, 1.4]
+    face: 0.0             # UNV: card edge position when inserted; STEP socket starts at x 2.25
+    plug: {size: [13.0, 3.0], length: 6}    # finger access to push the card, our choice
+
+# Boxes nothing may intersect: [xmin, xmax, ymin, ymax, zmin, zmax] (STEP bounding boxes, rounded out)
+keepouts:
+  - {name: pcb,          box: [0.0, 85.0, 0.0, 56.0, 0.0, 1.31]}
+  - {name: usb_c_power,  box: [6.7, 15.7, -1.2, 6.2, 0.3, 4.6]}
+  - {name: hdmi0,        box: [22.2, 29.4, -1.7, 6.9, 0.2, 4.7]}
+  - {name: hdmi1,        box: [35.6, 42.8, -1.7, 6.9, 0.2, 4.7]}
+  - {name: rtc_battery_connector, box: [17.0, 21.0, 3.3, 6.2, 1.3, 5.7]}
+  - {name: uart_connector, box: [30.0, 35.0, 2.5, 5.4, 1.3, 5.7]}
+  - {name: cam_disp_ffc_0, box: [47.1, 50.2, 0.1, 16.9, 1.4, 5.3]}
+  - {name: cam_disp_ffc_1, box: [53.3, 56.4, 0.1, 16.9, 1.4, 5.3]}
+  - {name: ethernet,     box: [66.4, 85.0, 2.2, 18.3, -0.7, 14.7]}
+  - {name: ethernet_overhang, box: [85.0, 88.1, 2.2, 18.3, 1.3, 14.7]}   # STEP section x>85: z 1.34..14.64
+  - {name: usb_a_lower,  box: [70.4, 85.0, 21.7, 36.3, -0.2, 17.6]}
+  - {name: usb_a_lower_overhang, box: [85.0, 88.0, 21.7, 36.3, 1.9, 17.6]}  # STEP section x>85: z 1.91..17.53
+  - {name: usb_a_upper,  box: [70.3, 85.0, 39.7, 54.3, -0.2, 17.4]}
+  - {name: usb_a_upper_overhang, box: [85.0, 87.8, 39.7, 54.3, 1.9, 17.4]}  # STEP section x>85: z 1.91..17.36
+  - {name: poe_header,   box: [59.9, 63.1, 7.9, 11.1, -0.6, 9.9]}
+  - {name: gpio_header,  box: [7.1, 57.9, 49.9, 55.1, -0.6, 9.9]}
+  - {name: fan_header,   box: [65.3, 68.2, 49.0, 55.0, 1.3, 5.7]}
+  - {name: pcie_ffc,     box: [1.1, 4.2, 23.1, 36.9, 1.4, 5.3]}
+  - {name: power_button, box: [-0.5, 3.0, 16.1, 20.7, 0.9, 4.7]}
+  - {name: microsd_socket, box: [2.2, 13.7, 22.1, 34.1, -1.5, 0.0]}
+
+tallest:
+  above_pcb: {name: usb_a_lower, z_top: 17.53}      # STEP
+  below_pcb: {name: microsd_socket, z_bottom: -1.42} # STEP
+
+# Cables that leave through a slot rather than a connector cutout.
+cable_access:
+  - name: pcie_ffc
+    side: -x
+    centre: [30.0, 4.5]     # STEP connector y 23.1..36.9, top z 5.29
+    size: [14.0, 2.0]       # UNV: 16-pin 0.5 mm pitch FFC ~ 9 mm wide; slot sized to the connector
+  - name: gpio_ribbon
+    side: +y
+    centre: [32.5, 11.0]    # over the GPIO header (STEP x 7.1..57.9, pins to z 9.88)
+    size: [52.0, 3.0]       # UNV: 40-way IDC ribbon ~ 51 mm wide
+  - name: cam_disp_ffc
+    side: -y
+    centre: [51.7, 6.5]     # between the two MIPI FFC connectors
+    size: [14.0, 2.0]       # UNV: 22-pin 0.5 mm pitch FFC ~ 11.5 mm wide
