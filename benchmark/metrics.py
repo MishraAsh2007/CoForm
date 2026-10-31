@@ -70,8 +70,18 @@ def run_data(d):
             "seconds": s["seconds"], "cost_usd": s["usage"]["cost_usd"], "curve": curve, "edits": edits}
 
 
+def rank_key(r):
+    """Ranking rule: a design that fails any check never outranks one that passes.
+    1) passes everything, 2) fewest failures left, 3) highest quality score."""
+    return (0 if r["passed"] else 1, r["all_failures"], -r["quality"])
+
+
 def collect(root):
-    return [run_data(d) for d in sorted(Path(root).iterdir()) if (d / "summary.json").exists()]
+    rows = [run_data(d) for d in sorted(Path(root).iterdir()) if (d / "summary.json").exists()]
+    rows.sort(key=rank_key)
+    for i, r in enumerate(rows, 1):
+        r["rank"] = i
+    return rows
 
 
 def caption(rows, extra=""):
@@ -110,6 +120,26 @@ def _fig(cap):
     return fig, ax
 
 
+def chart_failures_left(rows):
+    cap = caption(rows, "MAIN RESULT. Every run is a point: check failures left in the final design (real PreForm "
+                        "warnings included). Filled = passes everything. Lower is better; ranking is pass, then "
+                        "failures left, then quality.")
+    fig, ax = _fig(cap)
+    groups = sorted({(r["brief"], r["mode"]) for r in rows}, key=lambda g: (g[0], MODES.index(g[1])))
+    for i, (b, m) in enumerate(groups):
+        pts = [r for r in rows if r["brief"] == b and r["mode"] == m]
+        for j, r in enumerate(pts):
+            x = i + (j - (len(pts) - 1) / 2) * 0.08
+            ax.scatter([x], [r["all_failures"]], s=64, color=COLORS[m] if r["passed"] else SURFACE,
+                       edgecolors=COLORS[m], linewidths=2, zorder=3)
+    ax.set_xticks(range(len(groups)))
+    ax.set_xticklabels([f"{b.split('_')[0]}\n{m.replace('_', '-')}" for b, m in groups], color=INK, fontsize=8)
+    ax.set_ylim(bottom=-0.5)
+    _style(ax, "Failures left in the final design", "failures left (lower is better)")
+    fig.subplots_adjust(bottom=0.25)
+    return fig, cap
+
+
 def chart_failures_vs_evals(rows):
     cap = caption(rows, "Lines: failures of the current accepted design after each evaluation, one line per run.")
     fig, ax = _fig(cap)
@@ -129,7 +159,8 @@ def chart_failures_vs_evals(rows):
 
 
 def chart_quality(rows):
-    cap = caption(rows, "Every run is a point (filled = all checks pass, hollow = not).")
+    cap = caption(rows, "Every run is a point (filled = all checks pass, hollow = not). Quality only ranks designs "
+                        "with the same pass status and failures left; a failing design never outranks a passing one.")
     fig, ax = _fig(cap)
     groups = sorted({(r["brief"], r["mode"]) for r in rows}, key=lambda g: (g[0], MODES.index(g[1])))
     for i, (b, m) in enumerate(groups):
@@ -195,7 +226,8 @@ def chart_edits(rows):
     return fig, cap
 
 
-CHARTS = {"failures_vs_evals": chart_failures_vs_evals, "quality": chart_quality, "cost": chart_cost,
+CHARTS = {"failures_left": chart_failures_left, "failures_vs_evals": chart_failures_vs_evals,
+          "quality": chart_quality, "cost": chart_cost,
           "print": chart_print, "edits": chart_edits}
 
 
@@ -211,9 +243,10 @@ def table(rows):
             rs = [r for r in rows if r["brief"] == b and r["mode"] == m]
             if rs:
                 out.append({"brief": b, "mode": m, "runs": len(rs), "passed": f"{sum(r['passed'] for r in rs)}/{len(rs)}",
+                            "failures_left_mean": _mean([r["all_failures"] for r in rs]),
+                            "best_rank": min(r["rank"] for r in rs),
                             "quality_mean": _mean([r["quality"] for r in rs]),
                             "quality_min_max": f"{min(r['quality'] for r in rs)}..{max(r['quality'] for r in rs)}",
-                            "failures_mean": _mean([r["all_failures"] for r in rs]),
                             "evals_to_pass": _mean([r["evals_to_pass"] for r in rs]),
                             "edits_prop_acc": f"{_mean([r['edits_proposed'] for r in rs])}/{_mean([r['edits_accepted'] for r in rs])}",
                             "preform_warnings": _mean([r["preform_warnings"] for r in rs]),
@@ -236,9 +269,12 @@ def report(root):
         w.writeheader()
         w.writerows(rows)
     t = table(rows)
+    t.sort(key=lambda a: (a["brief"], -int(a["passed"].split("/")[0]), a["failures_left_mean"], -(a["quality_mean"] or 0)))
     lines = [f"# Benchmark summary ({tag})", "", f"_{caption(rows)}_", "",
              f"Print: {rows[0]['material']}, {rows[0]['layer_mm']} mm layers; clearances {rows[0]['clearances']}; "
-             "every mode starts from the same naive spec. Failures are counted by our own checks.", "",
+             "every mode starts from the same naive spec. Failures are counted by our own checks.",
+             "Ranking: passes everything, then fewest failures left, then quality score (best_rank = best run's rank "
+             "among all runs in this set).", "",
              "| " + " | ".join(t[0]) + " |", "|" + "---|" * len(t[0])]
     lines += ["| " + " | ".join(str(v) for v in r.values()) + " |" for r in t]
     for name, fn in CHARTS.items():

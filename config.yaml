@@ -147,7 +147,7 @@ preform:
 
 # ---------------- Phase 5: agents ----------------
 llm:
-  model: claude-haiku-5-5     # same model for every agent in every mode; chosen by progress per dollar (see README)
+  model: claude-sonnet-5-5    # same model for every agent in every mode (Haiku results kept in results/benchmark/runs_haiku_v2)
   effort: low                 # output_config.effort
   max_tokens: 4000
   send_images: true           # agents that own "renders" get the assembled picture
@@ -178,4 +178,4 @@ quality:
   clearance_margin_cap_mm: 0.5
   assembly_margin_cap_mm: 1.0
   tilt_deg: 30
-preform_requests_per_run: 2   # real PreForm runs the Manufacturing agent / generalist may ask for in a run
+preform_requests_per_run: 3   # real PreForm runs the Manufacturing agent / generalist may ask for in a run

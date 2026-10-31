@@ -1,0 +1,111 @@
+{
+ "print_settings": {
+  "printer": "Form Studio 1",
+  "machine_type": "CLRK-1-2",
+  "material": "Alpha Fast V1",
+  "material_code": "FLAPFA01",
+  "layer_thickness_mm": 0.15,
+  "print_setting": "DEFAULT"
+ },
+ "parts": [
+  "results\\runs\\a_pi5_standard__collective__generic__s0__claude-sonnet-5-5\\base.stl",
+  "results\\runs\\a_pi5_standard__collective__generic__s0__claude-sonnet-5-5\\lid.stl"
+ ],
+ "attempts": [
+  {
+   "strategy": "auto-orient all",
+   "warnings": [
+    {
+     "type": "interference",
+     "description": "1 colliding pair(s)"
+    },
+    {
+     "type": "cups",
+     "description": "1 cup(s) that trap resin"
+    }
+   ]
+  },
+  {
+   "strategy": "fixed per-part orientations",
+   "warnings": []
+  }
+ ],
+ "orientation_compare": {
+  "base.stl": [
+   {
+    "name": "flat",
+    "mocked": false,
+    "part_ml": 18.06,
+    "total_ml": 34.91,
+    "support_ml": 16.84,
+    "cups": 0,
+    "warnings": [],
+    "print_time_s": 1309
+   },
+   {
+    "name": "tilt_30_x",
+    "mocked": false,
+    "part_ml": 18.06,
+    "total_ml": 45.79,
+    "support_ml": 27.73,
+    "cups": 0,
+    "warnings": [],
+    "print_time_s": 2440
+   },
+   {
+    "name": "tilt_45_y",
+    "mocked": false,
+    "part_ml": 18.06,
+    "total_ml": 42.52,
+    "support_ml": 24.46,
+    "cups": 0,
+    "warnings": [],
+    "print_time_s": 3446
+   }
+  ],
+  "lid.stl": [
+   {
+    "name": "flat",
+    "mocked": false,
+    "part_ml": 11.1,
+    "total_ml": 28.09,
+    "support_ml": 16.99,
+    "cups": 0,
+    "warnings": [],
+    "print_time_s": 588
+   },
+   {
+    "name": "tilt_30_x",
+    "mocked": false,
+    "part_ml": 11.1,
+    "total_ml": 31.13,
+    "support_ml": 20.04,
+    "cups": 0,
+    "warnings": [
+     "2.1% of surface under-supported"
+    ],
+    "print_time_s": 1651
+   },
+   {
+    "name": "tilt_45_y",
+    "mocked": false,
+    "part_ml": 11.1,
+    "total_ml": 29.38,
+    "support_ml": 18.28,
+    "cups": 0,
+    "warnings": [
+     "1.0% of surface under-supported"
+    ],
+    "print_time_s": 2876
+   }
+  ]
+ },
+ "orientation_chosen": {
+  "base.stl": "flat",
+  "lid.stl": "flat"
+ },
+ "print_time_s": 1381,
+ "volume_ml": 61.85442540841652,
+ "form_path": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\print\\enclosure_a.form",
+ "warnings": []
+}

@@ -41,3 +41,12 @@ def test_orientations_real_preform(cfg, tmp_path):
     assert all(not r["mocked"] for r in rows)
     assert all(r["total_ml"] >= r["part_ml"] for r in rows)
     assert orientations.best(rows)["name"] in ("flat", "tilt_45_y")
+
+
+def test_print_job_refuses_without_server(cfg, tmp_path):
+    from cad.print_job import make
+    p = tmp_path / "cube.stl"
+    trimesh.creation.box((10, 10, 10)).export(p)
+    down = {**cfg, "preform": {**cfg["preform"], "base_url": "http://127.0.0.1:9"}}
+    with pytest.raises(RuntimeError, match="not running"):
+        make(tmp_path / "x.form", [p], cfg=down)          # a real .form is never faked

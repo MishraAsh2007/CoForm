@@ -11,8 +11,17 @@ recorded in every output (`PRINT_SETTINGS.json`) and run log. The fit-test resul
     .venv\Scripts\python.exe -m pip install -r requirements.txt
     copy .env.example .env      # put ANTHROPIC_API_KEY in .env (never committed)
 
-PreFormServer (3.64.2) on `http://127.0.0.1:44388` is used for real print checks. If it is down, checks fall
-back to a MOCK that is labelled everywhere.
+## PreFormServer setup (real print checks)
+
+1. Install Formlabs PreForm 3.64.2 on this PC. PreFormServer ships with it (`PreFormServer.exe` in the PreForm
+   install folder; Formlabs also offers it as a separate download for the Local API).
+2. Start it on the port this project expects:  `PreFormServer.exe --port 44388`
+3. Check it answers:  `curl http://127.0.0.1:44388/v1/`  ->  `{"version":"3.64.2..."}`
+4. Printer / material / layer come from `config.yaml` `print:` (Form Studio 1 = `CLRK-1-2`, Alpha Fast V1 =
+   `FLAPFA01`, 0.15 mm). To list what your PreForm knows:
+   `.venv\Scripts\python.exe -c "from cad.common import load_config; from checks.preform_check import preform_settings; from checks.preform_client import PreFormClient; print([r for r in PreFormClient(preform_settings(load_config())).list_materials() if 'Studio' in str(r['printer'])])"`
+5. Only one PreForm job runs at a time across all processes (file lock `results/cache/preform.lock`).
+If the server is down, every PreForm result falls back to a MOCK that is labelled everywhere.
 
 ## What is where
 
@@ -32,11 +41,13 @@ back to a MOCK that is labelled everywhere.
     .venv\Scripts\python.exe -m cad.test_print                 # Phase 1 plate + key
     .venv\Scripts\python.exe -m cad.fit_check                  # Phase 2 fit-check frame
     .venv\Scripts\python.exe -m cad.enclosure generic          # Phase 3 v0 enclosure (or: measured)
-    .venv\Scripts\python.exe -m cad.prepare_forms results\test_print   # real PreForm .form files
-    .venv\Scripts\python.exe run.py --mode collective --brief benchmark\briefs\a_pi5_standard.yaml --budget 12 --seed 0 [--mock] [--clearances measured] [--real-preform]
-    .venv\Scripts\python.exe -m benchmark.run_benchmark [--mock]
+    .venv\Scripts\python.exe -m cad.prepare_forms results\test_print   # real PreForm .form per STL
+    .venv\Scripts\python.exe -m cad.print_job out.form base.stl lid.stl   # several parts on ONE platform, zero warnings
+    .venv\Scripts\python.exe run.py --mode collective --brief benchmark\briefs\a_pi5_standard.yaml --budget 12 --seed 0 [--mock] [--clearances measured] [--model claude-sonnet-5-5]
+    .venv\Scripts\python.exe -m benchmark.run_benchmark --briefs a --seeds 3 --workers 2 --resume [--mock] [--out runs_sonnet]
+    .venv\Scripts\python.exe -m benchmark.metrics results\benchmark\runs_sonnet   # table + charts from the logs
     .venv\Scripts\python.exe -m streamlit run app.py
-    .venv\Scripts\python.exe -m pytest checks core
+    .venv\Scripts\python.exe -m pytest checks core families
 
 ## Fair comparison
 

@@ -74,7 +74,8 @@ def compare(stl_path, cfg, candidates=None):
         cups = sum(int(w["description"].split()[0]) for w in warns if w["type"] == "cups")
         rows.append({"name": name, "mocked": False, "part_ml": round(part, 2), "total_ml": round(total or 0, 2),
                      "support_ml": round((total or 0) - part, 2), "cups": cups,
-                     "warnings": [w["description"] for w in warns], "print_time_s": t})
+                     "warnings": [w["description"] for w in warns], "warning_types": [w["type"] for w in warns],
+                     "print_time_s": t})
     return rows
 
 

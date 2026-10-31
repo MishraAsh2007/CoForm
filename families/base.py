@@ -13,6 +13,8 @@ A family provides:
   hint(check, failure, spec, ctx) -> (patch, reason) or None      suggested fix (may be None)
   render(built, out_dir, cfg) -> {kind: png path}
   context(spec, brief) -> dict for agent prompts (component data, description...)
+  structure_check(spec, brief, cfg, built) -> None or a check result   EMPTY HOOK for a teammate's structural
+                            check (e.g. FEA). Returns None (not implemented); nothing calls it into a decision yet.
 """
 
 
@@ -45,3 +47,7 @@ class PartFamily:
 
     def context(self, spec, brief):
         return {}
+
+    def structure_check(self, spec, brief, cfg, built):
+        """Hook for a structural check (teammate). Not implemented: returns None."""
+        return None
