@@ -137,3 +137,50 @@ def rules(cfg, source=None, results=None):
     if len(out["fallbacks"]) >= 8:
         out["notes"].insert(0, "MEASURED MODE: data/fit_test_results.yaml is empty, so every value is GENERIC")
     return out
+
+
+def check(spec, rules):
+    """Fit check (owned by the Fit agent): does the design follow the clearance/fastener rules?
+
+    Returns {"name": "fit", "passed", "failures", "metrics"}. Every failure has the rule's number.
+    """
+    v = rules["values"]
+    c = spec["clearances"]
+    fails = []
+
+    def need(what, have, want, why):
+        if have < want - 1e-6:
+            fails.append({"code": "clearance", "msg": f"{what} {have} < {want} ({why})", "amount_mm": round(want - have, 3)})
+
+    src = rules["source"]
+    need("board gap", c["board_gap"], v["part_gap"], f"{src} part gap")
+    for side, g in spec["box"]["gap"].items():
+        need(f"{side} wall gap", g, v["part_gap"], f"{src} part gap")
+    need("port clearance", c["port"], v["port_cutout"], f"{src} port clearance")
+    need("lid fit per side", c["lid_fit"], round(v["lid_groove_extra"] / 2, 3), f"{src} lid groove")
+    need("M2.5 clearance hole", c["screw_hole"], v["m25_clearance_hole"], f"{src} M2.5 hole")
+
+    styles = {spec["fasteners"]["board"], spec["fasteners"]["lid"]}
+    if "through_nut" in styles:
+        if c["nut_pocket_af"] >= NUT_CORNERS:
+            fails.append({"code": "nut", "msg": f"nut pocket {c['nut_pocket_af']} AF >= nut corner width "
+                                                f"{NUT_CORNERS:.2f}: the nut spins", "amount_mm": round(c["nut_pocket_af"] - NUT_CORNERS + 0.05, 3)})
+        need("nut pocket AF", c["nut_pocket_af"], v["nut_pocket_af"] if v["nut_pocket_af"] < NUT_CORNERS else NUT_AF,
+             f"{src} nut pocket")
+    if "pilot" in styles:
+        posts = []
+        if spec["fasteners"]["board"] == "pilot":
+            posts.append(("standoff", spec["standoffs"]["diameter"]))
+        if spec["fasteners"]["lid"] == "pilot":
+            posts.append(("lid boss", spec["lid_screws"]["boss_diameter"]))
+        min_od = v.get("min_post_od_for_pilot")
+        for name, od in posts:
+            if v["fastener_style"] == "through_nut" or min_od is None:
+                fails.append({"code": "fastener", "msg": f"{name}: pilot-hole posts cracked in the fit test; "
+                                                         f"use through_nut", "amount_mm": 1.0})
+            else:
+                need(f"{name} OD for a pilot hole", od, min_od, f"{src}: smallest post that did not crack")
+    need("pilot hole", c["pilot_hole"], v["pilot_hole"], f"{src} pilot hole")
+
+    return {"name": "fit", "passed": not fails, "failures": fails,
+            "metrics": {"rule_source": src, "fallbacks": rules["fallbacks"]}}

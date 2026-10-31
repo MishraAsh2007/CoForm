@@ -1,0 +1,12 @@
+name: a_pi5_standard
+description: >
+  Two-piece enclosure (base + lid) for a Raspberry Pi 5 with the official Active Cooler.
+  Lid held by M2.5 screws. All ports usable with standard cables. Power button and microSD reachable.
+  Bolts to a robot with at least 4 tabs. Lid vents over the fan. GPIO ribbon cable can leave the case.
+bundle: rpi5_cooler
+required_ports: [usb_c_power, hdmi0, hdmi1, ethernet, usb_a_lower, usb_a_upper, power_button, status_leds, microsd]
+required_cables: [gpio_ribbon]
+mount_tabs_min: 4
+max_box: [120, 90, 40]
+vent_over_fan: true
+min_vent_fraction: 0.25

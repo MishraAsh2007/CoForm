@@ -95,3 +95,35 @@ enclosure:
   out_dir: results/enclosure
   default_bundle: rpi5_cooler
   lid_gap_above_parts: 1.0     # v0: lid underside this far above the tallest part
+
+# ---------------- Phase 4: checks ----------------
+checks:
+  min_part_gap: 0.3          # any enclosure surface closer than this to a part counts as a collision risk
+  lid_min_gap: 0.3           # lid underside / lip above the tallest part under it
+  screwdriver_diameter: 6.0  # shaft + hand clearance cylinder above every screw (UNVERIFIED typical small driver)
+  screw_head_diameter: 4.5   # M2.5 pan/cap head (ISO 7380 / ISO 4762 ~4.5, UNVERIFIED)
+  screw_lengths_available: [6, 8, 10, 12, 16, 20, 25, 30]
+  min_screw_engagement: 4.0  # thread length into plastic for a pilot-hole screw
+  tab_bolt_head_diameter: 6.0   # M3 head for the robot tabs
+  max_box: [120, 90, 40]     # default allowed outer size (x, y, z); briefs can tighten this
+
+# PreFormServer Local API (same settings as the teammate's project). machine_type / material_code are
+# PLACEHOLDERS until confirmed with PreFormClient.list_materials() for Form Studio 1 + Rigid 10K.
+preform:
+  base_url: http://127.0.0.1:44388
+  machine_type: ""            # TODO (teammate): Form Studio 1 machine type id
+  material_code: ""           # TODO (teammate): Rigid 10K material code
+  layer_thickness_mm: 0.1
+  print_setting: DEFAULT
+  request_timeout_s: 60
+  operation_timeout_s: 600
+  poll_interval_s: 0.5
+  max_scenes: 30
+  thin_wall_threshold_mm: 0.5
+  max_unsupported_percent: 1.0
+  layout_after_orient: true
+  mock:                       # used only when PreFormServer is not reachable; every output says "MOCK"
+    support_volume_factor: 1.15     # resin = part volume x this (guess)
+    seconds_per_layer: 6.0          # guess, not a Form Studio 1 figure
+    build_volume_mm: [200, 125, 210]  # UNVERIFIED placeholder (Form 4 size); Form Studio 1 size not confirmed
+    tilt_deg: 30                    # typical auto-orient tilt for flat parts, used for the height estimate
