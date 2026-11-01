@@ -313,7 +313,7 @@ def print_job_matches(R):
 # ---------------- meshes for the 3D viewer ----------------
 
 @st.cache_data(show_spinner=False, max_entries=48)
-def mesh_payload(path, _mtime, decimals=2):
+def mesh_payload(path, _mtime, decimals=2, _v=2):
     """STL -> {'v': flat xyz list, 'f': flat triangle index list} (rounded, merged; cached)."""
     import trimesh
     m = trimesh.load(str(path), force="mesh")

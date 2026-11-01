@@ -481,8 +481,9 @@ def why_page():
         T.html_block(f'<div style="margin:8px 0">{T.pill(k, cls)} <b>{T.esc(name)}</b> '
                      f'<span style="color:#99abae">[{e["id"]}]</span> {T.esc(text)}</div>')
     st.write("")
-    if st.button("✨ Write AI summary", help="2-3 plain sentences. The model may not write numbers: every number is "
-                                            "filled in from the log, and any digit it writes is removed and flagged."):
+    st.caption("AI summary: 2-3 plain sentences. The model may not write numbers: every number is filled in from the "
+               "log, and any digit it writes is removed and flagged.")
+    if st.button("✨ Write AI summary"):
         llm = None
         if not R["run"]["mocked"] and _has_key():
             from core.llm import LLM

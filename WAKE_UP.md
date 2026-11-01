@@ -23,6 +23,11 @@ Branch: `Mo_ver` on https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo
   agent; `thumbnail_1200x800.png`; `system_diagram.png`). All made by `scripts/make_submission_images.py` from the
   logs (board.sqlite, per-run CSV, enclosure_a.json). The app's Home and Charts pages use them.
 
+- Step 5, demo video: `results/submission/demo.mp4` (2:50, 5.6 MB, captions, no audio), `demo.gif` (14 s of the
+  3D page, 1.5 MB), script `scripts/record_demo.py`. DEMO.md rewritten: live 3-minute script A (IF PRINTED) and B
+  (IF NOT PRINTED, uses the Onshape fit check), backup plan. The 3D viewer now uses WebGL with a depth buffer
+  (the canvas painter version drew the floor over the board); canvas stays as a fallback.
+
 ## Notes
 - You asked me to read `results/benchmark/runs_v2_summary.md`: that file does not exist. I used
   `results/benchmark/runs_haiku_v2_summary.md` (the Haiku v2 set), which matches the numbers you gave.
