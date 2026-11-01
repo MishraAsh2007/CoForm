@@ -1,0 +1,617 @@
+{
+  "description": "Offline regression from the 24-attempt bottle-holder run: only geometry and reviews.",
+  "initial_spec": {
+    "environment": [
+      {
+        "at": [
+          -500.0,
+          -200.0,
+          "-desk_thick"
+        ],
+        "axis": "z",
+        "bears_on": null,
+        "force_n": null,
+        "insert": "+x",
+        "length": null,
+        "name": "desk",
+        "note": "Desk top at z = 0, its edge face at x = 0",
+        "radius": null,
+        "retain": [],
+        "role": "mount",
+        "shape": "box",
+        "size": [
+          500.0,
+          400.0,
+          "desk_thick"
+        ],
+        "touch": [
+          "+z",
+          "-z"
+        ]
+      },
+      {
+        "at": [
+          "20 + bottle_d / 2",
+          0.0,
+          -60.0
+        ],
+        "axis": "z",
+        "bears_on": null,
+        "force_n": [
+          0.0,
+          0.0,
+          "-bottle_kg * 9.81"
+        ],
+        "insert": "-z",
+        "length": 200.0,
+        "name": "bottle",
+        "note": "Stands in the cup just past the desk edge, dropped in from above",
+        "radius": "bottle_d / 2",
+        "retain": [
+          "+x",
+          "-x",
+          "+y",
+          "-y"
+        ],
+        "role": "payload",
+        "shape": "cylinder",
+        "size": null,
+        "touch": [
+          "-z"
+        ]
+      },
+      {
+        "at": [
+          "-20",
+          "0",
+          "-60.2"
+        ],
+        "axis": "z",
+        "bears_on": "desk",
+        "force_n": null,
+        "insert": "+z",
+        "length": "35.2",
+        "name": "clamp_screw",
+        "note": "M6 thumb screw tightened up against the underside",
+        "radius": "3",
+        "retain": [
+          "+x",
+          "-x",
+          "+y",
+          "-y"
+        ],
+        "role": "hardware",
+        "shape": "cylinder",
+        "size": null,
+        "touch": []
+      },
+      {
+        "at": [
+          "-25.6",
+          "-5.6",
+          "-29 - clamp_jaw_t + clamp_jaw_t / 2 - 2.6"
+        ],
+        "axis": "z",
+        "bears_on": null,
+        "force_n": null,
+        "insert": "+x",
+        "length": null,
+        "name": "clamp_nut",
+        "note": "Nut slid into its seat from the jaw tip",
+        "radius": null,
+        "retain": [
+          "+z",
+          "-z",
+          "+y",
+          "-y"
+        ],
+        "role": "hardware",
+        "shape": "box",
+        "size": [
+          "11.2",
+          "11.2",
+          "5.2"
+        ],
+        "touch": []
+      }
+    ],
+    "features": [
+      {
+        "at": [
+          "0 + (-40.0)",
+          "-20",
+          "0"
+        ],
+        "axis": "z",
+        "label": "clamp upper jaw",
+        "legs": null,
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "(0 + (clamp_spine_t)) - (0 + (-40.0))",
+          "(20) - (-20)",
+          "(0 + clamp_jaw_t) - (0)"
+        ],
+        "thickness": null
+      },
+      {
+        "at": [
+          "0 + (0)",
+          "-20",
+          "-29 - clamp_jaw_t - 40"
+        ],
+        "axis": "z",
+        "label": "clamp spine",
+        "legs": null,
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "(0 + (clamp_spine_t)) - (0 + (0))",
+          "(20) - (-20)",
+          "(0 + clamp_jaw_t) - (-29 - clamp_jaw_t - 40)"
+        ],
+        "thickness": null
+      },
+      {
+        "at": [
+          "0 + (-40.0)",
+          "-20",
+          "-29 - clamp_jaw_t"
+        ],
+        "axis": "z",
+        "label": "clamp lower jaw",
+        "legs": null,
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "(0 + (clamp_spine_t)) - (0 + (-40.0))",
+          "(20) - (-20)",
+          "(-29) - (-29 - clamp_jaw_t)"
+        ],
+        "thickness": null
+      },
+      {
+        "at": [
+          "57.5",
+          "0",
+          "-60 - cup_floor_t"
+        ],
+        "axis": "z",
+        "label": "cup floor",
+        "legs": null,
+        "length": "cup_floor_t",
+        "op": "add",
+        "radius": "38.5 + cup_wall_t",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null,
+        "thickness": null
+      },
+      {
+        "at": [
+          "57.5",
+          "0",
+          "-60"
+        ],
+        "axis": "z",
+        "label": "cup wall",
+        "legs": null,
+        "length": "50",
+        "op": "add",
+        "radius": "38.5 + cup_wall_t",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null,
+        "thickness": null
+      },
+      {
+        "at": [
+          "3",
+          "-20",
+          "-60"
+        ],
+        "axis": "z",
+        "label": "web",
+        "legs": null,
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "23",
+          "40",
+          "50"
+        ],
+        "thickness": null
+      },
+      {
+        "at": [
+          "-20",
+          "0",
+          "-29 - clamp_jaw_t - 1"
+        ],
+        "axis": "z",
+        "label": "clamp screw hole",
+        "legs": null,
+        "length": "clamp_jaw_t + 2",
+        "op": "subtract",
+        "radius": "3",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null,
+        "thickness": null
+      },
+      {
+        "at": [
+          "0 + (-41.0)",
+          "-5.6",
+          "-29 - clamp_jaw_t + clamp_jaw_t / 2 - 2.6"
+        ],
+        "axis": "z",
+        "label": "clamp nut seat",
+        "legs": null,
+        "length": null,
+        "op": "subtract",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "(0 + (-14.399999999999999)) - (0 + (-41.0))",
+          "(5.6) - (-5.6)",
+          "(-29 - clamp_jaw_t + clamp_jaw_t / 2 - 2.6 + 5.2) - (-29 - clamp_jaw_t + clamp_jaw_t / 2 - 2.6)"
+        ],
+        "thickness": null
+      },
+      {
+        "at": [
+          "57.5",
+          "0",
+          "-60"
+        ],
+        "axis": "z",
+        "label": "cup void",
+        "legs": null,
+        "length": "51",
+        "op": "subtract",
+        "radius": "38.5",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null,
+        "thickness": null
+      },
+      {
+        "at": [
+          "57.5",
+          "0",
+          "-61 - cup_floor_t"
+        ],
+        "axis": "z",
+        "label": "cup drain",
+        "legs": null,
+        "length": "cup_floor_t + 2",
+        "op": "subtract",
+        "radius": "4",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null,
+        "thickness": null
+      }
+    ],
+    "loads": [],
+    "name": "Desk Water Bottle Holder",
+    "parameters": {
+      "bottle_d": {
+        "max": 75.0,
+        "min": 75.0,
+        "note": "Bottle diameter",
+        "role": "fixed",
+        "value": 75.0
+      },
+      "bottle_kg": {
+        "max": 1.5,
+        "min": 1.5,
+        "note": "Full bottle mass",
+        "role": "fixed",
+        "value": 1.5
+      },
+      "clamp_jaw_t": {
+        "max": 16.200000000000003,
+        "min": 8.200000000000001,
+        "note": "jaw thickness",
+        "role": "thickness",
+        "value": 10.200000000000001
+      },
+      "clamp_spine_t": {
+        "max": 12.0,
+        "min": 4.0,
+        "note": "spine thickness past the desk edge",
+        "role": "thickness",
+        "value": 6.0
+      },
+      "cup_floor_t": {
+        "max": 6.0,
+        "min": 2.0,
+        "note": "cup floor",
+        "role": "thickness",
+        "value": 3.0
+      },
+      "cup_wall_t": {
+        "max": 6.0,
+        "min": 2.0,
+        "note": "cup wall",
+        "role": "thickness",
+        "value": 3.0
+      },
+      "desk_thick": {
+        "max": 25.0,
+        "min": 25.0,
+        "note": "Desk top thickness, from the request",
+        "role": "fixed",
+        "value": 25.0
+      }
+    },
+    "requirements": {
+      "max_displacement_mm": 2.0,
+      "max_mass_g": null,
+      "safety_factor": 2.0
+    },
+    "summary": "Screw clamp on the desk edge; the bottle stands in a cup beside the desk, joined to the clamp's spine.",
+    "supports": []
+  },
+  "bad_repair": {
+    "features": [
+      {
+        "changes": {
+          "at": [
+            57.5,
+            0,
+            -64.0
+          ],
+          "length": "cup_floor_t"
+        },
+        "index": 3
+      },
+      {
+        "changes": {
+          "at": [
+            57.5,
+            0,
+            -64.0
+          ],
+          "length": "cup_floor_t + 50"
+        },
+        "index": 8
+      },
+      {
+        "changes": {
+          "at": [
+            57.5,
+            0,
+            -64.0
+          ],
+          "length": "cup_floor_t + 1"
+        },
+        "index": 9
+      },
+      {
+        "changes": {
+          "radius": 3.3
+        },
+        "index": 6
+      }
+    ],
+    "parameters": {
+      "cup_floor_t": 4.0
+    }
+  },
+  "initial_reviews": [
+    {
+      "agent": "mechanics",
+      "issues": [
+        {
+          "evidence": "cup_floor_t = 3 mm; deflection 0.048 mm and peak stress 0.57 MPa are well within limits, but the floor is the first load-bearing feature and sees the full 14.7 N point load.",
+          "evidence_ids": [
+            "features:3",
+            "check:deflection",
+            "check:stress"
+          ],
+          "feature": "cup floor",
+          "fix": "Consider increasing cup_floor_t to 4\u20135 mm in a future revision for durability, or add a subtle rib pattern (not modelled here) if weight is a concern.",
+          "problem": "The cup floor is 3 mm thick and the bottle load is applied directly on its top face. While deflection and stress checks pass, a 3 mm floor under a 1.5 kg bottle is thin for repeated impact loads (setting the bottle down hard).",
+          "severity": "note",
+          "verification": "cited"
+        },
+        {
+          "evidence": "clamp_jaw_t = 10.2 mm; screw hole radius 3 mm at x = -20 mm; lower jaw spans x = -40 to 6 mm, so wall thickness on either side of hole is ~2.1 mm.",
+          "evidence_ids": [
+            "features:6",
+            "features:2",
+            "check:min_wall"
+          ],
+          "feature": "clamp screw hole",
+          "fix": "If the screw is a thumb-screw that bears on the jaw face, the current geometry is acceptable. If a nut bears on the jaw, consider a counter-bore or thicker jaw locally.",
+          "problem": "The screw hole is a 6 mm diameter through-hole in the 10.2 mm thick lower jaw, leaving only ~2.1 mm wall on each side of the hole. This is printable (min_wall check passes at 3 mm) but offers little bearing area for the M6 screw threads or head.",
+          "severity": "note",
+          "verification": "cited"
+        },
+        {
+          "evidence": "Web occupies x = 3\u201326 mm, y = -20\u201320 mm, z = -60 to -10 mm; it is the only connection between cup and clamp spine.",
+          "evidence_ids": [
+            "features:5",
+            "check:deflection",
+            "check:stress"
+          ],
+          "feature": "web",
+          "fix": "Add a stiffening rib or flange on the web (e.g., a 3 mm thick T-rib along its centre) in a later optimisation round if mass budget allows.",
+          "problem": "The web (3 mm to 26 mm in x, full 40 mm in y, 50 mm tall) carries the entire bottle moment into the clamp spine. It is a single flat plate; buckling out-of-plane is not checked by the current linear stress/deflection analysis.",
+          "severity": "note",
+          "verification": "cited"
+        }
+      ],
+      "mode": "llm",
+      "verdict": "approve"
+    },
+    {
+      "agent": "fabrication",
+      "issues": [
+        {
+          "evidence": "features:9 defines a subtract cylinder at z=-64.0 with length_mm=5.0 (bottom at -64.0, top at -59.0). features:3 shows the cup floor is a solid cylinder from z=-63.0 to -60.0 (thickness 3.0 mm). The hole stops 1 mm short of the floor's top surface, leaving a 1 mm resin trap and no drainage path.",
+          "evidence_ids": [
+            "features:9",
+            "features:3"
+          ],
+          "feature": "cup drain",
+          "fix": "Make the drain hole penetrate the full floor thickness (length_mm \u2265 cup_floor_t + small clearance, e.g., 4 mm) so it opens to the cup interior, or remove it if a drain is not required.",
+          "problem": "The drain hole is a 4 mm radius (8 mm diameter) blind hole drilled 5 mm deep into the cup floor from below. It does not break through the 3 mm thick floor, so it traps liquid resin during printing and cannot drain the cup in use.",
+          "severity": "must_fix",
+          "verification": "cited"
+        },
+        {
+          "evidence": "features:6 defines the clamp screw hole as a subtract cylinder with radius_mm=3.0. The hardware spec (M6 screw) and resin printing best practice call for +0.2 to +0.4 mm clearance on the nominal 3.0 mm radius.",
+          "evidence_ids": [
+            "features:6"
+          ],
+          "feature": "clamp screw hole",
+          "fix": "Increase the screw hole radius to 3.2\u20133.4 mm.",
+          "problem": "The M6 clearance hole is modeled at 3.0 mm radius (6.0 mm diameter). For reliable threading and screw passage in Alpha Fast Resin, a 3.2\u20133.4 mm radius (6.4\u20136.8 mm diameter) is recommended to account for resin shrinkage and support residue.",
+          "severity": "should_fix",
+          "verification": "cited"
+        },
+        {
+          "evidence": "features:4 shows a 50 mm tall cylinder with 3 mm wall thickness. The design_intent assumes 'Print orientation: clamp spine vertical, cup upright.' Tall, thin vertical walls in SLA are prone to peel-force distortion.",
+          "evidence_ids": [
+            "features:4",
+            "design_intent"
+          ],
+          "feature": "cup wall",
+          "fix": "Consider adding internal ribs or a slight outward draft (1\u20132\u00b0) to reduce peel forces, or re-orient the part so the cup wall prints at an angle (though this may conflict with the clamp spine orientation).",
+          "problem": "The cup wall is a 50 mm tall, 3 mm thick vertical cylinder printed upright. This orientation creates large peel forces on each layer and a tall unsupported span that may warp or delaminate.",
+          "severity": "note",
+          "verification": "cited"
+        }
+      ],
+      "mode": "llm",
+      "verdict": "revise"
+    },
+    {
+      "agent": "measurement",
+      "issues": [
+        {
+          "evidence": "Drain cylinder at [57.5, 0, -64] to -59 mm (features:9) exits at z = -59 mm, which is 34 mm below the desk top at z = 0 (scene:desk). Liquid will fall onto the desk.",
+          "evidence_ids": [
+            "features:9",
+            "scene:desk"
+          ],
+          "feature": "cup drain",
+          "fix": "If desk protection is desired, add a small printed drip tray or route the drain away from the desk edge; otherwise leave as-is for drainage.",
+          "problem": "The 4 mm radius drain hole through the cup floor is open to the desk surface; any spilled liquid will drip onto the desk.",
+          "severity": "note",
+          "verification": "cited"
+        },
+        {
+          "evidence": "Hole radius 3 mm (diameter 6 mm) matches M6 major diameter (features:6). Screw is retained by the lower jaw walls (scene:clamp_screw). No insert or thread feature is modelled.",
+          "evidence_ids": [
+            "features:6",
+            "scene:clamp_screw"
+          ],
+          "feature": "clamp screw hole",
+          "fix": "If the screw will be adjusted frequently, consider tapping the hole post-print or adding a metal heat-set insert; otherwise the current geometry is functional.",
+          "problem": "The screw hole is a plain 3 mm radius cylinder through the lower jaw; an M6 screw (major diameter 6 mm) will cut its own threads in the resin, which is acceptable for light duty but may strip under repeated tightening.",
+          "severity": "note",
+          "verification": "cited"
+        }
+      ],
+      "mode": "llm",
+      "verdict": "approve"
+    }
+  ],
+  "initial_checks": [
+    {
+      "label": "Leaves room for what it works with (no material inside the desk, bottle or screw)",
+      "limit": 0,
+      "name": "fit",
+      "passed": true,
+      "value": 0
+    },
+    {
+      "label": "Touches what it attaches to and carries, on the faces that make it work",
+      "limit": 0,
+      "name": "contact",
+      "passed": true,
+      "value": 0
+    },
+    {
+      "label": "Everything can be put in place (clear insertion and tool paths)",
+      "limit": 0,
+      "name": "insertion",
+      "passed": true,
+      "value": 0
+    },
+    {
+      "label": "Holds what it must hold (blocked in every direction that matters)",
+      "limit": 0,
+      "name": "retention",
+      "passed": true,
+      "value": 0
+    },
+    {
+      "label": "Bend at the load \u2264 2 mm",
+      "limit": 2.0,
+      "name": "deflection",
+      "passed": true,
+      "value": 0.048018882849882726
+    },
+    {
+      "label": "Peak stress \u2264 23.0 MPa (strength \u00f7 safety factor 2)",
+      "limit": 23.0,
+      "name": "stress",
+      "passed": true,
+      "value": 0.5695310480634462
+    },
+    {
+      "label": "Walls \u2265 1 mm (printable)",
+      "limit": 1.0,
+      "name": "min_wall",
+      "passed": true,
+      "value": 3.0
+    },
+    {
+      "label": "Joined pieces line up (nothing shifted off to one side)",
+      "limit": 0,
+      "name": "aligned",
+      "passed": true,
+      "value": 0
+    },
+    {
+      "label": "No sealed internal cavities (they trap liquid resin)",
+      "limit": 0,
+      "name": "sealed_cavity",
+      "passed": true,
+      "value": 0
+    },
+    {
+      "label": "Closed, watertight surface (no knife edges)",
+      "limit": 0,
+      "name": "watertight",
+      "passed": true,
+      "value": 0
+    },
+    {
+      "label": "Fits the printer's build volume (any orientation)",
+      "limit": 210.0,
+      "name": "build_volume",
+      "passed": true,
+      "value": 139.0
+    }
+  ]
+}

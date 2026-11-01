@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CoForm · Part designer</title><link rel="stylesheet" href="/static/style.css"><script src="/static/viewer3d.js" defer></script><script src="/static/designer_charts.js" defer></script><script src="/static/designer.js" defer></script></head>
+<body>
+<header class="top">
+  <a class="brand" href="/designer">◈ <span>COFORM</span></a>
+  <nav class="modes"><a class="active" href="/designer">Part designer</a><a href="/">Support studies</a></nav>
+  <label class="top-field">Part<select id="project-picker"><option value="">New part</option></select></label>
+  <span class="spacer"></span>
+  <label class="top-field">Agents<select id="agent-mode"><option value="offline">Rule-based (free, instant)</option><option value="live">Live AI models</option></select></label>
+  <span id="cad-status" class="pill">CAD: checking…</span>
+  <span id="preform-pill" class="pill">PreForm: not connected</span>
+</header>
+<div id="notice" role="status" aria-live="polite" hidden></div>
+
+<main class="designer">
+  <section class="card" id="brief">
+    <h2>Describe the part</h2>
+    <p class="sub">The agents turn this into a 3D design, test it with finite elements, adjust it until it passes with the least resin, and then hand it to you to view in Fusion and print.</p>
+    <form id="brief-form">
+      <textarea id="prompt" name="prompt" rows="4" required minlength="10" placeholder="e.g. A bracket that screws to a wall and holds a 3 kg plant pot 80 mm out from the wall. It should not sag more than 1 mm."></textarea>
+      <div class="form-grid">
+        <label>Load it must carry (N, optional)<input name="load_n" type="number" min="0.1" step="any" placeholder="From the description"></label>
+        <label>Maximum bend (mm, optional)<input name="max_displacement_mm" type="number" min="0.01" step="any" placeholder="From the description"></label>
+        <label>Maximum weight (g, optional)<input name="max_mass_g" type="number" min="0.1" step="any" placeholder="As light as possible"></label>
+        <label>Safety factor on strength<input name="safety_factor" type="number" min="1" max="10" step="0.1" value="2"></label>
+      </div>
+      <p class="muted" id="material-line">Material: Formlabs Alpha Fast Resin.</p>
+      <div class="form-end"><button type="submit">Design it →</button></div>
+    </form>
+  </section>
+
+  <section id="project" hidden>
+    <div class="goal">
+      <div><small>PART</small><p id="part-name"></p></div>
+      <div><small>STATUS</small><p id="part-status"></p></div>
+      <div><small>BEST SO FAR</small><p id="part-best"></p></div>
+    </div>
+
+    <div class="designer-grid">
+      <div class="viewer-card card">
+        <div class="card-top"><h3>Test results in 3D</h3>
+          <div class="row tight"><label class="inline">Design<select id="test-picker"></select></label>
+            <select id="color-by" aria-label="Colour by"><option value="stress">Colour by stress</option><option value="bend">Colour by bend</option></select>
+            <label class="check"><input type="checkbox" id="exaggerate"> Exaggerate bend</label>
+            <label class="check" title="Show each new design as the agents test it"><input type="checkbox" id="follow" checked> Follow the agents</label></div></div>
+        <div class="viewer-wrap"><canvas id="viewer" class="viewer"></canvas>
+          <div class="zoom"><button class="secondary small" id="zoom-in" title="Zoom in">+</button><button class="secondary small" id="zoom-out" title="Zoom out">−</button><button class="secondary small" id="zoom-reset" title="Reset view">⟲</button></div></div>
+        <div id="viewer-legend" class="ramp-legend"></div>
+        <p class="muted">Drag to rotate. Zoom with the buttons, Ctrl + scroll, or click the view and scroll. Grey dashed boxes are where the part is held; orange arrows are the loads. Colours are a share of the limit, so designs compare directly; orange areas are over it.</p>
+      </div>
+      <div class="card">
+        <h3 id="checks-title">Checks</h3>
+        <table class="facts-table"><tbody id="checks"></tbody></table>
+        <p class="muted" id="test-meta"></p>
+        <div class="actions"><button id="fusion-view" class="secondary">Open in Fusion</button><a id="step-link" class="button secondary">Download STEP</a><a id="stl-link" class="button secondary">Download STL</a></div>
+        <p class="hint" id="fusion-hint"></p>
+      </div>
+    </div>
+
+    <section class="card">
+      <h3>How the design evolved</h3>
+      <p class="sub">Every tested proposal has its own dot. The line shows the adopted design, held steady when a proposal is rejected. Click a dot to view that test.</p>
+      <div class="charts-3"><div><h4>Mass (g)</h4><div id="chart-mass" class="chart"></div></div><div><h4>Bend at the load (mm)</h4><div id="chart-bend" class="chart"></div></div><div><h4>Peak stress (MPa)</h4><div id="chart-stress" class="chart"></div></div></div>
+    </section>
+
+    <div class="designer-grid">
+      <section class="card"><h3>What the agents did</h3><div id="log" class="log"></div><div class="actions"><button id="run-more" class="secondary">Let the agents keep improving it</button></div><details><summary>Saved drafting attempts</summary><div id="draft-attempts"></div></details><div id="rounds" class="timeline"></div></section>
+      <section class="card"><h3>What the agents understood</h3><p id="spec-summary"></p><ul id="assumptions" class="muted"></ul>
+        <div id="design-intent"></div>
+        <table><thead><tr><th>Parameter</th><th>Best value</th><th>Allowed</th><th>Kind</th></tr></thead><tbody id="params"></tbody></table>
+        <p class="muted" id="spec-meta"></p>
+        <h4>Design review by the specialists</h4><div id="spec-reviews"></div></section>
+    </div>
+
+    <section class="card" id="print-card">
+      <h3>Print it</h3>
+      <p class="sub">Uses the best passing design. PreForm prepares it and runs its printability checks, the agents review it, and only then can it go to the printer queue. You still press start at the printer.</p>
+      <div class="steps-inline">
+        <div><b>a. Connect PreForm</b><p class="muted" id="preform-status">In PreForm: File › Start PreForm Server, then connect.</p><button id="preform-connect" class="secondary">Connect PreForm</button></div>
+        <div><b>b. Prepare &amp; check printability</b>
+          <label>Printer / resin / layer<select id="print-preset"><option value="">Connect PreForm first</option></select></label>
+          <label>Minimum wall (mm)<input id="minimum-wall" type="number" min="0.1" max="10" step="any" value="1.0"></label>
+          <button id="prepare">Prepare &amp; check</button><p class="hint" id="print-hint"></p></div>
+        <form id="queue-form"><b>c. Send to the printer queue</b>
+          <label>Printer<select id="print-printer"><option value="">Connect PreForm to find printers</option></select></label>
+          <label>Your review notes<input id="review-notes" minlength="3" placeholder="Checked orientation, supports, resin"></label>
+          <button id="queue">Send to queue</button></form>
+      </div>
+      <div id="print-review"></div>
+    </section>
+
+    <section class="card" id="real-test">
+      <h3>Test the printed part</h3>
+      <p class="sub" id="real-test-plan">After printing: hold it as shown, apply the load and measure how far it bends at the load. The agents then recalibrate the stiffness and can adjust the design again.</p>
+      <form id="measure-form" class="row"><label>Measured bend (mm)<input name="measured_mm" type="number" min="0.001" step="any" required></label><label>± (mm)<input name="uncertainty_mm" type="number" min="0.001" step="any" value="0.02" required></label><label>Notes<input name="notes" placeholder="Dial gauge, load used…"></label><button>Calibrate</button></form>
+      <div id="measurements"></div>
+    </section>
+  </section>
+</main>
+</body></html>

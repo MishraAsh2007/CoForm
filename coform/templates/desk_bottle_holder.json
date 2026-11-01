@@ -1,0 +1,23 @@
+{
+ "name": "Desk bottle holder",
+ "summary": "Screw clamp on the desk edge; the bottle stands in a cup beside the desk, joined to the clamp's spine.",
+ "parameters": {
+  "desk_thick": {"value": 25, "role": "fixed", "note": "Desk top thickness, from the request"},
+  "bottle_d": {"value": 75, "role": "fixed", "note": "Bottle diameter"},
+  "bottle_kg": {"value": 1.5, "role": "fixed", "note": "Full bottle mass"}
+ },
+ "environment": [
+  {"name": "desk", "role": "mount", "shape": "box", "at": [-500, -200, "-desk_thick"], "size": [500, 400, "desk_thick"],
+   "touch": ["+z", "-z"], "insert": "+x", "note": "Desk top at z = 0, its edge face at x = 0"},
+  {"name": "bottle", "role": "payload", "shape": "cylinder", "at": ["20 + bottle_d / 2", 0, -60], "radius": "bottle_d / 2",
+   "length": 200, "touch": ["-z"], "force_n": [0, 0, "-bottle_kg * 9.81"], "insert": "-z", "retain": ["+x", "-x", "+y", "-y"],
+   "note": "Stands in the cup just past the desk edge, dropped in from above"}
+ ],
+ "components": [
+  {"type": "desk_clamp", "name": "clamp", "grips": "desk", "edge": "+x", "along": 0, "drop": 40},
+  {"type": "cup", "name": "cup", "holds": "bottle", "height": 50},
+  {"type": "join", "name": "web", "between": ["clamp spine", "cup wall"]}
+ ],
+ "features": [],
+ "requirements": {"max_displacement_mm": 2.0, "safety_factor": 2}
+}

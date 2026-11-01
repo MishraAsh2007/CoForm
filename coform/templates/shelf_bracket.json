@@ -1,0 +1,157 @@
+{
+ "name": "Shelf bracket",
+ "summary": "L-bracket screwed to a wall; a shelf board rests on its arm.",
+ "parameters": {
+  "shelf_height": {
+   "value": 80,
+   "min": 80,
+   "max": 80,
+   "role": "fixed",
+   "note": "Height of the shelf board's underside above the bracket's base, from the request"
+  },
+  "arm_length": {
+   "value": 100,
+   "min": 60,
+   "max": 140,
+   "role": "size"
+  },
+  "width": {
+   "value": 25,
+   "min": 15,
+   "max": 40,
+   "role": "size"
+  },
+  "plate": {
+   "value": 4,
+   "min": 1.5,
+   "max": 10,
+   "role": "thickness"
+  },
+  "gusset": {
+   "value": 3,
+   "min": 1.5,
+   "max": 8,
+   "role": "thickness"
+  },
+  "gusset_size": {
+   "value": 50,
+   "min": 20,
+   "max": 70,
+   "role": "size"
+  }
+ },
+ "features": [
+  {
+   "label": "wall plate",
+   "shape": "box",
+   "at": [
+    0,
+    0,
+    0
+   ],
+   "size": [
+    "plate",
+    "width",
+    "shelf_height"
+   ]
+  },
+  {
+   "label": "arm",
+   "shape": "box",
+   "at": [
+    0,
+    0,
+    "shelf_height - plate"
+   ],
+   "size": [
+    "arm_length",
+    "width",
+    "plate"
+   ]
+  },
+  {
+   "label": "gusset",
+   "shape": "wedge",
+   "at": [
+    "plate - 0.5",
+    "width/2 - gusset/2",
+    "shelf_height - plate + 0.5"
+   ],
+   "legs": [
+    {
+     "axis": "x",
+     "length": "gusset_size"
+    },
+    {
+     "axis": "z",
+     "length": "-gusset_size"
+    }
+   ],
+   "thickness": "gusset"
+  },
+  {
+   "label": "screw hole",
+   "op": "subtract",
+   "shape": "cylinder",
+   "at": [
+    -1,
+    "width/2",
+    "shelf_height/3"
+   ],
+   "axis": "x",
+   "radius": 2.5,
+   "length": "plate + 2"
+  }
+ ],
+ "environment": [
+  {
+   "name": "wall",
+   "role": "mount",
+   "shape": "box",
+   "at": [
+    -100,
+    -200,
+    -200
+   ],
+   "size": [
+    100,
+    400,
+    500
+   ],
+   "touch": [
+    "+x"
+   ],
+   "insert": "+x",
+   "note": "The bracket's plate is screwed flat against the wall's face at x = 0"
+  },
+  {
+   "name": "shelf",
+   "role": "payload",
+   "shape": "box",
+   "at": [
+    0,
+    -100,
+    "shelf_height"
+   ],
+   "size": [
+    150,
+    225,
+    18
+   ],
+   "touch": [
+    "-z"
+   ],
+   "force_n": [
+    0,
+    0,
+    -50
+   ],
+   "insert": "-z",
+   "note": "Shelf board with its contents, 5 kg, laid on the arm from above"
+  }
+ ],
+ "requirements": {
+  "max_displacement_mm": 1.0,
+  "safety_factor": 2
+ }
+}
