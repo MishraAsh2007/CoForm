@@ -1,0 +1,1065 @@
+{
+ "process": "sla",
+ "spec": "results/runs/a_pi5_standard__collective__generic__s0__claude-sonnet-5-5/final_spec.json",
+ "levels": {
+  "floor_top": -2.9,
+  "floor_bot": -4.9,
+  "top": 18.4,
+  "lid_top": 20.4
+ },
+ "inner_box": [
+  -0.5,
+  85.5,
+  -0.5,
+  56.5
+ ],
+ "outer_box": [
+  -1.7,
+  86.7,
+  -1.7,
+  57.7
+ ],
+ "openings": [
+  {
+   "name": "usb_c_power",
+   "kind": "port",
+   "side": "-y",
+   "size": [
+    13.6,
+    7.7
+   ],
+   "open_top": true,
+   "top": 6.8,
+   "box": [
+    4.3999999999999995,
+    18.0,
+    -2.7,
+    -0.2,
+    -0.8999999999999999,
+    19.4
+   ]
+  },
+  {
+   "name": "hdmi0",
+   "kind": "port",
+   "side": "-y",
+   "size": [
+    12.2,
+    7.7
+   ],
+   "open_top": true,
+   "top": 6.85,
+   "box": [
+    19.700000000000003,
+    31.9,
+    -2.7,
+    -0.2,
+    -0.8500000000000001,
+    19.4
+   ]
+  },
+  {
+   "name": "hdmi1",
+   "kind": "port",
+   "side": "-y",
+   "size": [
+    12.2,
+    7.7
+   ],
+   "open_top": true,
+   "top": 6.85,
+   "box": [
+    33.1,
+    45.300000000000004,
+    -2.7,
+    -0.2,
+    -0.8500000000000001,
+    19.4
+   ]
+  },
+  {
+   "name": "ethernet",
+   "kind": "port",
+   "side": "+x",
+   "size": [
+    17.1,
+    14.5
+   ],
+   "open_top": true,
+   "top": 15.23,
+   "box": [
+    85.2,
+    87.7,
+    1.6999999999999993,
+    18.8,
+    0.7300000000000004,
+    19.4
+   ]
+  },
+  {
+   "name": "usb_a_lower",
+   "kind": "port",
+   "side": "+x",
+   "size": [
+    15.7,
+    16.8
+   ],
+   "open_top": true,
+   "top": 18.12,
+   "box": [
+    85.2,
+    87.7,
+    21.15,
+    36.85,
+    1.3200000000000003,
+    19.4
+   ]
+  },
+  {
+   "name": "usb_a_upper",
+   "kind": "port",
+   "side": "+x",
+   "size": [
+    15.7,
+    16.7
+   ],
+   "open_top": true,
+   "top": 17.99,
+   "box": [
+    85.2,
+    87.7,
+    39.15,
+    54.85,
+    1.290000000000001,
+    19.4
+   ]
+  },
+  {
+   "name": "power_button",
+   "kind": "port",
+   "side": "-x",
+   "size": [
+    6.2,
+    6.2
+   ],
+   "open_top": false,
+   "top": 6.14,
+   "box": [
+    -2.7,
+    -0.2,
+    15.299999999999999,
+    21.5,
+    -0.06000000000000005,
+    6.140000000000001
+   ]
+  },
+  {
+   "name": "status_leds",
+   "kind": "port",
+   "side": "-x",
+   "size": [
+    4.4,
+    2.2
+   ],
+   "open_top": false,
+   "top": 2.94,
+   "box": [
+    -2.7,
+    -0.2,
+    11.100000000000001,
+    15.5,
+    0.74,
+    2.9400000000000004
+   ]
+  },
+  {
+   "name": "microsd",
+   "kind": "port",
+   "side": "-x",
+   "size": [
+    14.8,
+    4.8
+   ],
+   "open_top": false,
+   "top": 1.7,
+   "box": [
+    -2.7,
+    -0.2,
+    20.700000000000003,
+    35.5,
+    -3.0999999999999996,
+    1.7
+   ]
+  },
+  {
+   "name": "gpio_ribbon",
+   "kind": "cable",
+   "side": "+y",
+   "size": [
+    53.2,
+    4.2
+   ],
+   "open_top": false,
+   "top": 13.1,
+   "box": [
+    5.899999999999999,
+    59.1,
+    56.2,
+    58.7,
+    8.9,
+    13.1
+   ]
+  }
+ ],
+ "screws": [
+  {
+   "name": "board_screw_1",
+   "x": 3.5,
+   "y": 3.5,
+   "head_z": 1.3,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 3.7
+  },
+  {
+   "name": "board_screw_2",
+   "x": 61.5,
+   "y": 3.5,
+   "head_z": 1.3,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 3.7
+  },
+  {
+   "name": "board_screw_3",
+   "x": 3.5,
+   "y": 52.5,
+   "head_z": 1.3,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 3.7
+  },
+  {
+   "name": "board_screw_4",
+   "x": 61.5,
+   "y": 52.5,
+   "head_z": 1.3,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 3.7
+  },
+  {
+   "name": "lid_screw_1",
+   "x": -1.5,
+   "y": -1.5,
+   "head_z": 20.4,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 8.0
+  },
+  {
+   "name": "lid_screw_2",
+   "x": 86.5,
+   "y": -1.5,
+   "head_z": 20.4,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 8.0
+  },
+  {
+   "name": "lid_screw_3",
+   "x": -1.5,
+   "y": 57.5,
+   "head_z": 20.4,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 8.0
+  },
+  {
+   "name": "lid_screw_4",
+   "x": 86.5,
+   "y": 57.5,
+   "head_z": 20.4,
+   "drive": "down",
+   "style": "pilot",
+   "length_needed": 8.0
+  }
+ ],
+ "rows": [
+  {
+   "kind": "keepout",
+   "name": "usb_c_power",
+   "box": [
+    6.7,
+    15.7,
+    -1.2,
+    6.2,
+    0.3,
+    4.6
+   ],
+   "to_base_mm": 0.54,
+   "base_point": [
+    6.7,
+    3.5,
+    0.3
+   ],
+   "to_lid_mm": 10.8,
+   "lid_point": [
+    6.7,
+    1.6,
+    4.6
+   ],
+   "margin_mm": 0.54
+  },
+  {
+   "kind": "keepout",
+   "name": "hdmi0",
+   "box": [
+    22.2,
+    29.4,
+    -1.7,
+    6.9,
+    0.2,
+    4.7
+   ],
+   "to_base_mm": 1.05,
+   "base_point": [
+    22.2,
+    -1.7,
+    0.2
+   ],
+   "to_lid_mm": 10.7,
+   "lid_point": [
+    22.2,
+    1.6,
+    4.7
+   ],
+   "margin_mm": 1.05
+  },
+  {
+   "kind": "keepout",
+   "name": "hdmi1",
+   "box": [
+    35.6,
+    42.8,
+    -1.7,
+    6.9,
+    0.2,
+    4.7
+   ],
+   "to_base_mm": 1.05,
+   "base_point": [
+    35.6,
+    -1.7,
+    0.2
+   ],
+   "to_lid_mm": 10.7,
+   "lid_point": [
+    35.6,
+    1.6,
+    4.7
+   ],
+   "margin_mm": 1.05
+  },
+  {
+   "kind": "keepout",
+   "name": "rtc_battery_connector",
+   "box": [
+    17.0,
+    21.0,
+    3.3,
+    6.2,
+    1.3,
+    5.7
+   ],
+   "to_base_mm": 3.8,
+   "base_point": [
+    19.7,
+    3.3,
+    1.3
+   ],
+   "to_lid_mm": 9.85,
+   "lid_point": [
+    17.0,
+    3.3,
+    5.7
+   ],
+   "margin_mm": 3.8
+  },
+  {
+   "kind": "keepout",
+   "name": "uart_connector",
+   "box": [
+    30.0,
+    35.0,
+    2.5,
+    5.4,
+    1.3,
+    5.7
+   ],
+   "to_base_mm": 3.0,
+   "base_point": [
+    33.1,
+    2.5,
+    1.3
+   ],
+   "to_lid_mm": 9.74,
+   "lid_point": [
+    30.0,
+    2.5,
+    5.7
+   ],
+   "margin_mm": 3.0
+  },
+  {
+   "kind": "keepout",
+   "name": "cam_disp_ffc_0",
+   "box": [
+    47.1,
+    50.2,
+    0.1,
+    16.9,
+    1.4,
+    5.3
+   ],
+   "to_base_mm": 0.6,
+   "base_point": [
+    47.1,
+    0.1,
+    5.3
+   ],
+   "to_lid_mm": 10.1,
+   "lid_point": [
+    47.1,
+    0.1,
+    5.3
+   ],
+   "margin_mm": 0.6
+  },
+  {
+   "kind": "keepout",
+   "name": "cam_disp_ffc_1",
+   "box": [
+    53.3,
+    56.4,
+    0.1,
+    16.9,
+    1.4,
+    5.3
+   ],
+   "to_base_mm": 0.6,
+   "base_point": [
+    53.3,
+    0.1,
+    5.3
+   ],
+   "to_lid_mm": 10.1,
+   "lid_point": [
+    53.3,
+    0.1,
+    5.3
+   ],
+   "margin_mm": 0.6
+  },
+  {
+   "kind": "keepout",
+   "name": "ethernet",
+   "box": [
+    66.4,
+    85.0,
+    2.2,
+    18.3,
+    -0.7,
+    14.7
+   ],
+   "to_base_mm": 0.5,
+   "base_point": [
+    85.0,
+    2.2,
+    -0.7
+   ],
+   "to_lid_mm": 0.7,
+   "lid_point": [
+    83.4,
+    2.2,
+    14.7
+   ],
+   "margin_mm": 0.5
+  },
+  {
+   "kind": "keepout",
+   "name": "ethernet_overhang",
+   "box": [
+    85.0,
+    88.1,
+    2.2,
+    18.3,
+    1.3,
+    14.7
+   ],
+   "to_base_mm": 0.5,
+   "base_point": [
+    86.7,
+    18.3,
+    1.3
+   ],
+   "to_lid_mm": 0.71,
+   "lid_point": [
+    85.0,
+    2.2,
+    14.7
+   ],
+   "margin_mm": 0.5
+  },
+  {
+   "kind": "keepout",
+   "name": "usb_a_lower",
+   "box": [
+    70.4,
+    85.0,
+    21.7,
+    36.3,
+    -0.2,
+    17.6
+   ],
+   "to_base_mm": 0.5,
+   "base_point": [
+    85.0,
+    21.7,
+    -0.2
+   ],
+   "to_lid_mm": 0.6,
+   "lid_point": [
+    84.9,
+    21.7,
+    15.4
+   ],
+   "margin_mm": 0.5
+  },
+  {
+   "kind": "keepout",
+   "name": "usb_a_lower_overhang",
+   "box": [
+    85.0,
+    88.0,
+    21.7,
+    36.3,
+    1.9,
+    17.6
+   ],
+   "to_base_mm": 0.55,
+   "base_point": [
+    86.7,
+    21.7,
+    1.9
+   ],
+   "to_lid_mm": 0.61,
+   "lid_point": [
+    85.0,
+    21.7,
+    17.6
+   ],
+   "margin_mm": 0.55
+  },
+  {
+   "kind": "keepout",
+   "name": "usb_a_upper",
+   "box": [
+    70.3,
+    85.0,
+    39.7,
+    54.3,
+    -0.2,
+    17.4
+   ],
+   "to_base_mm": 0.5,
+   "base_point": [
+    85.0,
+    39.7,
+    -0.2
+   ],
+   "to_lid_mm": 0.6,
+   "lid_point": [
+    70.3,
+    54.3,
+    17.4
+   ],
+   "margin_mm": 0.5
+  },
+  {
+   "kind": "keepout",
+   "name": "usb_a_upper_overhang",
+   "box": [
+    85.0,
+    87.8,
+    39.7,
+    54.3,
+    1.9,
+    17.4
+   ],
+   "to_base_mm": 0.55,
+   "base_point": [
+    86.7,
+    39.7,
+    1.9
+   ],
+   "to_lid_mm": 0.61,
+   "lid_point": [
+    85.0,
+    39.7,
+    17.4
+   ],
+   "margin_mm": 0.55
+  },
+  {
+   "kind": "keepout",
+   "name": "poe_header",
+   "box": [
+    59.9,
+    63.1,
+    7.9,
+    11.1,
+    -0.6,
+    9.9
+   ],
+   "to_base_mm": 1.65,
+   "base_point": [
+    61.5,
+    7.9,
+    -0.6
+   ],
+   "to_lid_mm": 8.36,
+   "lid_point": [
+    59.9,
+    7.9,
+    9.9
+   ],
+   "margin_mm": 1.65
+  },
+  {
+   "kind": "keepout",
+   "name": "gpio_header",
+   "box": [
+    7.1,
+    57.9,
+    49.9,
+    55.1,
+    -0.6,
+    9.9
+   ],
+   "to_base_mm": 0.85,
+   "base_point": [
+    7.1,
+    52.5,
+    0.0
+   ],
+   "to_lid_mm": 5.5,
+   "lid_point": [
+    7.1,
+    55.1,
+    9.9
+   ],
+   "margin_mm": 0.85
+  },
+  {
+   "kind": "keepout",
+   "name": "fan_header",
+   "box": [
+    65.3,
+    68.2,
+    49.0,
+    55.0,
+    1.3,
+    5.7
+   ],
+   "to_base_mm": 1.5,
+   "base_point": [
+    65.3,
+    55.0,
+    5.7
+   ],
+   "to_lid_mm": 9.7,
+   "lid_point": [
+    65.3,
+    55.0,
+    5.7
+   ],
+   "margin_mm": 1.5
+  },
+  {
+   "kind": "keepout",
+   "name": "pcie_ffc",
+   "box": [
+    1.1,
+    4.2,
+    23.1,
+    36.9,
+    1.4,
+    5.3
+   ],
+   "to_base_mm": 1.6,
+   "base_point": [
+    1.1,
+    23.1,
+    5.3
+   ],
+   "to_lid_mm": 10.1,
+   "lid_point": [
+    1.1,
+    23.1,
+    5.3
+   ],
+   "margin_mm": 1.6
+  },
+  {
+   "kind": "keepout",
+   "name": "power_button",
+   "box": [
+    -0.5,
+    3.0,
+    16.1,
+    20.7,
+    0.9,
+    4.7
+   ],
+   "to_base_mm": 0.8,
+   "base_point": [
+    -0.5,
+    20.7,
+    4.7
+   ],
+   "to_lid_mm": 10.7,
+   "lid_point": [
+    1.6,
+    16.1,
+    4.7
+   ],
+   "margin_mm": 0.8
+  },
+  {
+   "kind": "keepout",
+   "name": "microsd_socket",
+   "box": [
+    2.2,
+    13.7,
+    22.1,
+    34.1,
+    -1.5,
+    0.0
+   ],
+   "to_base_mm": 1.4,
+   "base_point": [
+    2.2,
+    22.1,
+    -1.5
+   ],
+   "to_lid_mm": 15.41,
+   "lid_point": [
+    2.2,
+    22.1,
+    0.0
+   ],
+   "margin_mm": 1.4
+  },
+  {
+   "kind": "keepout",
+   "name": "active_cooler",
+   "box": [
+    0.5,
+    64.0,
+    6.5,
+    49.0,
+    3.65,
+    14.0
+   ],
+   "to_base_mm": 1.0,
+   "base_point": [
+    0.5,
+    6.5,
+    14.0
+   ],
+   "to_lid_mm": 1.4,
+   "lid_point": [
+    0.5,
+    6.5,
+    14.0
+   ],
+   "margin_mm": 1.0
+  },
+  {
+   "kind": "keepout",
+   "name": "cooler_pin_a_tip",
+   "box": [
+    1.5,
+    5.5,
+    7.5,
+    11.5,
+    -1.5,
+    0.0
+   ],
+   "to_base_mm": 1.25,
+   "base_point": [
+    3.5,
+    7.5,
+    0.0
+   ],
+   "to_lid_mm": 15.4,
+   "lid_point": [
+    1.5,
+    7.5,
+    0.0
+   ],
+   "margin_mm": 1.25
+  },
+  {
+   "kind": "keepout",
+   "name": "cooler_pin_b_tip",
+   "box": [
+    59.5,
+    63.5,
+    44.5,
+    48.5,
+    -1.5,
+    0.0
+   ],
+   "to_base_mm": 1.25,
+   "base_point": [
+    61.5,
+    48.5,
+    0.0
+   ],
+   "to_lid_mm": 16.49,
+   "lid_point": [
+    59.5,
+    48.5,
+    0.0
+   ],
+   "margin_mm": 1.25
+  },
+  {
+   "kind": "plug_zone",
+   "name": "usb_c_power",
+   "box": [
+    4.999999999999999,
+    17.4,
+    -26.2,
+    -1.2,
+    -0.2999999999999998,
+    6.2
+   ],
+   "to_base_mm": 0.6,
+   "base_point": [
+    17.4,
+    -1.2,
+    6.2
+   ],
+   "to_lid_mm": 9.29,
+   "lid_point": [
+    5.0,
+    -1.2,
+    6.2
+   ],
+   "margin_mm": 0.6
+  },
+  {
+   "kind": "plug_zone",
+   "name": "hdmi0",
+   "box": [
+    20.3,
+    31.3,
+    -26.6,
+    -1.6,
+    -0.25,
+    6.25
+   ],
+   "to_base_mm": 0.6,
+   "base_point": [
+    20.3,
+    -1.6,
+    6.2
+   ],
+   "to_lid_mm": 9.31,
+   "lid_point": [
+    20.3,
+    -1.6,
+    6.2
+   ],
+   "margin_mm": 0.6
+  },
+  {
+   "kind": "plug_zone",
+   "name": "hdmi1",
+   "box": [
+    33.7,
+    44.7,
+    -26.6,
+    -1.6,
+    -0.25,
+    6.25
+   ],
+   "to_base_mm": 0.6,
+   "base_point": [
+    33.7,
+    -1.6,
+    -0.2
+   ],
+   "to_lid_mm": 9.31,
+   "lid_point": [
+    33.7,
+    -1.6,
+    6.2
+   ],
+   "margin_mm": 0.6
+  },
+  {
+   "kind": "plug_zone",
+   "name": "ethernet",
+   "box": [
+    88.05,
+    118.05,
+    3.25,
+    17.25,
+    1.2300000000000004,
+    14.73
+   ],
+   "to_base_mm": 1.44,
+   "base_point": [
+    88.0,
+    3.2,
+    1.2
+   ],
+   "to_lid_mm": 3.22,
+   "lid_point": [
+    88.0,
+    3.2,
+    14.7
+   ],
+   "margin_mm": 1.44
+  },
+  {
+   "kind": "plug_zone",
+   "name": "usb_a_lower",
+   "box": [
+    88.0,
+    118.0,
+    21.0,
+    37.0,
+    1.4700000000000006,
+    17.97
+   ],
+   "to_base_mm": 1.3,
+   "base_point": [
+    88.0,
+    21.0,
+    18.0
+   ],
+   "to_lid_mm": 1.37,
+   "lid_point": [
+    88.0,
+    21.0,
+    18.0
+   ],
+   "margin_mm": 1.3
+  },
+  {
+   "kind": "plug_zone",
+   "name": "usb_a_upper",
+   "box": [
+    87.8,
+    117.8,
+    39.0,
+    55.0,
+    1.3900000000000006,
+    17.89
+   ],
+   "to_base_mm": 0.07,
+   "base_point": [
+    87.8,
+    55.0,
+    17.9
+   ],
+   "to_lid_mm": 0.51,
+   "lid_point": [
+    87.8,
+    55.0,
+    17.9
+   ],
+   "margin_mm": 0.07
+  },
+  {
+   "kind": "plug_zone",
+   "name": "power_button",
+   "box": [
+    -8.45,
+    -0.45,
+    15.899999999999999,
+    20.9,
+    0.54,
+    5.54
+   ],
+   "to_base_mm": 0.6,
+   "base_point": [
+    -1.7,
+    20.9,
+    1.7
+   ],
+   "to_lid_mm": 9.88,
+   "lid_point": [
+    -0.5,
+    15.9,
+    5.5
+   ],
+   "margin_mm": 0.6
+  },
+  {
+   "kind": "plug_zone",
+   "name": "microsd",
+   "box": [
+    -6.0,
+    0.0,
+    21.6,
+    34.6,
+    -2.2,
+    0.8
+   ],
+   "to_base_mm": 0.7,
+   "base_point": [
+    0.0,
+    21.6,
+    -2.2
+   ],
+   "to_lid_mm": 14.6,
+   "lid_point": [
+    0.0,
+    21.6,
+    0.8
+   ],
+   "margin_mm": 0.7
+  },
+  {
+   "kind": "cable_path",
+   "name": "gpio_ribbon",
+   "box": [
+    6.5,
+    58.5,
+    55.5,
+    67.7,
+    9.5,
+    12.5
+   ],
+   "to_base_mm": 0.6,
+   "base_point": [
+    6.5,
+    57.7,
+    12.5
+   ],
+   "to_lid_mm": 2.9,
+   "lid_point": [
+    6.5,
+    55.5,
+    12.5
+   ],
+   "margin_mm": 0.6
+  }
+ ]
+}

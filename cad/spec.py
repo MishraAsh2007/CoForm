@@ -27,7 +27,7 @@ SCHEMA = {
     "properties": {
         "name": {"type": "string"},
         "bundle": {"type": "string"},
-        "clearance_source": {"enum": ["generic", "measured"]},
+        "clearance_source": {"enum": ["generic", "measured", "fdm"]},
         "clearances": {"type": "object", "required": ["board_gap", "port", "lid_fit", "screw_hole", "pilot_hole",
                                                       "nut_pocket_af", "nut_pocket_depth"],
                        "additionalProperties": False,

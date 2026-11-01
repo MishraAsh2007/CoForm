@@ -46,7 +46,29 @@ def _smallest(rows, ok):
     return min(vals) if vals else None
 
 
-def rules(cfg, source=None, results=None):
+def process_cfg(cfg, process=None):
+    """Config with the assembly-check minimums of a process profile applied (config.yaml `processes:`)."""
+    import copy
+    process = process or cfg.get("process", "sla")
+    if process == "sla":
+        return cfg
+    prof = cfg["processes"][process]
+    out = copy.deepcopy(cfg)
+    out["checks"].update(prof.get("checks", {}))
+    out["process"] = process
+    return out
+
+
+def rules(cfg, source=None, results=None, process=None):
+    process = process or cfg.get("process", "sla")
+    if process != "sla":
+        # FDM etc.: published generic values for that process; the SLA fit test does not apply to it
+        prof = cfg["processes"][process]
+        vals = dict(cfg["clearances"]["generic"])
+        vals.update(prof["clearances"])
+        return {"source": process, "values": vals, "fallbacks": [],
+                "notes": [f"{process.upper()} process profile (config.yaml processes.{process}); "
+                          f"{prof['printer']}, {prof['material']}; NOT checked by PreForm"]}
     source = source or cfg.get("clearance_source", "generic")
     g = dict(cfg["clearances"]["generic"])
     out = {"source": source, "values": dict(g), "notes": [], "fallbacks": []}

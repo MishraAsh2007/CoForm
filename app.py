@@ -165,6 +165,9 @@ elif page == "Versions":
         run = b.run(1)
         vs = b.versions(1)
         ids = [x["id"] for x in vs]
+        if not ids:
+            st.info("This run has no versions (it stopped before the first design was logged). Pick another run.")
+            st.stop()
         v = st.select_slider("Version", ids, value=ids[-1]) if len(ids) > 1 else ids[0]
         ver = b.version(v)
         st.markdown(f"**v{v} by {ver['author']}** ({ver['status']}): {ver['reason']}")
@@ -223,11 +226,36 @@ elif page == "Versions":
                 st.write({"warnings": [f["msg"] for f in det.get("failures", [])], **det.get("metrics", {})})
             if not pfs:
                 st.info("No PreForm result for this version.")
+            pj = ROOT / "results" / "print" / "formlabs" / "enclosure_a.json"
+            if v == ids[-1] and pj.exists():
+                job = json.loads(pj.read_text(encoding="utf-8"))
+                if any(d.name in p for p in job.get("parts", [])):
+                    st.markdown("**Print job (real PreForm): final design, base + lid on one platform, orientation "
+                                "chosen per part** (`results/print/formlabs/enclosure_a.form`)")
+                    st.write({"attempts": [f"{a['strategy']}: {[w['description'] for w in a['warnings']] or 'no warnings'}"
+                                           for a in job["attempts"]],
+                              "orientation": job.get("orientation_chosen"), "warnings": job["warnings"],
+                              "print_time_min": round(job["print_time_s"] / 60, 1),
+                              "resin_ml_incl_supports": round(job["volume_ml"], 1), **job["print_settings"]})
         with tabs[4]:
             why_panel(b, v, bool(run["mocked"]))
 
 elif page == "Downloads":
     st.title("Downloads")
+    pr = ROOT / "results" / "print"
+    pkg = [(pr / "formlabs" / "enclosure_a.form", "Formlabs .form (PreForm, Form Studio 1, Alpha Fast V1 0.15 mm; 0 warnings)"),
+           (pr / "stl_sla.zip", "SLA STL set (base.stl, lid.stl: exact geometry in the .form)"),
+           (pr / "fdm.zip", "FDM STL set for a Creality 0.4 mm / PLA (pre-rotated; NOT checked by PreForm)"),
+           (pr / "onshape_step.zip", "STEP zip for Onshape (base, lid, Pi 5 board, Active Cooler keep-out APPROX, assembly)")]
+    if any(p.exists() for p, _ in pkg):
+        st.subheader("Print package: print candidate (a_pi5_standard, collective, Sonnet)")
+        st.caption("Which file for which printer or tool: results/print/README.md")
+        for p, label in pkg:
+            if p.exists():
+                st.download_button(f"{label} ({p.stat().st_size / 1e6:.1f} MB)", p.read_bytes(), file_name=p.name,
+                                   key=f"pkg_{p.name}")
+        st.divider()
+        st.subheader("Files of one run")
     d = pick_run("dl_run")
     if d:
         ps = d / "PRINT_SETTINGS.json"

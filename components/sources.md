@@ -56,3 +56,13 @@ Values marked **UNVERIFIED** are best documented or typical values. The fit-chec
 |---|---|---|
 | Formlabs Design Guide (Form 1+/Form 2, Clear resin, 100 µm) | https://pocc-techpark.media.uconn.edu/wp-content/uploads/sites/2880/2020/10/formlabs-design-guide.pdf (copy of Formlabs' guide) | Min supported wall 0.4. Min unsupported wall 0.6. Min clearance between parts 0.5 ("less than 0.5 mm may cause parts to fuse"). Min hole 0.5. Min engraved detail 0.4. Min embossed 0.1. Drain hole 3.5. Max overhang 1.0. Overhang angle ≥ 19°. The guide warns that other resins may vary. It does not cover the Form Studio 1, Alpha Fast or 150 µm layers, so these are our **generic** rules (**UNVERIFIED** for Alpha Fast). |
 | Formlabs Engineering Fit | https://formlabs.com/global/blog/3D-printing-tolerances-for-engineering-fit/ | Recommends printing a test coupon for the exact resin and printer, which is what Phase 1 does. Gives no numeric values for Alpha resins. |
+
+## FDM (process profile `processes.fdm` in config.yaml; used only for the FDM variant, never checked by PreForm)
+
+| key | source | used for |
+|---|---|---|
+| UZH | University of Zurich AMF, *Design Guideline FDM* (https://www.amf.uzh.ch/dam/jcr:fd1ee024-1a98-488b-89ec-ffd85befa786/Design-Guideline-FDM.pdf) | 0.5 mm clearance between connecting parts; min hole 2.0 mm |
+| JLC | JLC3DP *3D Printing Design Guideline* (https://jlc3dp.com/help/article/3D-Printing-Design-Guideline) | 0.5 mm FDM mating clearance (agrees with UZH) |
+| WEV | Wevolver *FDM 3D printing design tips* | bridges under ~10 mm need no support (generic) |
+| CURA | Ultimaker Cura defaults | line width = nozzle diameter (0.4) -> 3 perimeters = 1.2 mm |
+| UNV | our choices, UNVERIFIED | +0.3 mm desktop margin (0.8 mm gaps), 0.2 mm hole compensation, 2.3 mm modelled pilot hole for M2.5 in PLA, 0.5 mm assembly-check gap |

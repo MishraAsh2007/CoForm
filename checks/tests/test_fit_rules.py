@@ -66,3 +66,27 @@ def test_check_spinning_nut(spec, cfg):
     spec["fasteners"]["board"] = "through_nut"             # generic 6.0 AF pocket > 5.77 corners
     r = check(spec, rules(cfg, "generic"))
     assert any(f["code"] == "nut" for f in r["failures"])
+
+
+def test_fdm_profile_rules(cfg):
+    from checks.fit_rules import process_cfg
+    r = rules(cfg, process="fdm")
+    v = r["values"]
+    assert r["source"] == "fdm"
+    assert v["min_wall"] >= 3 * cfg["processes"]["fdm"]["line_width_mm"] - 1e-9   # at least 3 perimeters
+    assert v["part_gap"] > cfg["clearances"]["generic"]["part_gap"]               # larger than SLA
+    assert v["m25_clearance_hole"] > cfg["clearances"]["generic"]["m25_clearance_hole"]   # hole compensation
+    assert process_cfg(cfg, "fdm")["checks"]["min_part_gap"] == cfg["processes"]["fdm"]["checks"]["min_part_gap"]
+    assert process_cfg(cfg, "sla") is cfg
+
+
+def test_fdm_spec_applies_rules_without_agents(cfg, good_spec):
+    from cad.fdm import fdm_spec
+    r = rules(cfg, process="fdm")
+    s, changes = fdm_spec(good_spec, r, cfg["processes"]["fdm"])
+    v = r["values"]
+    assert s["clearance_source"] == "fdm" and changes
+    assert all(g >= v["part_gap"] for g in s["box"]["gap"].values())
+    assert all(s["walls"][k] >= v["min_wall"] for k in ("wall", "floor", "lid"))
+    assert (s["standoffs"]["diameter"] - s["clearances"]["pilot_hole"]) / 2 >= v["min_wall"] - 1e-9
+    assert good_spec["clearance_source"] != "fdm"     # input not changed

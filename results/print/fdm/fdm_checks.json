@@ -1,0 +1,246 @@
+{
+ "process": "fdm",
+ "profile": {
+  "printer": "Creality FDM (0.4 mm nozzle)",
+  "material": "PLA",
+  "nozzle_mm": 0.4,
+  "line_width_mm": 0.4,
+  "layer_height_mm": 0.2,
+  "perimeters_min": 3,
+  "hole_compensation_mm": 0.2,
+  "max_bridge_mm": 10.0,
+  "clearances": {
+   "part_gap": 0.8,
+   "port_cutout": 0.8,
+   "peg_hole_extra": 1.6,
+   "lid_groove_extra": 1.6,
+   "m25_clearance_hole": 3.1,
+   "pilot_hole": 2.3,
+   "min_wall": 1.2,
+   "min_supported_wall": 1.1,
+   "min_hole": 2.0,
+   "min_post_od_for_pilot": 5.0
+  },
+  "checks": {
+   "min_part_gap": 0.5,
+   "lid_min_gap": 0.5
+  }
+ },
+ "rules": {
+  "source": "fdm",
+  "values": {
+   "part_gap": 0.8,
+   "port_cutout": 0.8,
+   "peg_hole_extra": 1.6,
+   "lid_groove_extra": 1.6,
+   "m25_clearance_hole": 3.1,
+   "nut_pocket_af": 6.0,
+   "pilot_hole": 2.3,
+   "min_wall": 1.2,
+   "min_supported_wall": 1.1,
+   "min_hole": 2.0,
+   "min_post_od_for_pilot": 5.0,
+   "fastener_style": "pilot"
+  },
+  "fallbacks": [],
+  "notes": [
+   "FDM process profile (config.yaml processes.fdm); Creality FDM (0.4 mm nozzle), PLA; NOT checked by PreForm"
+  ]
+ },
+ "checks_cfg": {
+  "min_part_gap": 0.5,
+  "lid_min_gap": 0.5,
+  "screwdriver_diameter": 6.0,
+  "screw_head_diameter": 4.5,
+  "screw_lengths_available": [
+   6,
+   8,
+   10,
+   12,
+   16,
+   20,
+   25,
+   30
+  ],
+  "min_screw_engagement": 4.0,
+  "tab_bolt_head_diameter": 6.0,
+  "max_box": [
+   120,
+   90,
+   40
+  ]
+ },
+ "source_run": "results/runs/a_pi5_standard__collective__generic__s0__claude-sonnet-5-5",
+ "spec_changes": [
+  {
+   "path": "/clearances/board_gap",
+   "from": 0.6,
+   "to": 0.8
+  },
+  {
+   "path": "/clearances/port",
+   "from": 0.6,
+   "to": 0.8
+  },
+  {
+   "path": "/clearances/lid_fit",
+   "from": 0.6,
+   "to": 0.8
+  },
+  {
+   "path": "/clearances/screw_hole",
+   "from": 2.9,
+   "to": 3.1
+  },
+  {
+   "path": "/clearances/pilot_hole",
+   "from": 2.1,
+   "to": 2.3
+  },
+  {
+   "path": "/box/gap/+x",
+   "from": 0.5,
+   "to": 0.8
+  },
+  {
+   "path": "/box/gap/+y",
+   "from": 0.5,
+   "to": 0.8
+  },
+  {
+   "path": "/box/gap/-x",
+   "from": 0.5,
+   "to": 0.8
+  },
+  {
+   "path": "/box/gap/-y",
+   "from": 0.5,
+   "to": 0.8
+  },
+  {
+   "path": "/mount_tabs/0/hole",
+   "from": 3.4,
+   "to": 3.6
+  },
+  {
+   "path": "/mount_tabs/1/hole",
+   "from": 3.4,
+   "to": 3.6
+  },
+  {
+   "path": "/mount_tabs/2/hole",
+   "from": 3.4,
+   "to": 3.6
+  },
+  {
+   "path": "/mount_tabs/3/hole",
+   "from": 3.4,
+   "to": 3.6
+  },
+  {
+   "path": "/standoffs/diameter",
+   "from": 5.5,
+   "to": 5.4
+  },
+  {
+   "path": "/ports/hdmi0/extra",
+   "from": 0.0,
+   "to": -0.2
+  },
+  {
+   "path": "/ports/hdmi1/extra",
+   "from": 0.0,
+   "to": -0.2
+  }
+ ],
+ "results": {
+  "assembly": {
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "board_edge_gap_mm": {
+     "-x": 0.8,
+     "+x": 0.8,
+     "-y": 0.8,
+     "+y": 0.8
+    },
+    "lid_gap_above_tallest_part_mm": 0.8,
+    "plugs_clear": "8/8",
+    "mount_tabs": 4,
+    "outer_size_mm": [
+     93.5,
+     76.0,
+     25.3
+    ],
+    "fan_intake_vented_fraction": 0.53
+   }
+  },
+  "printability": {
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "min_wall_rule_mm": 1.2,
+    "rule_source": "fdm",
+    "mesh_thickness_p1_mm": {
+     "base": 1.199,
+     "lid": 1.199
+    }
+   }
+  },
+  "fit": {
+   "passed": true,
+   "failures": [],
+   "metrics": {
+    "rule_source": "fdm",
+    "fallbacks": []
+   }
+  }
+ },
+ "bridges": [
+  {
+   "name": "power_button",
+   "side": "-x",
+   "span_mm": 6.6,
+   "needs_support": false
+  },
+  {
+   "name": "status_leds",
+   "side": "-x",
+   "span_mm": 4.8,
+   "needs_support": false
+  },
+  {
+   "name": "microsd",
+   "side": "-x",
+   "span_mm": 15.2,
+   "needs_support": true
+  },
+  {
+   "name": "gpio_ribbon",
+   "side": "+y",
+   "span_mm": 53.6,
+   "needs_support": true
+  }
+ ],
+ "parts": {
+  "base_fdm.stl": {
+   "extents_mm": [
+    93.5,
+    76.0,
+    23.3
+   ],
+   "volume_cm3": 18.02,
+   "orientation": "open side up (floor on the bed)"
+  },
+  "lid_fdm.stl": {
+   "extents_mm": [
+    93.5,
+    64.5,
+    5.0
+   ],
+   "volume_cm3": 11.23,
+   "orientation": "flat top face on the bed (lip and screw ears up)"
+  }
+ },
+ "preform": "NOT RUN: PreForm is an SLA tool; this variant is not checked by PreForm"
+}

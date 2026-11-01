@@ -1,0 +1,5 @@
+run,brief,mode,seed,model,mocked_llm,mocked_preform,clearances,material,layer_mm,passed,quality,all_failures,requirement_failures,evaluations_used,evals_to_pass,edits_proposed,edits_accepted,preform_warnings,print_time_min,resin_ml,seconds,cost_usd,rank
+a_pi5_standard__generalist__generic__s0__claude-sonnet-5-5,a_pi5_standard,generalist,0,claude-sonnet-5-5,False,False,generic,Alpha Fast V1,0.15,False,46.4,1,0,3,3,2,2,1,93.4,66.27,253.1,0.1048,1
+a_pi5_standard__one_shot__generic__s0__claude-sonnet-5-5,a_pi5_standard,one_shot,0,claude-sonnet-5-5,False,False,generic,Alpha Fast V1,0.15,False,49.78,20,20,0,,1,1,0,92.1,63.37,166.2,0.0181,2
+a_pi5_standard__one_shot__generic__s1__claude-sonnet-5-5,a_pi5_standard,one_shot,1,claude-sonnet-5-5,False,False,generic,Alpha Fast V1,0.15,False,49.67,20,20,0,,1,1,0,92.0,63.65,310.4,0.0185,3
+a_pi5_standard__one_shot__generic__s2__claude-sonnet-5-5,a_pi5_standard,one_shot,2,claude-sonnet-5-5,False,False,generic,Alpha Fast V1,0.15,False,49.59,20,20,0,,1,1,0,92.0,63.71,256.9,0.0187,4

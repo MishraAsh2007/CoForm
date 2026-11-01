@@ -95,6 +95,36 @@ clearances:
     min_post_od_for_pilot: 5.0   # generic: assume a 5 mm post holds a self-tapping M2.5 (the test print checks this)
     fastener_style: pilot    # pilot = self-tap into a post; through_nut = clearance hole + hex nut pocket
 
+# ---------------- Manufacturing process profiles ----------------
+# process: sla (default: everything above, Formlabs + PreForm). fdm: the profile below REPLACES the clearance
+# values and the assembly-check minimums; it is used by cad/fdm.py (rebuild an existing spec for FDM, no agents).
+# Agent runs (run.py) are SLA only for now. The FDM variant is NEVER checked by PreForm (PreForm is SLA only).
+process: sla
+processes:
+  fdm:
+    printer: Creality FDM (0.4 mm nozzle)
+    material: PLA
+    nozzle_mm: 0.4
+    line_width_mm: 0.4          # Cura default line width = nozzle diameter
+    layer_height_mm: 0.2        # common 0.4 mm nozzle default (Creality/Cura "Standard" profile)
+    perimeters_min: 3
+    hole_compensation_mm: 0.2   # added to EVERY round hole diameter: FDM holes print undersize (UNVERIFIED, typical 0.1-0.3)
+    max_bridge_mm: 10.0         # spans longer than this need support (generic FDM guides, see components/sources.md "FDM")
+    clearances:                 # overrides clearances.generic for FDM
+      part_gap: 0.8             # UZH AMF / JLC3DP FDM guides: 0.5 mm for mating parts; +0.3 for a desktop printer (UNVERIFIED margin)
+      port_cutout: 0.8          # same rule
+      peg_hole_extra: 1.6
+      lid_groove_extra: 1.6     # 0.8 per side
+      m25_clearance_hole: 3.1   # 2.9 (ISO 273 medium) + hole compensation 0.2
+      pilot_hole: 2.3           # 2.1 + hole compensation 0.2 -> prints ~2.1 for a self-tapping M2.5 in PLA (UNVERIFIED)
+      min_wall: 1.2             # 3 perimeters x 0.4 mm line width (user rule: at least 3 perimeters)
+      min_supported_wall: 1.1   # mesh ray-cast safety net: min_wall less 0.1 for tessellation noise
+      min_hole: 2.0             # UZH AMF FDM guide: min hole 2.0 mm
+      min_post_od_for_pilot: 5.0
+    checks:                     # overrides `checks:` for FDM
+      min_part_gap: 0.5         # FDM position error is larger than SLA (UNVERIFIED)
+      lid_min_gap: 0.5
+
 # ---------------- Phase 2: fit-check frame ----------------
 fit_check:
   out_dir: results/fit_check

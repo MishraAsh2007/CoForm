@@ -13,3 +13,8 @@ results/**/_mesh/
 results/cache/
 results/benchmark/runs*/
 config.yaml.tmp
+
+# official Raspberry Pi 5 STEP (77 MB, MIT licence, too big for git): recreate with `python -m cad.print_package step`
+results/print/onshape/rpi5_board_official.step
+results/print/onshape_step.zip
+results/print/_mesh/
