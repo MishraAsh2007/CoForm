@@ -43,7 +43,7 @@ Open http://127.0.0.1:8000 and use the offline demo (no keys needed). [Teammates
 
 ## Submission material
 
-- Slides: [slides.pdf](https://github.com/MishraAsh2007/ScienceClaw_Project/blob/Mo_ver/results/submission/slides.pdf) [Teammates: replace with the combined deck]
+- Slides: [slides.pdf](https://github.com/MishraAsh2007/ScienceClaw_Project/blob/Mo_ver/results/submission/slides.pdf)
 - Demo video: [demo.mp4](https://github.com/MishraAsh2007/ScienceClaw_Project/blob/Mo_ver/results/submission/demo.mp4) (enclosures, 2:50)
 - Print files: [`results/print/`](https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo_ver/results/print) on `Mo_ver`
 
