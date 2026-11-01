@@ -1,13 +1,13 @@
 import pytest
 
-from scienceclaw.domain import Geometry, ModelParameters, Protocol
-from scienceclaw.mechanics import optimize_geometry, requirement_checks, root_stress, section_properties
-from scienceclaw.service import ScienceClaw
+from coform.domain import Geometry, ModelParameters, Protocol
+from coform.mechanics import optimize_geometry, requirement_checks, root_stress, section_properties
+from coform.service import CoForm
 
 
 @pytest.fixture
 def service(tmp_path):
-    s = ScienceClaw(tmp_path)
+    s = CoForm(tmp_path)
     yield s
     s.store.close()
 
@@ -59,7 +59,7 @@ def test_conflicting_requirements_name_the_binding_one(service):
 
 
 def test_agent_design_proposals_must_meet_requirements():
-    from scienceclaw.agents import Proposal, validate_proposal
+    from coform.agents import Proposal, validate_proposal
     protocol = Protocol(max_root_stress_pa=1e4)
     context = {"protocol": protocol.model_dump(mode="json"), "candidates": [{"id": "c1", "geometry": Geometry().model_dump()}],
                "evidence_ids": ["o1"], "budget": {"cycles_remaining": 5, "designs_remaining": 2},

@@ -4,8 +4,8 @@ from xml.etree import ElementTree
 
 import pytest
 
-from scienceclaw.domain import Geometry, ModelParameters, Observation, Protocol
-from scienceclaw.mechanics import (
+from coform.domain import Geometry, ModelParameters, Observation, Protocol
+from coform.mechanics import (
     choose_diagnostic_position, fit_model, generate_template, generate_stl, generate_scad, optimize_geometry,
     predict_deflection, section_properties,
 )

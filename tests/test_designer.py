@@ -3,10 +3,10 @@ import time
 
 import pytest
 
-from scienceclaw import freeform as ff
-from scienceclaw.designer import PROGRESS, Designer, _example, template_spec
-from scienceclaw.fea import find_tools
-from scienceclaw.providers import ProviderResponse
+from coform import freeform as ff
+from coform.designer import PROGRESS, Designer, _example, template_spec
+from coform.fea import find_tools
+from coform.providers import ProviderError, ProviderResponse
 
 needs_solver = pytest.mark.skipif(find_tools() is None, reason="Gmsh and CalculiX are not installed (bundled with FreeCAD 1.x)")
 
@@ -15,7 +15,7 @@ needs_solver = pytest.mark.skipif(find_tools() is None, reason="Gmsh and Calculi
 def bounded_test_iterations(monkeypatch):
     # Exercise the same termination behavior with short, deterministic test runs.
     for name, value in {"MAX_DRAFT_ATTEMPTS": 6, "MAX_ROUNDS": 6, "MAX_REVIEW_CYCLES": 2, "MAX_STALLED_ROUNDS": 2}.items():
-        monkeypatch.setenv("SCIENCECLAW_DESIGN_" + name, str(value))
+        monkeypatch.setenv("COFORM_DESIGN_" + name, str(value))
 
 
 def test_expressions_allow_arithmetic_over_parameters_only():
@@ -73,11 +73,11 @@ def _wait(project_id):
 
 @needs_solver
 def test_rule_based_designer_tests_adjusts_and_converges(tmp_path):
-    from scienceclaw.service import ScienceClaw
-    service = ScienceClaw(tmp_path)
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
     try:
         designer = Designer(service)
-        state = designer.create("A wall bracket for a small shelf of books.", {"load_n": 30, "max_displacement_mm": 1.0}, live=False)
+        state = designer.create("A wall bracket for a small shelf of books.", {"load_n": 150, "max_displacement_mm": 1.0}, live=False)
         pid = state["project"]["id"]
         _wait(pid)
         state = designer.state(pid)
@@ -124,10 +124,71 @@ class Drafter:
         return ProviderResponse({"changes": None, "reason": "Already good enough"}, 300, 40)
 
 
+class FlakyDrafter(Drafter):
+    """The first draft replies fail the way live Nemotron drafts did: cut off at the token cap, or timed out."""
+
+    def __init__(self, failures, truncated=True):
+        super().__init__()
+        self.failures, self.truncated, self.drafts = failures, truncated, []
+
+    def complete_json(self, system, payload, max_output_tokens):
+        if "request" in payload:
+            self.drafts.append(payload)
+            if len(self.drafts) <= self.failures:
+                if self.truncated:
+                    raise ProviderError(f"nvidia reply was cut off at the {max_output_tokens}-token output limit before the JSON ended",
+                                        input_tokens=1945, output_tokens=max_output_tokens, truncated=True)
+                raise ProviderError("nvidia request failed (ReadTimeout); no retry was made")
+        return super().complete_json(system, payload, max_output_tokens)
+
+
+@needs_solver
+def test_a_cut_off_draft_reply_is_retried_with_the_reason_instead_of_stopping_the_run(tmp_path, monkeypatch):
+    from coform.designer import DRAFT_CUT_OFF
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
+    drafter = FlakyDrafter(failures=1)
+    monkeypatch.setattr(Designer, "_providers", lambda self, live: {r: drafter for r in ("mechanics", "fabrication", "measurement")} if live else None)
+    try:
+        designer = Designer(service)
+        pid = designer.create("A hook that hangs a backpack from a desk edge.", {}, live=True)["project"]["id"]
+        _wait(pid)
+        state = designer.state(pid)
+        assert state["specs"] and state["specs"][0]["source"] == "llm"  # the run went on to a real draft
+        assert DRAFT_CUT_OFF in json.dumps(drafter.drafts[1]["previous_attempt_errors"])  # and the drafter was told why
+        assert state["attempts"][0]["status"] == "provider_error"
+        assert any("Asking again" in e["message"] for e in state["progress"]["log"])
+        assert not any(e["message"].startswith("Stopped: ") for e in state["progress"]["log"])  # no crashed run
+    finally:
+        service.store.close()
+
+
+def test_repeated_draft_call_failures_stop_after_three_instead_of_every_attempt(tmp_path, monkeypatch):
+    from coform.designer import MAX_DRAFT_PROVIDER_FAILURES
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
+    drafter = FlakyDrafter(failures=99, truncated=False)
+    monkeypatch.setattr(Designer, "_providers", lambda self, live: {r: drafter for r in ("mechanics", "fabrication", "measurement")} if live else None)
+    try:
+        designer = Designer(service)
+        pid = designer.create("A hook that hangs a backpack from a desk edge.", {}, live=True)["project"]["id"]
+        _wait(pid)
+        log = [e["message"] for e in designer.state(pid)["progress"]["log"]]
+        assert len(drafter.drafts) == MAX_DRAFT_PROVIDER_FAILURES < 6  # 6 = this file's MAX_DRAFT_ATTEMPTS
+        assert "ReadTimeout" in log[-1] and f"{MAX_DRAFT_PROVIDER_FAILURES} times in a row" in log[-1]
+        # The part's lock is released, so Resume works without restarting the server.
+        drafter.failures = 0
+        designer.run_more(pid, live=True, rounds=1)
+        _wait(pid)
+        assert len(drafter.drafts) > MAX_DRAFT_PROVIDER_FAILURES
+    finally:
+        service.store.close()
+
+
 @needs_solver
 def test_live_drafting_retries_with_the_kernel_reason(tmp_path, monkeypatch):
-    from scienceclaw.service import ScienceClaw
-    service = ScienceClaw(tmp_path)
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
     drafter = Drafter()
     monkeypatch.setattr(Designer, "_providers", lambda self, live: {r: drafter for r in ("mechanics", "fabrication", "measurement")} if live else None)
     try:
@@ -144,10 +205,10 @@ def test_live_drafting_retries_with_the_kernel_reason(tmp_path, monkeypatch):
 
 
 def test_fusion_view_job_opens_a_step_without_creating_cad_revisions(tmp_path):
-    from scienceclaw.formlabs import Manufacturing
-    from scienceclaw.fusion import FusionLink
-    from scienceclaw.service import ScienceClaw
-    service = ScienceClaw(tmp_path)
+    from coform.formlabs import Manufacturing
+    from coform.fusion import FusionLink
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
     try:
         link = FusionLink(service, Manufacturing(service.store))
         with pytest.raises(ValueError, match="not connected"):
@@ -179,7 +240,7 @@ def _winding_problems(path):
 def test_sealed_pocket_fails_printability_and_the_stl_is_consistently_wound(tmp_path):
     # A real live draft hid a nut trap inside a jaw: a sealed cavity that traps resin, and an STL
     # with inside-out patches that slicers showed as broken.
-    from scienceclaw.designer import _check_spec
+    from coform.designer import _check_spec
     raw = _example()
     raw["features"].append({"label": "sealed pocket", "op": "subtract", "shape": "box", "at": [1, 8, 50], "size": [2, 6, 6]})
     spec = ff.DesignSpec.model_validate(raw)
@@ -217,15 +278,16 @@ class Reviewer(Drafter):
                 if self.reviews == 1:
                     return ProviderResponse({"verdict": "revise", "issues": [{"severity": "must_fix", "feature": "screw hole",
                                              "problem": "M5 hole has no print clearance", "fix": "radius 2.7 mm",
-                                             "evidence_ids": ["features:3"], "evidence": "Radius 2.5 mm equals the nominal M5 radius"}]}, 300, 60)
+                                             "evidence_ids": ["features:3"], "evidence": "Radius 2.5 mm equals the nominal M5 radius",
+                                             "claim": {"kind": "comparison", "left": "measure:features:3:radius", "op": "lt", "right": 2.7}}]}, 300, 60)
             return ProviderResponse({"verdict": "approve", "issues": [{"severity": "note", "feature": "", "problem": "Looks fine"}]}, 300, 40)
         return super().complete_json(system, payload, max_output_tokens)
 
 
 @needs_solver
 def test_specialists_review_the_draft_and_must_fix_issues_go_back_to_the_drafter(tmp_path, monkeypatch):
-    from scienceclaw.service import ScienceClaw
-    service = ScienceClaw(tmp_path)
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
     agent = Reviewer()
     monkeypatch.setattr(Designer, "_providers", lambda self, live: {r: agent for r in ("mechanics", "fabrication", "measurement")} if live else None)
     try:
@@ -247,7 +309,7 @@ def test_specialists_review_the_draft_and_must_fix_issues_go_back_to_the_drafter
 
 class FakePreForm:
     def add_asset(self, filename, raw, **kw):
-        assert raw[:80].startswith(b"ScienceClaw repaired STL")
+        assert raw[:80].startswith(b"CoForm repaired STL")
         return {"id": "asset_1"}
 
     def prepare(self, asset_id, profile):
@@ -256,16 +318,20 @@ class FakePreForm:
 
 @needs_solver
 def test_unresolved_must_fix_review_issues_require_repair_before_printing(tmp_path):
-    from scienceclaw.formlabs import PrintProfile
-    from scienceclaw.service import ScienceClaw
-    service = ScienceClaw(tmp_path)
+    from coform.formlabs import PrintProfile
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
     try:
         designer = Designer(service, FakePreForm())
         pid = designer.create("A wall bracket for a small shelf of books.", {"load_n": 30, "max_displacement_mm": 1.0}, live=False)["project"]["id"]
         _wait(pid)
         best = designer.state(pid)["best"]
         profile = PrintProfile(machine_type="FRML-4-0", material_code="FLAPFA01", layer_thickness_mm=0.1, minimum_wall_mm=1.0)
-        assert designer.prepare_print(pid, best["id"], profile, live=False)["status"] == "approved"
+        review = designer.prepare_print(pid, best["id"], profile, live=False)
+        assert review["status"] == "approved" and review["blocked_by"] == [] and review["votes_needed"] == 2
+        votes = {v["agent"]: v for v in review["votes"]}
+        assert all(v["status"] == "approves" for v in votes.values())
+        assert "dial indicator" in votes["measurement"]["suggestions"][0]  # how to test the printed part
         spec = service.store.list(pid, "design_spec")[-1]
         service.store.put("design_spec", pid, {**spec, "id": "spec_reviewed", "reviews": [
             {"agent": "fabrication", "verdict": "revise", "issues": [{"severity": "must_fix", "feature": "hole", "problem": "Blind hole traps resin", "fix": "Open it"}]}]})
@@ -275,6 +341,47 @@ def test_unresolved_must_fix_review_issues_require_repair_before_printing(tmp_pa
                 designer.prepare_print(pid, best["id"], profile, live=False, accept_review_issues=accepted)
     finally:
         service.store.close()
+
+
+class PrintVoter:
+    """Fake live specialists at the print vote: mechanics is cut off once, fabrication objects, measurement approves."""
+    name, model = "fake", "voter"
+
+    def __init__(self):
+        self.calls = []
+
+    def complete_json(self, system, payload, max_output_tokens):
+        role = next(r for r in ("mechanics", "fabrication", "measurement") if f"the {r} specialist" in system)
+        self.calls.append((role, payload))
+        if role == "mechanics" and "previous_reply_lost" not in payload:
+            raise ProviderError("nvidia reply was cut off at the 800-token output limit before the JSON ended", output_tokens=800, truncated=True)
+        if role == "fabrication":
+            return ProviderResponse({"support": False, "reason": "Large flat underside will peel.", "suggestions": ["Tilt it 20 degrees", "", 7]}, 300, 60)
+        return ProviderResponse({"support": True, "reason": "Passes with margin.", "suggestions": ["Load it at the cup centre"]}, 300, 60)
+
+
+def test_print_votes_keep_suggestions_and_ask_again_when_a_reply_is_cut_off(tmp_path, monkeypatch):
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
+    voter = PrintVoter()
+    monkeypatch.setattr(Designer, "_providers", lambda self, live: dict.fromkeys(("mechanics", "fabrication", "measurement"), voter))
+    try:
+        test = {"results": {"passed": True, "mass_g": 125, "loads": [{"deflection_mm": 0.08, "force_n": [0, 0, -14.7]}],
+                            "peak_stress_mpa": 0.76, "allowable_stress_mpa": 23, "checks": []}}
+        votes = {v["agent"]: v for v in Designer(service)._print_votes(test, {"validation": {"grade": "PASS", "warnings": []}}, [], True)}
+        assert [r for r, _ in voter.calls] == ["mechanics", "mechanics", "fabrication", "measurement"]
+        assert "cut off" in voter.calls[1][1]["previous_reply_lost"]
+        assert votes["mechanics"]["status"] == "approves" and votes["mechanics"]["support"] is True
+        assert votes["fabrication"]["status"] == "objects" and votes["fabrication"]["suggestions"] == ["Tilt it 20 degrees"]
+        assert votes["measurement"]["suggestions"] == ["Load it at the cup centre"]
+    finally:
+        service.store.close()
+
+
+def test_a_lost_print_vote_says_so_instead_of_reading_as_an_objection():
+    from coform.designer import _print_vote
+    assert _print_vote("measurement", None, "provider_error")["status"] == "no_reply"
+    assert _print_vote("measurement", {"support": "yes"}, None)["support"] is False  # only an explicit true approves
 
 
 @needs_solver
@@ -301,8 +408,8 @@ class StubbornDrafter(Drafter):
 
 @needs_solver
 def test_a_repeated_sealed_pocket_is_saved_without_deleting_its_function(tmp_path, monkeypatch):
-    from scienceclaw.service import ScienceClaw
-    service = ScienceClaw(tmp_path)
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
     agent = StubbornDrafter()
     monkeypatch.setattr(Designer, "_providers", lambda self, live: {r: agent for r in ("mechanics", "fabrication", "measurement")} if live else None)
     try:
@@ -311,7 +418,8 @@ def test_a_repeated_sealed_pocket_is_saved_without_deleting_its_function(tmp_pat
         _wait(pid)
         state = designer.state(pid)
         assert not state["specs"] and not state["tests"]
-        assert len(state["attempts"]) == 6
+        assert len(state["attempts"]) == 4 and "Return a redesign" in state["attempts"][-1]["strategy"]
+        assert "stalled after 4" in state["progress"]["log"][-1]["message"]
         assert "nut trap" in [f["label"] for f in state["attempts"][0]["spec"]["features"]]
         assert "sealed internal cavity" in state["attempts"][0]["errors"][0]
         assert "no change" in state["attempts"][-1]["errors"][0]
@@ -329,23 +437,24 @@ def test_a_rib_rotated_through_the_wall_fails_the_mount_check_and_names_it(tmp_p
     spec = ff.DesignSpec.model_validate(raw)
     lo, hi = ff.feature_bounds(spec.features[-1], ff.values_of(spec))
     assert lo[0] == pytest.approx(-20 / 2 ** 0.5, abs=0.01)  # a 20 mm tall rib turned 45° swings 14.1 mm back
-    result = ff.analyze(spec, ff.values_of(spec), tmp_path)
-    mount = next(c for c in result["checks"] if c["name"] == "mount_clear")
-    assert not mount["passed"] and "'rib through the wall'" in mount["detail"] and "wall" in mount["detail"]
-    assert all(c["passed"] for c in ff.analyze(ff.DesignSpec.model_validate(_example()), ff.values_of(ff.DesignSpec.model_validate(_example())),
-                                               tmp_path / "ok")["checks"] if c["name"] == "mount_clear")
+    # The wall is modelled, so the rib is found inside it before any strength result is computed.
+    with pytest.raises(ff.BuildError, match=r"\[fit\] 'rib through the wall' reach up to 14\.\d mm into 'wall'"):
+        ff.analyze(spec, ff.values_of(spec), tmp_path)
+    ok = ff.DesignSpec.model_validate(_example())
+    assert next(c for c in ff.analyze(ok, ff.values_of(ok), tmp_path / "ok")["checks"] if c["name"] == "fit")["passed"]
 
 
 @needs_solver
 def test_a_piece_shifted_off_to_one_side_fails_the_alignment_check(tmp_path):
     # A live draft put a 25 mm-wide hook curl 12.5 mm off the 25 mm-wide arm, so half of it stuck out sideways.
     raw = _example()
-    raw["features"].append({"label": "tip lip", "shape": "box", "at": ["arm_length - 5", "width/2", "height"], "size": [5, "width", 6]})
+    under = "shelf_height - plate - 6"  # hangs under the arm's end, clear of the shelf board resting on top
+    raw["features"].append({"label": "tip lip", "shape": "box", "at": ["arm_length - 5", "width/2", under], "size": [5, "width", 6]})
     spec = ff.DesignSpec.model_validate(raw)
     problems = ff.alignment_problems(spec, ff.values_of(spec))
     assert len(problems) == 1 and "'tip lip'" in problems[0] and "shifted 12.5 mm" in problems[0]
     # Lined up, and pieces that join end to end, pass.
-    raw["features"][-1]["at"] = ["arm_length - 5", 0, "height"]
+    raw["features"][-1]["at"] = ["arm_length - 5", 0, under]
     spec = ff.DesignSpec.model_validate(raw)
     assert ff.alignment_problems(spec, ff.values_of(spec)) == []
     result = ff.analyze(spec, ff.values_of(spec), tmp_path)
@@ -369,7 +478,7 @@ def test_real_backpack_hook_draft_is_caught_by_the_mount_and_alignment_checks():
 
 @needs_solver
 def test_real_backpack_hook_fails_and_its_draft_would_go_back_to_the_drafter(tmp_path):
-    from scienceclaw.designer import _check_spec
+    from coform.designer import _check_spec
     spec, values = _fixture("live_backpack_hook")
     result = ff.analyze(spec, values, tmp_path / "a")
     failed = {c["name"]: c.get("detail", "") for c in result["checks"] if not c["passed"]}
@@ -385,3 +494,41 @@ def test_real_desk_hook_with_its_sealed_nut_trap_is_caught(tmp_path):
     result = ff.analyze(spec, values, tmp_path)
     failed = {c["name"]: c.get("detail", "") for c in result["checks"] if not c["passed"]}
     assert "sealed internal cavity" in failed["sealed_cavity"] and "x 35.0-42.0" in failed["sealed_cavity"]
+
+
+class OutageTeam(Drafter):
+    """Drafts and reviews the part, then loses the connection for every optimisation call."""
+
+    def __init__(self):
+        super().__init__()
+        self.down, self.lost = True, 0
+
+    def complete_json(self, system, payload, max_output_tokens):
+        if self.down and "context" in payload and "proposals" not in payload:
+            self.lost += 1
+            raise ProviderError("could not connect to nvidia (ConnectTimeout): the network or the provider's server is unreachable")
+        return super().complete_json(system, payload, max_output_tokens)
+
+
+@needs_solver
+def test_an_outage_stops_the_rounds_and_says_so_instead_of_spending_every_round(tmp_path, monkeypatch):
+    from coform.designer import MAX_UNANSWERED_ROUNDS
+    from coform.service import CoForm
+    service = CoForm(tmp_path)
+    team = OutageTeam()
+    monkeypatch.setattr(Designer, "_providers", lambda self, live: {r: team for r in ("mechanics", "fabrication", "measurement")} if live else None)
+    try:
+        designer = Designer(service)
+        pid = designer.create("A water bottle holder that clamps to a desk.", {}, live=True)["project"]["id"]
+        _wait(pid)
+        state = designer.state(pid)
+        assert [r["status"] for r in state["rounds"]] == ["no_reply"] * MAX_UNANSWERED_ROUNDS  # not all 6 allowed rounds
+        assert team.lost == 3 * MAX_UNANSWERED_ROUNDS
+        last = state["progress"]["log"][-1]["message"]
+        assert last.startswith("Stopped: no agent answered") and "ConnectTimeout" in last and "not the design" in last
+        team.down = False  # connection back: the same button carries on
+        designer.run_more(pid, live=True, rounds=1)
+        _wait(pid)
+        assert designer.state(pid)["rounds"][-1]["status"] != "no_reply"
+    finally:
+        service.store.close()

@@ -1,7 +1,7 @@
 import pytest
 
-from scienceclaw.budget import SpendGuard, BudgetedProvider
-from scienceclaw.providers import ProviderError, ProviderResponse
+from coform.budget import SpendGuard, BudgetedProvider
+from coform.providers import ProviderError, ProviderResponse
 
 
 class Fake:

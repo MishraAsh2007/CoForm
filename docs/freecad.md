@@ -12,8 +12,8 @@ No account or API key is needed. Tested with **FreeCAD 1.1.4** on Windows.
    cut into **SupportArm**) take their sizes from those cells through expressions. Open
    it in FreeCAD, change a cell, press Recompute: the part rebuilds, exactly as the
    agents use it. The master is created on first use.
-2. **Per candidate**, ScienceClaw runs `FreeCADCmd` headless with
-   [`scienceclaw/freecad_worker.py`](../scienceclaw/freecad_worker.py): set the cells,
+2. **Per candidate**, CoForm runs `FreeCADCmd` headless with
+   [`coform/freecad_worker.py`](../coform/freecad_worker.py): set the cells,
    recompute, require exactly one valid solid, then save the candidate snapshot
    `data/freecad/<candidate>.FCStd` and export STEP and STL. The master file is never
    overwritten. Each run takes about half a second.
@@ -40,5 +40,5 @@ No account or API key is needed. Tested with **FreeCAD 1.1.4** on Windows.
 API: `GET /api/freecad/status`, `POST /api/runs/{run}/candidates/{candidate}/freecad`,
 `POST /api/runs/{run}/cad/{cad}/open`, `GET /api/runs/{run}/cad/{cad}/step|fcstd`.
 
-ScienceClaw finds `FreeCADCmd.exe` under `%LOCALAPPDATA%\Programs\FreeCAD*`,
+CoForm finds `FreeCADCmd.exe` under `%LOCALAPPDATA%\Programs\FreeCAD*`,
 `Program Files\FreeCAD*` or `PATH`. Set `FREECAD_CMD` to override.

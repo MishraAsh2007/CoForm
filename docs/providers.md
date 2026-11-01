@@ -48,7 +48,7 @@ listed in NVIDIA's docs. `GET /v1/models` shows what a key can use.
   `stop`) is an explicit failure.
 - Calls are spaced by `NVIDIA_MIN_INTERVAL_S` (default 1.6 s) for free-tier rate
   limits; failures are never retried automatically.
-- Free-credit calls are counted against `SCIENCECLAW_NVIDIA_MAX_CALLS` (default 2000),
+- Free-credit calls are counted against `COFORM_NVIDIA_MAX_CALLS` (default 2000),
   separately from the paid providers' dollar and call limits. No dollar price is claimed.
 - `MECHANICS_MODEL` / `FABRICATION_MODEL` / `MEASUREMENT_MODEL` optionally give each
   specialist its own model. `SINGLE_AGENT_PROVIDER` / `SINGLE_AGENT_MODEL` configure the

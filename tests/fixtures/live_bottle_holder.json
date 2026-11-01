@@ -1,0 +1,354 @@
+{
+ "source": "Live Nemotron draft for 'build a water bottle holder which can attach to a desk and hold it' (2026-11-01). Passed every check at 110 g although its lower jaw filled the desk gap and its support was a 30x75x25 mm volume.",
+ "spec": {
+  "features": [
+   {
+    "at": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "axis": "z",
+    "label": "back_plate",
+    "legs": null,
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "wall_t",
+     "back_width",
+     "back_height"
+    ],
+    "thickness": null
+   },
+   {
+    "at": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "axis": "z",
+    "label": "cradle",
+    "legs": null,
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "cradle_depth",
+     "back_width",
+     "wall_t"
+    ],
+    "thickness": null
+   },
+   {
+    "at": [
+     "wall_t - 0.5",
+     "back_width/2 - gusset_t/2",
+     "0.5"
+    ],
+    "axis": "z",
+    "label": "gusset",
+    "legs": [
+     {
+      "axis": "x",
+      "length": "gusset_size"
+     },
+     {
+      "axis": "z",
+      "length": "gusset_size"
+     }
+    ],
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "wedge",
+    "size": null,
+    "thickness": "gusset_t"
+   },
+   {
+    "at": [
+     "-clamp_depth",
+     0.0,
+     "-base_foot_t"
+    ],
+    "axis": "z",
+    "label": "lower_jaw",
+    "legs": null,
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "clamp_depth",
+     "back_width",
+     "base_foot_t + desk_thick + clamp_jaw_gap"
+    ],
+    "thickness": null
+   },
+   {
+    "at": [
+     "-clamp_depth",
+     0.0,
+     "desk_thick + clamp_jaw_gap"
+    ],
+    "axis": "z",
+    "label": "upper_jaw",
+    "legs": null,
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "clamp_depth",
+     "back_width",
+     "wall_t"
+    ],
+    "thickness": null
+   },
+   {
+    "at": [
+     "-clamp_depth/2",
+     "back_width/2",
+     "-base_foot_t - 1"
+    ],
+    "axis": "z",
+    "label": "screw_hole_lower",
+    "legs": null,
+    "length": "base_foot_t + desk_thick + clamp_jaw_gap + wall_t + 5",
+    "op": "subtract",
+    "radius": "screw_dia/2",
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null,
+    "thickness": null
+   },
+   {
+    "at": [
+     "-clamp_depth/2",
+     "back_width/2 - 6.5",
+     "desk_thick + clamp_jaw_gap + wall_t - screw_nut_trap_depth"
+    ],
+    "axis": "y",
+    "label": "nut_trap",
+    "legs": null,
+    "length": 13.0,
+    "op": "subtract",
+    "radius": 6.5,
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null,
+    "thickness": null
+   },
+   {
+    "at": [
+     "cradle_depth - 10",
+     "back_width/2",
+     "-1"
+    ],
+    "axis": "z",
+    "label": "cradle_drain",
+    "legs": null,
+    "length": "wall_t + 2",
+    "op": "subtract",
+    "radius": 5.0,
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null,
+    "thickness": null
+   },
+   {
+    "at": [
+     "-1",
+     "back_width/2",
+     "back_height - 10"
+    ],
+    "axis": "x",
+    "label": "back_plate_drain",
+    "legs": null,
+    "length": "wall_t + 2",
+    "op": "subtract",
+    "radius": 5.0,
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null,
+    "thickness": null
+   }
+  ],
+  "loads": [
+   {
+    "force_n": [
+     0.0,
+     0.0,
+     -15.0
+    ],
+    "max": [
+     "cradle_depth",
+     "back_width",
+     "wall_t + 0.01"
+    ],
+    "min": [
+     0.0,
+     0.0,
+     "wall_t - 0.01"
+    ],
+    "name": "bottle_weight"
+   },
+   {
+    "force_n": [
+     0.0,
+     -5.0,
+     0.0
+    ],
+    "max": [
+     "cradle_depth",
+     "back_width",
+     "back_height"
+    ],
+    "min": [
+     "cradle_depth - 0.01",
+     "back_width - 0.01",
+     0.0
+    ],
+    "name": "bottle_side_lean"
+   }
+  ],
+  "name": "Desk-Mount Water Bottle Holder",
+  "parameters": {
+   "back_height": {
+    "max": 180.0,
+    "min": 100.0,
+    "note": "Height of back plate above desk",
+    "role": "size",
+    "value": 120.0
+   },
+   "back_width": {
+    "max": 110.0,
+    "min": 70.0,
+    "note": "Width of back plate and cradle",
+    "role": "size",
+    "value": 75.0
+   },
+   "base_foot_t": {
+    "max": 10.0,
+    "min": 3.0,
+    "note": "Thickness of bottom foot on lower jaw",
+    "role": "thickness",
+    "value": 3.0
+   },
+   "clamp_depth": {
+    "max": 70.0,
+    "min": 30.0,
+    "note": "How far the clamp reaches under the desk",
+    "role": "size",
+    "value": 30.0
+   },
+   "clamp_jaw_gap": {
+    "max": 5.0,
+    "min": 1.0,
+    "note": "Initial gap between jaws before screw tightens",
+    "role": "size",
+    "value": 2.0
+   },
+   "cradle_depth": {
+    "max": 100.0,
+    "min": 60.0,
+    "note": "Front-to-back depth of bottle cradle",
+    "role": "size",
+    "value": 70.0
+   },
+   "desk_thick": {
+    "max": 50.0,
+    "min": 10.0,
+    "note": "Desk thickness at clamp location",
+    "role": "size",
+    "value": 25.0
+   },
+   "gusset_size": {
+    "max": 80.0,
+    "min": 30.0,
+    "note": "Leg length of triangular gusset",
+    "role": "size",
+    "value": 40.0
+   },
+   "gusset_t": {
+    "max": 8.0,
+    "min": 1.5,
+    "note": "Thickness of reinforcing gusset",
+    "role": "thickness",
+    "value": 1.5
+   },
+   "screw_dia": {
+    "max": 10.0,
+    "min": 6.0,
+    "note": "Thumb screw major diameter (M8 typical)",
+    "role": "size",
+    "value": 8.0
+   },
+   "screw_nut_trap_depth": {
+    "max": 10.0,
+    "min": 4.0,
+    "note": "Depth of hex nut trap in upper jaw",
+    "role": "size",
+    "value": 6.0
+   },
+   "wall_t": {
+    "max": 8.0,
+    "min": 1.5,
+    "note": "Wall thickness for plates and cradle",
+    "role": "thickness",
+    "value": 1.5
+   }
+  },
+  "requirements": {
+   "max_displacement_mm": 1.5,
+   "max_mass_g": 200.0,
+   "safety_factor": 2.0
+  },
+  "summary": "A clamp-on desk holder with a vertical back plate and a horizontal cradle. The clamp tightens against the desk edge with a thumb screw; the bottle sits in the cradle and leans against the back plate. Loads transfer from the cradle through a gusset into the back plate and clamp.",
+  "supports": [
+   {
+    "max": [
+     "0",
+     "back_width",
+     "desk_thick"
+    ],
+    "min": [
+     "-clamp_depth",
+     0.0,
+     0.0
+    ],
+    "name": "clamped_to_desk"
+   }
+  ]
+ },
+ "design_intent": {
+  "assumptions": [
+   "Desk edge is flat and parallel, thickness 10-50 mm.",
+   "M8 thumb screw with standard hex nut (13 mm across flats, 6.5 mm radius).",
+   "Bottle mass up to 1.5 kg (15 N), side force 5 N.",
+   "Print orientation: back plate vertical (z up), cradle horizontal, clamp jaws horizontal. Drain holes at lowest points of each cavity.",
+   "Alpha Fast Resin min wall 1.5 mm respected; all walls >= 4 mm."
+  ],
+  "function": "Holds a typical 500-1000 ml water bottle on a desk edge via a screw clamp. The bottle rests in a horizontal cradle and leans back against a vertical plate.",
+  "interfaces": [
+   "Desk top and bottom surfaces clamped between lower jaw (with foot) and upper jaw, tightened by M8 thumb screw with captive hex nut in upper jaw.",
+   "Bottle base sits on cradle floor (z = wall_t), bottle side contacts back plate (x = wall_t).",
+   "Thumb screw inserts from below through lower jaw foot, threads into nut trapped in upper jaw."
+  ],
+  "keep_clear": [
+   "Screw insertion path from below: cylinder at clamp center through lower jaw foot and desk-thickness gap into upper jaw nut trap.",
+   "Nut trap access from front/back of upper jaw for assembly.",
+   "Cradle front open for bottle insertion/removal (no front wall).",
+   "Drain holes at cradle rear corner and back plate top edge for resin drainage.",
+   "No material below desk bottom (z < 0) except lower jaw foot and screw."
+  ],
+  "load_path": "Bottle weight on cradle -> gusset -> back plate -> upper/lower jaws -> desk clamp. Side lean loads transfer directly into back plate and down to clamp."
+ }
+}

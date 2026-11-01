@@ -1,9 +1,9 @@
 import threading
 import time
 
-from scienceclaw.agents import decide, decide_independent
-from scienceclaw.domain import Geometry, ModelParameters
-from scienceclaw.providers import ProviderResponse
+from coform.agents import decide, decide_independent
+from coform.domain import Geometry, ModelParameters
+from coform.providers import ProviderResponse
 from tests.test_agents import context, proposal
 
 
@@ -78,16 +78,16 @@ def test_design_with_wrong_station_and_cost_is_normalized_not_rejected():
 
 def test_study_team_chooses_provider_and_model_per_role(tmp_path, monkeypatch):
     import pytest
-    from scienceclaw import providers
-    from scienceclaw.domain import Protocol
-    from scienceclaw.service import ScienceClaw
+    from coform import providers
+    from coform.domain import Protocol
+    from coform.service import CoForm
     built = []
 
     def fake_from_environment(name, model=None):
         built.append((name, model))
         return Slow(agree, delay=0)
     monkeypatch.setattr(providers, "from_environment", fake_from_environment)
-    service = ScienceClaw(tmp_path)
+    service = CoForm(tmp_path)
     try:
         nemotron = {"provider": "nvidia", "model": "nvidia/nemotron-3.5-lightning-30b-a3b"}
         run = service.create_run(team={r: nemotron for r in ("mechanics", "fabrication", "measurement")}, protocol=Protocol())
@@ -108,7 +108,7 @@ def identifiable_context():
 
 
 def test_each_specialist_sees_only_its_own_evidence_and_tools():
-    from scienceclaw.agents import _context_view
+    from coform.agents import _context_view
     ctx = identifiable_context()
     mech, fab, meas = (_context_view(ctx, r) for r in ("mechanics", "fabrication", "measurement"))
     assert set(mech["tools"]) == {"mechanics"} and set(fab["tools"]) == {"fabrication"} and set(meas["tools"]) == {"measurement"}
@@ -123,7 +123,7 @@ def test_each_specialist_sees_only_its_own_evidence_and_tools():
 
 
 def test_reviewers_stress_test_from_different_angles():
-    from scienceclaw.agents import _stress_tests
+    from coform.agents import _stress_tests
     ctx = identifiable_context()
     design = {**proposal(), "id": "p1", "action": "design", "load_position_m": .12,
               "geometry": Geometry(base_width_m=.020, wall_height_m=.012).model_dump()}
@@ -160,7 +160,7 @@ def test_offline_design_stage_is_owned_by_mechanics_and_fabrication():
 
 
 def test_one_malformed_reply_is_an_abstention_not_the_end_of_the_decision():
-    from scienceclaw.providers import ProviderError
+    from coform.providers import ProviderError
 
     class Flaky(Slow):
         def complete_json(self, system, payload, max_output_tokens):
@@ -177,7 +177,7 @@ def test_one_malformed_reply_is_an_abstention_not_the_end_of_the_decision():
 def test_fabrication_can_pick_a_screened_design_by_number():
     # Live runs: fabrication copied the starting design's geometry, so every design it proposed was a duplicate.
     ctx = identifiable_context()
-    from scienceclaw.agents import _design_options
+    from coform.agents import _design_options
     lightest = _design_options(ctx)[0]
     copied = {**proposal(), "action": "design", "geometry": ctx["candidates"][0]["geometry"], "candidate_id": "made_up", "design_option": 0}
 

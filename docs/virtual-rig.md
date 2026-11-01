@@ -69,7 +69,7 @@ allowed uncertainty instead of the measured noise, vetoed every test. Both are f
 Example:
 
 ```
-python -m scienceclaw.cli compare --seeds 17 18 --methods adaptive collective single_agent independent   --scenarios rig_alpha_fast_printed_jaws rig_alpha_fast_rubber_clamp --output data/rig-comparison
+python -m coform.cli compare --seeds 17 18 --methods adaptive collective single_agent independent   --scenarios rig_alpha_fast_printed_jaws rig_alpha_fast_rubber_clamp --output data/rig-comparison
 ```
 
 ## Limits

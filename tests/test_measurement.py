@@ -3,8 +3,8 @@ import io
 
 import pytest
 
-from scienceclaw.domain import Geometry, Observation, Protocol
-from scienceclaw.measurement import TRACE_COLUMNS, acceptance_summary, analyze_trace, classify_observation
+from coform.domain import Geometry, Observation, Protocol
+from coform.measurement import TRACE_COLUMNS, acceptance_summary, analyze_trace, classify_observation
 
 
 def observation(**overrides):

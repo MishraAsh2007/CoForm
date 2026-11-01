@@ -6,12 +6,12 @@ from types import SimpleNamespace
 
 import pytest
 
-from scienceclaw import freeform as ff
-from scienceclaw.designer import Designer, PROGRESS, ROLES, _example
-from scienceclaw.designer_limits import DesignerLimits
-from scienceclaw.designer_repair import apply_repair, repair_from_spec, assess_review, evidence_for
-from scienceclaw.providers import ProviderResponse
-from scienceclaw.store import Store
+from coform import freeform as ff
+from coform.designer import Designer, PROGRESS, ROLES, _example
+from coform.designer_limits import DesignerLimits
+from coform.designer_repair import apply_repair, repair_from_spec, assess_review, evidence_for
+from coform.providers import ProviderResponse
+from coform.store import Store
 
 
 @pytest.fixture
@@ -34,7 +34,7 @@ def result(spec, values, folder=None, *, modulus_scale=1):
     bend = (6 / values["plate"]) ** 3
     checks = [{"name": "deflection", "label": "Bend", "passed": bend <= 1, "value": bend, "limit": 1}]
     checks += [{"name": n, "label": n, "passed": True, "value": 0, "limit": 0}
-               for n in ("sealed_cavity", "watertight", "mount_clear", "aligned")]
+               for n in ("sealed_cavity", "watertight", "mount_clear", "aligned", "fit", "contact", "insertion", "retention")]
     if folder:
         folder.mkdir(parents=True, exist_ok=True)
         (folder / "part.step").write_text(str(values))
@@ -96,22 +96,23 @@ def test_saved_backpack_replies_count_only_effective_changes():
 
 def test_more_than_six_effective_changes_still_rejected():
     spec = ff.DesignSpec.model_validate(_example())
-    patch = {"parameters": {n: p.value + 0.1 for n, p in spec.parameters.items()},
-             "features": [{"index": 3, "changes": {"radius": 2.7}}]}
+    patch = {"parameters": {n: p.value + 0.1 for n, p in spec.parameters.items() if p.role != "fixed"},
+             "features": [{"index": 3, "changes": {"radius": 2.7}}, {"index": 0, "changes": {"at": [0, 0, 1]}}]}
     with pytest.raises(ValueError, match="at most six"):
         apply_repair(spec, patch)
 
 
 @pytest.mark.parametrize("change", ["requirements", "force", "feature_count", "feature_identity",
                                     "operation", "shape", "parameter_range", "parameter_role",
-                                    "parameter_names", "support_identity", "load_count"])
+                                    "parameter_names", "support_identity", "load_count", "world_size",
+                                    "fixed_dimension"])
 def test_full_spec_recovery_rejects_changes_outside_the_repair_contract(change):
     spec = ff.DesignSpec.model_validate(_example())
     raw = spec.model_dump(mode="json")
     if change == "requirements":
         raw["requirements"]["max_displacement_mm"] = 100
     elif change == "force":
-        raw["loads"][0]["force_n"] = [0, 0, -1]
+        raw["environment"][1]["force_n"] = [0, 0, -1]
     elif change == "feature_count":
         raw["features"].pop()
     elif change == "feature_identity":
@@ -127,9 +128,13 @@ def test_full_spec_recovery_rejects_changes_outside_the_repair_contract(change):
     elif change == "parameter_names":
         raw["parameters"].pop("plate")
     elif change == "support_identity":
-        raw["supports"][0]["name"] = "Different attachment"
+        raw["environment"][0]["name"] = "different_attachment"
     elif change == "load_count":
-        raw["loads"].append(deepcopy(raw["loads"][0]))
+        raw["environment"].append({**deepcopy(raw["environment"][1]), "name": "second_shelf"})
+    elif change == "world_size":  # the wall or shelf is the world, not the design
+        raw["environment"][1]["size"] = [150, 225, 30]
+    elif change == "fixed_dimension":
+        raw["parameters"]["shelf_height"].update(value=90, min=90, max=90)
     with pytest.raises(ValueError, match="Repair"):
         repair_from_spec(spec, raw)
 
@@ -161,6 +166,42 @@ def test_contradictory_review_is_clarified_without_redrafting(designer):
     assert all(x["verdict"] == "approve" for x in reviews)
     assert len(fab.payloads) == 2 and len(other.payloads) == 2
     assert reviews[1]["previous_review"]["issues"][0]["verification"] == "contradicts_check"
+
+
+def test_a_claim_code_contradicts_twice_is_overruled_instead_of_stopping_the_run(designer):
+    # Live: fabrication twice called the cup's drain blind while its span check showed it through the floor.
+    spec = ff.DesignSpec.model_validate(_example())
+    r = result(spec, ff.values_of(spec))
+    def reply(system, payload):
+        return {"verdict": "revise", "issues": [
+            {"severity": "must_fix", "problem": "Hole far too small", "evidence_ids": ["features:3"], "evidence": "radius under 0.1 mm",
+             "claim": {"kind": "comparison", "left": "measure:features:3:radius", "op": "lt", "right": 0.1}},
+            {"severity": "should_fix", "problem": "Add clearance", "evidence_ids": ["features:3"], "evidence": "M6"}]}
+    fab, other = Agent(reply), Agent(approve)
+    reviews = designer._review_draft(spec, r, {"mechanics": other, "fabrication": fab, "measurement": other},
+                                    dict(input_tokens=0, output_tokens=0, total_tokens=0, reserved_tokens=0, calls=0))
+    assert len(fab.payloads) == 2  # it had its clarification round first
+    fabrication = reviews[1]
+    assert fabrication["verdict"] == "approve" and "overruled 1 claim" in fabrication["note"]
+    overruled = fabrication["issues"][0]
+    assert overruled["severity"] == "note" and overruled["verification"] == "overruled_by_measurement" and "left" in overruled["overruled"]
+    assert fabrication["issues"][1]["severity"] == "should_fix"  # the rest of the review stands
+
+
+def test_a_review_cut_off_at_the_token_cap_is_asked_once_more_compactly(designer):
+    from coform.providers import ProviderError
+    spec = ff.DesignSpec.model_validate(_example())
+    r = result(spec, ff.values_of(spec))
+    def reply(system, payload):
+        if "previous_reply_lost" not in payload:
+            raise ProviderError("nvidia reply was cut off at the 1600-token output limit before the JSON ended", output_tokens=1600, truncated=True)
+        assert "at most 4 issues" in system and "cut off" in payload["previous_reply_lost"]
+        return approve(system, payload)
+    mech, other = Agent(reply), Agent(approve)
+    reviews = designer._review_draft(spec, r, {"mechanics": mech, "fabrication": other, "measurement": other},
+                                    dict(input_tokens=0, output_tokens=0, total_tokens=0, reserved_tokens=0, calls=0))
+    assert reviews[0]["verdict"] == "approve" and "cut off" in reviews[0]["retried_after"]
+    assert len(mech.systems) == 2 and len(other.payloads) == 2
 
 
 def test_missing_and_uncited_reviews_cannot_approve():
@@ -225,7 +266,7 @@ def test_failed_job_and_attempts_survive_reopening_store(designer, monkeypatch):
     p = project(designer)
     agent = Agent(lambda s, p: {"spec": {}})
     monkeypatch.setattr(designer, "_providers", lambda live: dict.fromkeys(ROLES, agent))
-    with pytest.raises(ValueError, match="6 attempts"):
+    with pytest.raises(RuntimeError, match="stalled after 3"):
         designer._draft(p, True)
     designer._log(p["id"], "No acceptable design", stage="error")
     PROGRESS[p["id"]]["running"] = False
@@ -235,7 +276,7 @@ def test_failed_job_and_attempts_survive_reopening_store(designer, monkeypatch):
     try:
         other = Designer(SimpleNamespace(store=other_store))
         state = other.state(p["id"])
-        assert len(state["attempts"]) == 6
+        assert len(state["attempts"]) == 3
         assert state["progress"]["stage"] == "error" and state["progress"]["log"][-1]["message"] == "No acceptable design"
         assert other.store.verify()
     finally:
@@ -317,16 +358,17 @@ def test_must_fix_does_not_become_approval_when_revision_limit_expires(designer,
             radius = payload["previous_spec"]["features"][3]["radius"]
             return {"repair": {"features": [{"index": 3, "changes": {"radius": radius + 0.1}}]}}
         return {"verdict": "revise", "issues": [{"severity": "must_fix", "problem": "Assembly access remains blocked",
-                "evidence_ids": ["features:3"], "evidence": "Hole placement does not allow access from the mating side"}]}
+                "evidence_ids": ["features:3"], "evidence": "Hole radius remains below required 4 mm",
+                "claim": {"kind": "comparison", "left": "measure:features:3:radius", "op": "lt", "right": 4}}]}
     agent = Agent(reply)
     monkeypatch.setattr(designer, "_providers", lambda live: dict.fromkeys(ROLES, agent))
-    # The run continues to the optimisation rounds, but the must-fix stays open: it is never turned into
-    # approval, and printing stays locked until the user accepts it (see the print-gate tests).
-    spec, _analysis, _source, _assumptions, _usage, reviews = designer._draft(p, True)
+    with pytest.raises(RuntimeError, match="Must-fix review issues remain"):
+        designer._draft(p, True)
+    reviews = designer.state(p["id"])["attempts"][-1]["reviews"]
     open_issues = [i for r in reviews for i in r["issues"] if i["severity"] == "must_fix"]
     assert open_issues and all(r["verdict"] == "revise" for r in reviews)
     state = designer.state(p["id"])
-    assert [a["status"] for a in state["attempts"]] == ["review_rejected", "review_rejected", "accepted_with_open_review"]
+    assert [a["status"] for a in state["attempts"]] == ["review_rejected", "review_rejected", "review_blocked"]
 
 
 def test_unverified_review_resume_rechecks_same_geometry_before_any_edits(designer, monkeypatch):
@@ -338,9 +380,11 @@ def test_unverified_review_resume_rechecks_same_geometry_before_any_edits(design
         return {"verdict": "revise", "issues": [{"severity": "must_fix", "problem": "An unsupported claim"}]}
     agent = Agent(reply)
     monkeypatch.setattr(designer, "_providers", lambda live: dict.fromkeys(ROLES, agent))
-    spec, _analysis, _source, _assumptions, _usage, reviews = designer._draft(p, True)
+    with pytest.raises(RuntimeError, match="unverified"):
+        designer._draft(p, True)
+    reviews = designer.state(p["id"])["attempts"][-1]["reviews"]
     assert any(r["verdict"] == "needs_evidence" for r in reviews)  # flagged, not approved
-    assert designer.state(p["id"])["attempts"][-1]["status"] == "accepted_with_open_review"
+    assert designer.state(p["id"])["attempts"][-1]["status"] == "review_blocked"
     assert len([x for x in agent.payloads if "request" in x]) == 1
     reviewer = Agent(approve)
     monkeypatch.setattr(designer, "_providers", lambda live: dict.fromkeys(ROLES, reviewer))
@@ -387,7 +431,8 @@ def test_existing_designs_with_open_issues_are_repaired_before_printing(designer
         if 'fabrication specialist' in system and payload['part']['features'][3]['radius_mm'] == 2.5:
             assert payload['prior_design_review']['issues'][0]['problem'] == 'Hole needs clearance'
             return {'verdict': 'revise', 'issues': [{'severity': 'must_fix', 'problem': 'Hole needs clearance',
-                'evidence_ids': ['features:3'], 'evidence': 'Radius 2.5 equals nominal fastener radius', 'fix': 'Increase to 2.7'}]}
+                'evidence_ids': ['features:3'], 'evidence': 'Radius 2.5 equals nominal fastener radius', 'fix': 'Increase to 2.7',
+                'claim': {'kind': 'comparison', 'left': 'measure:features:3:radius', 'op': 'lt', 'right': 2.7}}]}
         return approve(system, payload)
     agent = Agent(reply)
     monkeypatch.setattr(designer, '_providers', lambda live: dict.fromkeys(ROLES, agent))
@@ -409,13 +454,20 @@ def test_surface_export_keeps_a_closed_shell_even_with_legacy_triangle_limit():
 def test_default_limits_allow_a_seventh_drafting_attempt(designer, monkeypatch):
     designer.limits = DesignerLimits()
     p = project(designer)
-    monkeypatch.setattr(ff, 'analyze', result)
+    def improving(spec, values, folder):
+        r = result(spec, values, folder)
+        remaining = max(0, 6 - round((spec.features[3].radius - 2.5) * 10))
+        r['checks'][1].update(passed=not remaining, value=remaining, detail='Remaining geometry failures')
+        return r
+    monkeypatch.setattr(ff, 'analyze', improving)
     drafts = 0
     def reply(system, payload):
         nonlocal drafts
         if 'request' in payload:
             drafts += 1
-            return {'spec': {} if drafts <= 6 else _example()}
+            if drafts == 1:
+                return {'spec': _example()}
+            return {'repair': {'features': [{'index': 3, 'changes': {'radius': round(2.5 + (drafts - 1) * 0.1, 2)}}]}}
         return approve(system, payload)
     agent = Agent(reply)
     monkeypatch.setattr(designer, '_providers', lambda live: dict.fromkeys(ROLES, agent))
@@ -449,7 +501,8 @@ def test_default_review_limit_allows_six_repairs_then_accepts_seventh_draft(desi
             return {'repair': {'features': [{'index': 3, 'changes': {'radius': radius}}]}}
         if payload['part']['features'][3]['radius_mm'] < 3.1:
             return {'verdict': 'revise', 'issues': [{'severity': 'must_fix', 'problem': 'Insufficient hole clearance',
-                'evidence_ids': ['features:3'], 'evidence': 'Required radius is 3.1 mm; the current radius is smaller'}]}
+                'evidence_ids': ['features:3'], 'evidence': 'Required radius is 3.1 mm; the current radius is smaller',
+                'claim': {'kind': 'comparison', 'left': 'measure:features:3:radius', 'op': 'lt', 'right': 3.1}}]}
         return approve(system, payload)
     agent = Agent(reply)
     monkeypatch.setattr(designer, '_providers', lambda live: dict.fromkeys(ROLES, agent))
@@ -460,12 +513,14 @@ def test_default_review_limit_allows_six_repairs_then_accepts_seventh_draft(desi
 
 def test_iteration_configuration_and_api_overrides(monkeypatch, designer):
     from dataclasses import fields
-    from scienceclaw.app import DesignRunRequest
+    from coform.app import DesignRunRequest
     for field in fields(DesignerLimits):
-        monkeypatch.delenv('SCIENCECLAW_DESIGN_' + field.name.upper(), raising=False)
+        # Both the current name and the SCIENCECLAW_ one it still falls back to.
+        for prefix in ('COFORM_DESIGN_', 'SCIENCECLAW_DESIGN_'):
+            monkeypatch.delenv(prefix + field.name.upper(), raising=False)
     assert DesignerLimits.from_environment() == DesignerLimits(12, 12, 8, 8)
-    monkeypatch.setenv('SCIENCECLAW_DESIGN_MAX_ROUNDS', '20')
-    monkeypatch.setenv('SCIENCECLAW_DESIGN_MAX_DRAFT_ATTEMPTS', '18')
+    monkeypatch.setenv('COFORM_DESIGN_MAX_ROUNDS', '20')
+    monkeypatch.setenv('COFORM_DESIGN_MAX_DRAFT_ATTEMPTS', '18')
     designer.limits = DesignerLimits.from_environment()
     assert designer.limits.max_draft_attempts == 18
     assert DesignRunRequest().rounds is None
@@ -478,6 +533,6 @@ def test_iteration_configuration_and_api_overrides(monkeypatch, designer):
     designer.run_more(p['id'], live=False, rounds=25)
     assert called == [20, 25]
     for bad in ('0', '51', 'not a number'):
-        monkeypatch.setenv('SCIENCECLAW_DESIGN_MAX_ROUNDS', bad)
+        monkeypatch.setenv('COFORM_DESIGN_MAX_ROUNDS', bad)
         with pytest.raises(ValueError, match='integer from 1 to 50'):
             DesignerLimits.from_environment()

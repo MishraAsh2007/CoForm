@@ -2,9 +2,9 @@ from copy import deepcopy
 
 import pytest
 
-from scienceclaw.agents import decide, validate_proposal, Proposal
-from scienceclaw.domain import Geometry, ModelParameters, Protocol
-from scienceclaw.providers import ProviderError, ProviderResponse
+from coform.agents import decide, validate_proposal, Proposal
+from coform.domain import Geometry, ModelParameters, Protocol
+from coform.providers import ProviderError, ProviderResponse
 
 
 def evidence_context(**protocol_changes):
@@ -106,3 +106,22 @@ def test_design_family_is_frozen_for_a_calibrated_study():
     proposal=Proposal(action="design",candidate_id="candidate",geometry=Geometry(section_family="solid_bar"),
                       force_n=.3,load_position_m=.12,reason="Switch family",evidence_ids=("obs",),cost={"cycles":1,"designs":1})
     assert "New designs must preserve section_family" in validate_proposal(proposal,context)
+
+
+def test_an_unexpected_provider_exception_still_frees_its_token_reservation():
+    """A sibling call waiting on the same meter would otherwise block forever (only a restart freed the part)."""
+    import sqlite3
+    import pytest
+    from coform.agents import _meter, _metered_call
+
+    class Locked:
+        name, model = "nvidia", "test"
+
+        def complete_json(self, system, payload, max_output_tokens):
+            raise sqlite3.OperationalError("database is locked")
+
+    meter = _meter()
+    usage = {"input_tokens": 0, "output_tokens": 0, "total_tokens": 0, "reserved_tokens": 0, "calls": 0}
+    with pytest.raises(sqlite3.OperationalError):
+        _metered_call(Locked(), "mechanics", "review", "system", {"x": 1}, usage=usage, token_limit=100000, transcript=[], meter=meter)
+    assert meter["inflight"] == 0

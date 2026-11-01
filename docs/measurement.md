@@ -75,7 +75,7 @@ Frame gaps inside a window, missing coordinates and large jumps are flagged.
 All numeric values and calibration settings must be finite.
 
 ```python
-from scienceclaw.measurement import analyze_trace_file
+from coform.measurement import analyze_trace_file
 
 result = analyze_trace_file("cycle.csv", pixels_per_m=100_000)
 ```

@@ -3,18 +3,18 @@ import sys
 
 import pytest
 
-from scienceclaw.cad import FreeCADLink, find_freecad_cmd, print_pipeline
-from scienceclaw.domain import Geometry
-from scienceclaw.formlabs import Manufacturing
-from scienceclaw.service import ScienceClaw
+from coform.cad import FreeCADLink, find_freecad_cmd, print_pipeline
+from coform.domain import Geometry
+from coform.formlabs import Manufacturing
+from coform.service import CoForm
 
 ROOT = Path(__file__).resolve().parents[1]
 FAKE_WORKER = f'''
 import json, os, sys
 sys.path.insert(0, {str(ROOT)!r})
-from scienceclaw.domain import Geometry
-from scienceclaw.mechanics import generate_stl, section_properties
-job = json.load(open(os.environ["SCIENCECLAW_FREECAD_JOB"], encoding="utf-8"))
+from coform.domain import Geometry
+from coform.mechanics import generate_stl, section_properties
+job = json.load(open(os.environ["COFORM_FREECAD_JOB"], encoding="utf-8"))
 result = {{"ok": True, "freecad_version": "fake-1.1"}}
 if job["action"] == "build":
     if os.getenv("FAKE_FREECAD_FAIL"):
@@ -41,7 +41,7 @@ json.dump(result, open(job["result"], "w"))
 def lab(tmp_path):
     worker = tmp_path / "fake_worker.py"
     worker.write_text(FAKE_WORKER, encoding="utf-8")
-    service = ScienceClaw(tmp_path / "data")
+    service = CoForm(tmp_path / "data")
     manufacturing = Manufacturing(service.store)
     yield service, manufacturing, FreeCADLink(service.store, manufacturing, command=[sys.executable, str(worker)])
     service.store.close()
@@ -90,7 +90,7 @@ def test_freecad_rebuild_failure_is_reported(lab, monkeypatch):
 def test_missing_freecad_is_explained(tmp_path, monkeypatch):
     monkeypatch.setenv("FREECAD_CMD", str(tmp_path / "missing.exe"))
     assert find_freecad_cmd() is None
-    service = ScienceClaw(tmp_path / "data")
+    service = CoForm(tmp_path / "data")
     status = FreeCADLink(service.store, Manufacturing(service.store)).status()
     assert status["available"] is False and "FreeCAD not found" in status["detail"]
     service.store.close()
@@ -99,7 +99,7 @@ def test_missing_freecad_is_explained(tmp_path, monkeypatch):
 @pytest.mark.skipif(find_freecad_cmd() is None, reason="FreeCAD is not installed")
 @pytest.mark.parametrize("family,height", [("u_channel", .010), ("solid_bar", .005), ("rectangular_tube", .010)])
 def test_real_freecad_matches_the_physics(tmp_path, family, height):
-    service = ScienceClaw(tmp_path)
+    service = CoForm(tmp_path)
     try:
         freecad = FreeCADLink(service.store, Manufacturing(service.store))
         run = service.create_run(mode="physical", geometry=Geometry(section_family=family, wall_height_m=height))

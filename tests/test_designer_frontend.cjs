@@ -2,7 +2,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const {chartSvg} = require('../scienceclaw/static/designer_charts.js');
+const {chartSvg} = require('../coform/static/designer_charts.js');
 const tests = [
   {id: 'draft', iteration: 0, chosen: true, results: {passed: true, mass_g: 70}},
   {id: 'a', iteration: 1, chosen: false, results: {passed: false, mass_g: 50}},
@@ -31,7 +31,7 @@ const canvas = {clientWidth: 260, clientHeight: 140, getContext: () => ctx,
   addEventListener: (n, f) => {events[n] = f;}, setPointerCapture() {}};
 const sandbox = {window: {devicePixelRatio: 1, addEventListener() {}}, console};
 vm.createContext(sandbox);
-vm.runInContext(fs.readFileSync(require.resolve('../scienceclaw/static/viewer3d.js'), 'utf8'), sandbox);
+vm.runInContext(fs.readFileSync(require.resolve('../coform/static/viewer3d.js'), 'utf8'), sandbox);
 const viewer = sandbox.window.Viewer3D(canvas, null);
 const field = {positions: [[0, 0, 0], [100, 100, 100], [100, 0, 0]],
   displacement: [[0, 0, 0], [0, 0, 0], [0, 0, 0]], stress: [1, 2, 3], triangles: [[0, 1, 2], [2, 1, 0]]};
@@ -46,4 +46,12 @@ assert.throws(() => viewer.setField({...field, triangles: [[0, 1, 999]]}), /inco
 // A dense field must not exceed JavaScript's argument limit via Math.max(...array).
 const dense = {...field, positions: Array(140000).fill([0, 0, 0]), displacement: Array(140000).fill([0, 0, 0]), stress: Array(140000).fill(0)};
 viewer.setField(dense, {supports: [], loads: []}, {stress: 23});
+// Reference bodies: a 1 m desk is clipped near the part, a bottle is drawn as a cylinder, and everything stays on screen.
+ctx.points = []; ctx.fills = 0;
+viewer.setField(field, {supports: [], loads: [], bodies: [
+  {name: 'desk', role: 'mount', shape: 'box', min: [-1000, -500, -25], max: [0, 500, 0]},
+  {name: 'bottle', role: 'payload', shape: 'cylinder', min: [10, 10, 0], max: [80, 80, 200], base: [45, 45, 0], axis: 'z', radius: 35, length: 200},
+  {name: 'far away', role: 'keep_clear', shape: 'box', min: [5000, 5000, 5000], max: [5100, 5100, 5100]}]}, {stress: 23});
+assert(ctx.fills >= 2 + 6 + 2); // part faces, the desk slab's six faces, the bottle's two end rings
+assert(ctx.points.every(([x, y]) => Number.isFinite(x) && Number.isFinite(y) && x >= 0 && x <= 260 && y >= 0 && y <= 140));
 console.log('Chart and 3D drawing checks passed (Node only).');

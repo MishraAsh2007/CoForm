@@ -9,11 +9,11 @@ from fastapi.testclient import TestClient
 
 pytest.importorskip("formlabs_sdk")
 from formlabs_sdk import FormlabsClient
-from scienceclaw.app import create_app
-from scienceclaw.domain import Geometry
-from scienceclaw.formlabs import Manufacturing, PrintProfile, FormlabsError, inspect_scene, validate_stl
-from scienceclaw.mechanics import generate_stl as stl
-from scienceclaw.store import Store
+from coform.app import create_app
+from coform.domain import Geometry
+from coform.formlabs import Manufacturing, PrintProfile, FormlabsError, inspect_scene, validate_stl
+from coform.mechanics import generate_stl as stl
+from coform.store import Store
 
 
 PROFILE = PrintProfile(machine_type="FORM-4-0", material_code="FLGPGR05", layer_thickness_mm=.1, minimum_wall_mm=.5)

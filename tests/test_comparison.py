@@ -4,9 +4,9 @@ import zipfile
 
 import pytest
 
-from scienceclaw.cli import main
-from scienceclaw.comparison import export_run, run_comparison
-from scienceclaw.service import ScienceClaw
+from coform.cli import main
+from coform.comparison import export_run, run_comparison
+from coform.service import CoForm
 
 
 def test_paired_comparison_uses_identical_initial_evidence_and_budget(tmp_path):
@@ -30,7 +30,7 @@ def test_paired_comparison_uses_identical_initial_evidence_and_budget(tmp_path):
 
 
 def test_export_contains_reconstructable_records_and_verified_hashes(tmp_path):
-    service = ScienceClaw(tmp_path / "data")
+    service = CoForm(tmp_path / "data")
     try:
         state = service.create_run(seed=10)
         run_id = state["run"]["id"]
@@ -54,7 +54,7 @@ def test_export_contains_reconstructable_records_and_verified_hashes(tmp_path):
 
 
 def test_export_refuses_corrupted_artifacts(tmp_path):
-    service = ScienceClaw(tmp_path / "data")
+    service = CoForm(tmp_path / "data")
     try:
         state = service.create_run(seed=10)
         name = state["candidates"][0]["artifacts"]["stl"]["filename"]

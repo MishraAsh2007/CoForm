@@ -6,13 +6,13 @@ import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 
-from scienceclaw.app import create_app
-from scienceclaw.cad import _triangles
-from scienceclaw.domain import Geometry, Protocol
-from scienceclaw.formlabs import Manufacturing
-from scienceclaw.fusion import FusionLink, _stl_binary
-from scienceclaw.mechanics import generate_stl, section_properties
-from scienceclaw.service import ScienceClaw
+from coform.app import create_app
+from coform.cad import _triangles
+from coform.domain import Geometry, Protocol
+from coform.formlabs import Manufacturing
+from coform.fusion import FusionLink, _stl_binary
+from coform.mechanics import generate_stl, section_properties
+from coform.service import CoForm
 
 
 def export(geometry, *, cm=False, extra_volume=0.0, values=None):
@@ -26,7 +26,7 @@ def export(geometry, *, cm=False, extra_volume=0.0, values=None):
     return {"stl_b64": base64.b64encode(stl).decode(), "step_b64": base64.b64encode(b"ISO-10303-21;").decode(),
             "values_mm": mm, "parameters": {k: f"{v:g} mm" for k, v in mm.items()},
             "volume_mm3": section_properties(geometry)["area_m2"] * geometry.length_m * 1e9 * (1 + extra_volume),
-            "bodies": 1, "document": "ScienceClaw arm", "version": 3}
+            "bodies": 1, "document": "CoForm arm", "version": 3}
 
 
 class FakeAddin(threading.Thread):
@@ -49,7 +49,7 @@ class FakeAddin(threading.Thread):
 
 @pytest.fixture
 def lab(tmp_path):
-    service = ScienceClaw(tmp_path)
+    service = CoForm(tmp_path)
     link = FusionLink(service, Manufacturing(service.store))
     yield service, link
     service.store.close()

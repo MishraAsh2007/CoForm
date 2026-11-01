@@ -1,6 +1,6 @@
-# ScienceClaw Design Lab
+# CoForm Design Lab
 
-An implementation for the MIT ScienceClaw hackathon: three specialists propose and review experiments, with **Onshape for production CAD and Formlabs PreForm for print preparation**. ScienceClaw coordinates evidence and decisions.
+An implementation for the MIT ScienceClaw hackathon: three specialists propose and review experiments, with **Onshape for production CAD and Formlabs PreForm for print preparation**. CoForm coordinates evidence and decisions.
 
 **Current on-site target:** Formlabs Form Studio 1; Rigid 10K Resin and another resin whose exact product name is pending. PreForm Insider 3.65.0.1096 is connected locally. Its current Studio 1 catalog does not list Rigid 10K, and no actual printable device is connected yet. The integration reads catalog settings instead of guessing compatibility.
 
@@ -14,7 +14,7 @@ Python 3.11+ is required. A configured `.venv` already exists in this workspace.
 
 ```powershell
 # Existing workspace:
-.\.venv\Scripts\python.exe -m scienceclaw.cli serve
+.\.venv\Scripts\python.exe -m coform.cli serve
 ```
 
 Open **http://127.0.0.1:8000**. Create a simulated study, then choose **Offline step** or **Complete offline demo**. No keys, printer or camera are needed for the offline demo.
@@ -24,7 +24,7 @@ For a clean installation:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e ".[dev,formlabs]"
-.\.venv\Scripts\python.exe -m scienceclaw.cli serve
+.\.venv\Scripts\python.exe -m coform.cli serve
 ```
 
 ## Enable all three models
@@ -45,7 +45,7 @@ The creation form lets you set the aggregate token budget. Its 12,000-token defa
 
 ## What works
 
-- Autodesk Fusion add-in ([docs](docs/fusion.md)): agents set Fusion user parameters and Fusion rebuilds while keeping your own features. **Send to ScienceClaw** turns your edits into checked candidates, with the requirements verdict shown in Fusion.
+- Autodesk Fusion add-in ([docs](docs/fusion.md)): agents set Fusion user parameters and Fusion rebuilds while keeping your own features. **Send to CoForm** turns your edits into checked candidates, with the requirements verdict shown in Fusion.
 - Baselines for the rubric's "does the collective add capability?" question, with the same tools, evidence, checks and token budget: a **single agent** that owns every responsibility (it retries with validator feedback), and **specialists without evidence exchange** (independent proposals, no review or revision; the plurality valid action wins). `compare --live` runs them against the collective and the adaptive optimizer on identical simulated tasks.
 - NVIDIA-hosted models (Nemotron) as an agent provider; see [providers](docs/providers.md).
 - Design requirements, frozen per study: design load and position, maximum deflection, base-width and wall-height ranges, and optional material budget and allowable root stress. One function (`mechanics.requirement_checks`) judges every design for the optimizer, diagnosis, agent proposals, repairs and print review. When the requirements conflict, the diagnosis names the binding one.
@@ -84,16 +84,16 @@ See [measurement protocol and marker CSV format](docs/measurement.md). Automatic
 
 ```powershell
 # One offline simulated run:
-.\.venv\Scripts\python.exe -m scienceclaw.cli demo --method collective --seed 7
+.\.venv\Scripts\python.exe -m coform.cli demo --method collective --seed 7
 
 # Same initial evidence, protocol, geometry and budgets for each paired seed:
-.\.venv\Scripts\python.exe -m scienceclaw.cli compare --seeds 7 8 9 --output data/comparison
+.\.venv\Scripts\python.exe -m coform.cli compare --seeds 7 8 9 --output data/comparison
 
 # Live agents (uses model credits): four methods, two scenarios, two seeds, equal budgets:
-.\.venv\Scripts\python.exe -m scienceclaw.cli compare --live --seeds 7 8 --methods adaptive collective single_agent independent --scenarios nominal stiff_material_loose_mount --token-budget 500000 --output data/comparison-live
+.\.venv\Scripts\python.exe -m coform.cli compare --live --seeds 7 8 --methods adaptive collective single_agent independent --scenarios nominal stiff_material_loose_mount --token-budget 500000 --output data/comparison-live
 
 # Export a run (substitute the actual run ID):
-.\.venv\Scripts\python.exe -m scienceclaw.cli export RUN_ID --output data/exports
+.\.venv\Scripts\python.exe -m coform.cli export RUN_ID --output data/exports
 
 # Tests:
 .\.venv\Scripts\python.exe -m pytest -q

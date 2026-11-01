@@ -4,7 +4,7 @@ import zipfile
 
 from fastapi.testclient import TestClient
 
-from scienceclaw.app import create_app
+from coform.app import create_app
 
 
 def test_api_create_generate_run_export_and_secret_redaction(tmp_path, monkeypatch):

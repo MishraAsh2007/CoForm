@@ -2,9 +2,9 @@ import subprocess
 
 import pytest
 
-from scienceclaw import fea
-from scienceclaw.domain import Geometry, ModelParameters, Protocol
-from scienceclaw.mechanics import predict_deflection
+from coform import fea
+from coform.domain import Geometry, ModelParameters, Protocol
+from coform.mechanics import predict_deflection
 
 TOOLS = fea.find_tools()
 pytestmark = pytest.mark.skipif(TOOLS is None, reason="Gmsh and CalculiX are not installed (bundled with FreeCAD 1.x)")
@@ -56,10 +56,10 @@ def test_a_step_of_a_different_part_is_refused(tmp_path):
 
 
 def test_simulated_study_takes_measurements_from_the_rig_and_hides_the_truth(tmp_path):
-    from scienceclaw.service import ScienceClaw
-    from scienceclaw.validation import RIG_SCENARIOS
+    from coform.service import CoForm
+    from coform.validation import RIG_SCENARIOS
     scenario = RIG_SCENARIOS[0]
-    service = ScienceClaw(tmp_path)
+    service = CoForm(tmp_path)
     try:
         run = service.create_run(scenario=scenario, protocol=Protocol(**scenario.protocol_overrides), seed=3)["run"]["id"]
         final = service.demo(run)

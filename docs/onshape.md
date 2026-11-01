@@ -5,7 +5,7 @@
 Onshape may refuse to create API keys for some accounts ("Your account is not currently
 eligible to create API keys"). The API is optional. Two routes need no keys:
 
-- **ScienceClaw parametric CAD** (`cad_source: "local_fixture"`, the default): the
+- **CoForm parametric CAD** (`cad_source: "local_fixture"`, the default): the
   STL is generated from the candidate's dimensions. For these prismatic sections it is
   exactly the analyzed part.
 - **Manual Onshape export** (`cad_source: "uploaded"`): set the part's dimensions in
@@ -23,10 +23,10 @@ The agents' designs reach the printer through one parametric Onshape Part Studio
 1. A candidate's dimensions are written to four Onshape **Length variables**
    (`sc_length`, `sc_base_width`, `sc_wall_height`, `sc_thickness`). Nothing else in
    the document is edited. Unchanged variables are not rewritten.
-2. ScienceClaw confirms every feature regenerated, then creates an Onshape **version**
-   named `ScienceClaw <candidate_id>`. Versions are immutable, so each candidate has a
+2. CoForm confirms every feature regenerated, then creates an Onshape **version**
+   named `CoForm <candidate_id>`. Versions are immutable, so each candidate has a
    permanent CAD snapshot.
-3. A millimeter binary STL is exported **from that version**. ScienceClaw checks the
+3. A millimeter binary STL is exported **from that version**. CoForm checks the
    exact bytes that will be printed: closed mesh, extents and volume within 0.05 mm / 1%
    of the section the mechanics model analyzed. Onshape mass properties are an extra
    volume cross-check. A part that differs (fillets, holes, wrong family) is stopped here.
@@ -56,16 +56,16 @@ Every step is an immutable record (`cad_revision`, `print_asset`, `print_project
    ```
 
    The URL is the browser address of the **Part Studio tab** in the
-   *ScienceClaw - Physical Design* document. Enterprise stacks also set
-   `ONSHAPE_BASE_URL=https://<company>.onshape.com`. Restart `scienceclaw serve`.
-2. **Variables.** In the ScienceClaw page, click **Create Onshape variables** (or
+   *CoForm - Physical Design* document. Enterprise stacks also set
+   `ONSHAPE_BASE_URL=https://<company>.onshape.com`. Restart `coform serve`.
+2. **Variables.** In the CoForm page, click **Create Onshape variables** (or
    `POST /api/onshape/bootstrap`). This adds any missing `sc_*` Variable features at the
    current study's reference dimensions. You can also create them by hand in Onshape
    (Variable feature, type Length); they must come **before** the geometry feature.
 3. **Geometry feature.** In the Onshape document, create a **Feature Studio**, keep the two
    header lines Onshape generates, paste the body of
-   [`onshape/scienceclaw_support_arm.fs`](onshape/scienceclaw_support_arm.fs), and commit.
-   In the Part Studio, add the **ScienceClaw support arm** feature (custom features menu),
+   [`onshape/coform_support_arm.fs`](onshape/coform_support_arm.fs), and commit.
+   In the Part Studio, add the **CoForm support arm** feature (custom features menu),
    choose the section family that matches your study, and type the expressions
    `#sc_length`, `#sc_base_width`, `#sc_wall_height`, `#sc_thickness` into its fields.
    A teammate may instead model the part by hand, provided its dimensions reference
@@ -92,7 +92,7 @@ remains available.
 layer_thickness_mm, print_setting, minimum_wall_mm}, "cad_source": "onshape" |
 "local_fixture", "live": false}`. `live: true` asks the three configured model
 providers for the review and charges the study's token budget. `local_fixture` uses
-ScienceClaw's own STL, labeled as such, for testing without Onshape credentials.
+CoForm's own STL, labeled as such, for testing without Onshape credentials.
 
 Authentication uses Onshape API keys over HTTP Basic, which Onshape documents as
 suitable for local use. Export redirects are followed only within `*.onshape.com`;

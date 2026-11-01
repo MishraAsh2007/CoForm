@@ -43,7 +43,7 @@ observations, completed prints, or validated material properties have been colle
 
 ## Onshape → PreForm → specialist review pipeline (2026-10-31)
 
-Implemented in `scienceclaw/cad.py`; see [onshape.md](onshape.md). The Onshape link
+Implemented in `coform/cad.py`; see [onshape.md](onshape.md). The Onshape link
 (variable writes, versioning, 307 export redirect, mass-properties cross-check, foreign
 redirect refusal, missing-variable bootstrap) is tested against a **fake Onshape server**
 only. No Onshape API keys are configured yet, and the FeatureScript support-arm feature

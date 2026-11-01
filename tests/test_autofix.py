@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 
-from scienceclaw.app import create_app
-from scienceclaw.domain import Geometry, Protocol
-from scienceclaw.mechanics import generate_stl
+from coform.app import create_app
+from coform.domain import Geometry, Protocol
+from coform.mechanics import generate_stl
 
 
 def test_one_button_fix_covers_each_kind_of_problem(tmp_path):

@@ -3,9 +3,9 @@ import json
 import httpx
 import pytest
 
-from scienceclaw.agents import Proposal, decide, validate_proposal
-from scienceclaw.domain import Geometry, ModelParameters, Protocol
-from scienceclaw.providers import JSONProvider, ProviderError, ProviderResponse, from_environment
+from coform.agents import Proposal, decide, validate_proposal
+from coform.domain import Geometry, ModelParameters, Protocol
+from coform.providers import JSONProvider, ProviderError, ProviderResponse, from_environment
 
 
 def context():

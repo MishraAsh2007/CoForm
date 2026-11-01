@@ -1,0 +1,13 @@
+{
+	"autodeskProduct": "Fusion",
+	"type": "addin",
+	"id": "6f3c2a8e-6a51-4c1f-9b55-5d2e8f0c7a11",
+	"author": "CoForm team",
+	"description": {
+		"": "Connects a parametric support-arm design to the local CoForm lab: agents set sc_* parameters; you can send your own edits back."
+	},
+	"version": "0.4.0",
+	"runOnStartup": false,
+	"supportedOS": "windows|mac",
+	"editEnabled": true
+}

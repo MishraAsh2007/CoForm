@@ -6,14 +6,14 @@ import struct
 import httpx
 import pytest
 
-from scienceclaw.cad import (CADLink, OnshapeClient, OnshapeError, VARIABLES, check_mesh, mesh_metrics,
+from coform.cad import (CADLink, OnshapeClient, OnshapeError, VARIABLES, check_mesh, mesh_metrics,
                              new_variable_feature, parse_part_studio_url, print_pipeline, with_expression)
-from scienceclaw.domain import Geometry, Protocol
-from scienceclaw.mechanics import generate_stl
-from scienceclaw.service import ScienceClaw
+from coform.domain import Geometry, Protocol
+from coform.mechanics import generate_stl
+from coform.service import CoForm
 
 pytest.importorskip("formlabs_sdk")
-from scienceclaw.formlabs import Manufacturing, PrintProfile  # noqa: E402
+from coform.formlabs import Manufacturing, PrintProfile  # noqa: E402
 from tests.test_formlabs import FakePreForm  # noqa: E402
 
 
@@ -39,8 +39,8 @@ class FakeOnshape:
         self.base = base or Geometry()
         self.features = [{**new_variable_feature(name, f"{getattr(self.base, key) * 1000:g} mm"), "featureId": f"F{name}"}
                          for name, key in VARIABLES.items()] if variables else []
-        self.features.append({"btType": "BTMFeature-134", "featureType": "scienceClawSupportArm", "featureId": "Fgeom",
-                              "name": "ScienceClaw support arm", "parameters": []})
+        self.features.append({"btType": "BTMFeature-134", "featureType": "coFormSupportArm", "featureId": "Fgeom",
+                              "name": "CoForm support arm", "parameters": []})
         self.versions, self.requests, self.extra_volume = {}, [], 0.0
         self.redirect_host = "cad.onshape.com"
 
@@ -79,7 +79,7 @@ class FakeOnshape:
         if path.startswith("/download/"):
             return httpx.Response(200, content=binary_stl(self.versions[path.split("/")[-1][:-4]]))
         if path.endswith("/massproperties"):
-            from scienceclaw.mechanics import section_properties
+            from coform.mechanics import section_properties
             g = self.versions[path.split("/v/")[1].split("/")[0]]
             v = section_properties(g)["area_m2"] * g.length_m + self.extra_volume
             return httpx.Response(200, json={"bodies": {"-all-": {"volume": [v, v * .999, v * 1.001]}}})
@@ -88,7 +88,7 @@ class FakeOnshape:
 
 @pytest.fixture
 def lab(tmp_path):
-    service = ScienceClaw(tmp_path)
+    service = CoForm(tmp_path)
     fake_pf = FakePreForm()
 
     @contextmanager
@@ -170,7 +170,7 @@ def test_sync_detects_cad_that_differs_and_refuses_foreign_redirect(lab):
 
 
 def test_missing_variables_and_bootstrap(tmp_path):
-    service = ScienceClaw(tmp_path)
+    service = CoForm(tmp_path)
     onshape = FakeOnshape(variables=False)
     client = OnshapeClient("access", "secret", client=httpx.Client(transport=httpx.MockTransport(onshape.handler)))
     cad = CADLink(service.store, Manufacturing(service.store), lambda: (client, DOC))
@@ -220,7 +220,7 @@ def test_review_rejects_thin_walls_and_predicted_failure(lab):
 
 
 def test_live_print_review_routes_each_specialist_and_meters_tokens(lab, monkeypatch):
-    from scienceclaw.providers import ProviderResponse
+    from coform.providers import ProviderResponse
     service, manufacturing, cad, _, _ = lab
 
     class Fake:
@@ -233,7 +233,7 @@ def test_live_print_review_routes_each_specialist_and_meters_tokens(lab, monkeyp
             return ProviderResponse({"support": self.support, "reason": f"{self.name} checked", "evidence_ids": ids}, 500, 40)
 
     fakes = {"mechanics": Fake("openai", True), "fabrication": Fake("anthropic", False), "measurement": Fake("gemini", True)}
-    monkeypatch.setattr(ScienceClaw, "_live_providers", staticmethod(lambda team=None: fakes))
+    monkeypatch.setattr(CoForm, "_live_providers", staticmethod(lambda team=None: fakes))
     run = service.create_run(mode="physical", protocol=Protocol(token_budget=20000))
     result = print_pipeline(service, cad, manufacturing, run["run"]["id"], run["candidates"][0]["id"], PROFILE,
                             cad_source="local_fixture", live=True)

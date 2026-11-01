@@ -7,8 +7,8 @@ from types import ModuleType, SimpleNamespace
 
 import pytest
 
-from scienceclaw.fusion import FusionLink
-from scienceclaw.store import Store
+from coform.fusion import FusionLink
+from coform.store import Store
 
 
 @pytest.fixture
@@ -49,7 +49,7 @@ def test_empty_import_confirmation_is_not_success(link):
 
 def test_view_status_api_reports_actual_import_completion(tmp_path):
     from fastapi.testclient import TestClient
-    from scienceclaw.app import create_app
+    from coform.app import create_app
     app = create_app(tmp_path)
     try:
         with TestClient(app) as client:
@@ -73,7 +73,7 @@ def addin(monkeypatch):
     adsk.core, adsk.fusion = core, fusion
     for name, module in [('adsk', adsk), ('adsk.core', core), ('adsk.fusion', fusion)]:
         monkeypatch.setitem(sys.modules, name, module)
-    spec = importlib.util.spec_from_file_location('test_scienceclaw_addin', Path('fusion/ScienceClaw/ScienceClaw.py'))
+    spec = importlib.util.spec_from_file_location('test_coform_addin', Path('fusion/CoForm/CoForm.py'))
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     module.app = SimpleNamespace(activeDocument=None)

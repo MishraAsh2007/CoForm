@@ -1,16 +1,16 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from scienceclaw.app import create_app
-from scienceclaw.diagnosis import physics
-from scienceclaw.domain import Geometry, ModelParameters, Protocol
-from scienceclaw.mechanics import generate_stl, predict_deflection
-from scienceclaw.service import ScienceClaw
+from coform.app import create_app
+from coform.diagnosis import physics
+from coform.domain import Geometry, ModelParameters, Protocol
+from coform.mechanics import generate_stl, predict_deflection
+from coform.service import CoForm
 
 
 @pytest.fixture
 def service(tmp_path):
-    s = ScienceClaw(tmp_path)
+    s = CoForm(tmp_path)
     yield s
     s.store.close()
 

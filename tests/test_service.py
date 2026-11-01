@@ -2,13 +2,13 @@ import sqlite3
 
 import pytest
 
-from scienceclaw.domain import Geometry, Protocol
-from scienceclaw.service import ScienceClaw
+from coform.domain import Geometry, Protocol
+from coform.service import CoForm
 
 
 @pytest.fixture
 def service(tmp_path):
-    value = ScienceClaw(tmp_path)
+    value = CoForm(tmp_path)
     yield value
     value.store.close()
 
@@ -85,8 +85,8 @@ def test_protocol_cannot_reserve_the_proof_condition():
 
 
 def test_live_round_routes_three_providers_with_realistic_context(service, monkeypatch):
-    from scienceclaw import providers
-    from scienceclaw.providers import ProviderResponse, encode
+    from coform import providers
+    from coform.providers import ProviderResponse, encode
     # Independent of the developer's .env role assignment.
     for role, name in (("MECHANICS", "openai"), ("FABRICATION", "anthropic"), ("MEASUREMENT", "gemini")):
         monkeypatch.setenv(f"{role}_PROVIDER", name)
@@ -118,5 +118,5 @@ def test_live_round_routes_three_providers_with_realistic_context(service, monke
     assert result["decision"]["usage"]["calls"] == 6
     assert 0 < service.state(run_id)["budget"]["tokens_used"] <= Protocol().token_budget
     service.step(run_id, live=False)
-    from scienceclaw.comparison import summarize_run
+    from coform.comparison import summarize_run
     assert summarize_run(service.state(run_id))["policy"] == "mixed_live_and_offline_specialists"

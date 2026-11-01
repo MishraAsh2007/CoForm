@@ -1,7 +1,7 @@
 # Onshape and Formlabs workflow
 
-ScienceClaw coordinates experiments and agent discussion. Onshape owns production CAD;
-PreForm owns print preparation. ScienceClaw is not a replacement CAD editor or slicer.
+CoForm coordinates experiments and agent discussion. Onshape owns production CAD;
+PreForm owns print preparation. CoForm is not a replacement CAD editor or slicer.
 
 ## What is implemented
 
@@ -28,7 +28,7 @@ An arbitrary imported STL does not acquire beam predictions or physical validati
 ## Your account and hardware setup
 
 1. Sign in to [Onshape](https://cad.onshape.com/signin) yourself. Create a document named
-   **ScienceClaw - Physical Design** and send its document URL. Keep passwords out of chat.
+   **CoForm - Physical Design** and send its document URL. Keep passwords out of chat.
    Do not create new API credentials yet: the exact automation access will be scoped
    after the document exists. Manual export works without API credentials.
 2. Create/open the part in Onshape. Export the part as **STL**, units **millimeter**.
@@ -37,14 +37,14 @@ An arbitrary imported STL does not acquire beam predictions or physical validati
    need starting again. Auto-start was not enabled.
 4. If remote printers are needed, sign in to Formlabs yourself inside PreForm. Add/select
    the actual on-site printer using the team's normal network or Dashboard setup.
-5. Open [ScienceClaw locally](http://127.0.0.1:8000), click **Connect PreForm**, and import
+5. Open [CoForm locally](http://127.0.0.1:8000), click **Connect PreForm**, and import
    the STL. Select a catalog preset matching the actual printer and exact resin product.
    Enter the minimum-wall threshold from the material/process guidance. No threshold
-   is automatically qualified by ScienceClaw.
+   is automatically qualified by CoForm.
 6. Click **Prepare in PreForm**. Inspect the result and saved `.form` file. Record the
    orientation, supports, settings and wash/cure plan in the review notes.
 7. Select the actual printer and upload the reviewed project to its queue. Start the job
-   at the printer once the operator has checked the hardware. ScienceClaw never sends
+   at the printer once the operator has checked the hardware. CoForm never sends
    `print_now=True`. Printability PASS and queue receipts are not physical test results.
 
 ## On-site hardware and live check, 2026-10-31
@@ -77,7 +77,7 @@ including supports. No job was queued or printed.
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -e ".[dev,formlabs]"
-.\.venv\Scripts\python.exe -m scienceclaw.cli serve
+.\.venv\Scripts\python.exe -m coform.cli serve
 ```
 
 The optional Formlabs dependency is pinned to the official SDK's

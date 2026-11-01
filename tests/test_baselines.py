@@ -1,12 +1,13 @@
 import json
+import re
 
 import httpx
 import pytest
 
-from scienceclaw.agents import decide_independent, decide_single
-from scienceclaw.budget import BudgetedProvider, SpendGuard
-from scienceclaw.comparison import run_comparison
-from scienceclaw.providers import JSONProvider, ProviderError, ProviderResponse
+from coform.agents import decide_independent, decide_single
+from coform.budget import BudgetedProvider, SpendGuard
+from coform.comparison import run_comparison
+from coform.providers import JSONProvider, ProviderError, ProviderResponse
 from tests.test_agents import context, proposal
 
 
@@ -32,6 +33,12 @@ def test_nvidia_truncation_is_an_explicit_failure_with_usage():
     with pytest.raises(ProviderError) as exc:
         nvidia('{"ok": tr', finish="length").complete_json("system", {}, 256)
     assert exc.value.input_tokens == 120
+    # Named as a cut-off (not "invalid JSON"), so callers can ask for a shorter reply instead of giving up.
+    assert exc.value.truncated and "cut off at the 256-token output limit" in str(exc.value)
+    assert exc.value.excerpt == '{"ok": tr'
+    with pytest.raises(ProviderError) as other:
+        nvidia('{"ok": tr', finish="content_filter").complete_json("system", {}, 256)
+    assert not other.value.truncated
 
 
 def test_nvidia_calls_have_their_own_cap_and_do_not_use_paid_limits(tmp_path):
@@ -86,7 +93,7 @@ def test_offline_baselines_produce_decisions():
 
 
 def test_four_method_comparison_shares_evidence_and_summarizes(tmp_path):
-    from scienceclaw.validation import SCENARIOS
+    from coform.validation import SCENARIOS
     report = run_comparison([7], tmp_path / "cmp", methods=["adaptive", "collective", "single_agent", "independent"],
                             scenarios=[SCENARIOS[0], SCENARIOS[2]])
     assert len(report["results"]) == 8 and len(report["pairs"]) == 2
@@ -109,8 +116,36 @@ def test_single_agent_retries_after_declining_and_reasons_are_recorded():
 
 
 def test_unparseable_reply_excerpt_is_kept_for_diagnosis():
-    from scienceclaw.agents import decide
+    from coform.agents import decide
     agents = {r: nvidia("Sure! Here is my proposal: action=experiment") for r in ("mechanics", "fabrication", "measurement")}
     result = decide(context(), provider=agents)
     error = next(t for t in result["transcript"] if t["type"] == "provider_error")
     assert result["status"] == "provider_error" and error["reply_excerpt"].startswith("Sure! Here is my proposal")
+
+
+@pytest.mark.parametrize("error, says", [(httpx.ConnectTimeout, "could not connect to nvidia (ConnectTimeout)"),
+                                         (httpx.ConnectError, "could not connect to nvidia (ConnectError)"),
+                                         (httpx.ReadTimeout, "nvidia did not answer within 90 s (ReadTimeout)")])
+def test_connection_failures_are_named_as_such_not_as_rate_limits(error, says):
+    def handler(request):
+        raise error("boom", request=request)
+    provider = JSONProvider("nvidia", "nvidia/nemotron", "nvapi-test", timeout_s=90,
+                            client=httpx.Client(transport=httpx.MockTransport(handler)))
+    with pytest.raises(ProviderError, match=re.escape(says)):
+        provider.complete_json("system", {}, 256)
+
+
+def test_a_long_reply_gets_time_to_be_written():
+    # NVIDIA once slowed to 29 tokens/s, so 2,900-token drafts missed a flat 90 s timeout three times running.
+    from coform.providers import reply_timeout
+    seen = []
+
+    def handler(request):
+        seen.append(request.extensions["timeout"]["read"])
+        return httpx.Response(200, json={"choices": [{"message": {"content": '{"ok": true}'}, "finish_reason": "stop"}],
+                                         "usage": {"prompt_tokens": 1, "completion_tokens": 1}})
+    provider = JSONProvider("nvidia", "nvidia/nemotron", "nvapi-test", timeout_s=90,
+                            client=httpx.Client(transport=httpx.MockTransport(handler)))
+    provider.complete_json("system", {}, 4096)
+    provider.complete_json("system", {}, 256)
+    assert seen == [pytest.approx(reply_timeout(90, 4096)), 90] and reply_timeout(90, 4096) > 4096 / 29
