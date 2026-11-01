@@ -26,3 +26,36 @@ Streamlit's "running" indicator went away; a Plotly chart can still be drawing a
 | 14 | First page load 8.8 s (cold start, imports CadQuery stack). | `01_run.png` | Start the app before the demo. |
 
 No browser console errors were logged.
+
+## After: new UI (`app.py`)
+
+Script: `scripts/ui_audit_after.py` (every page by URL) and `scripts/ui_audit_run.py` (clicks **Start the run** with
+Mock on, budget 4, and screenshots the live progress). Screenshots: `results/ui_audit/after/`. Times in
+`after/timings.json` now include waiting until every 3D canvas has been drawn.
+
+| # | before | after | screenshot |
+|---|---|---|---|
+| 1 | Charts crashed (`KeyError: 'rank'`) | Fixed in both apps (ranks assigned as in `metrics.collect`). Charts page leads with the honest summary, then the clean step-4 charts, then a live explorer that opens on `runs_haiku_v2` | `09_charts.png` |
+| 2 | Charts opened on an empty set | Opens on `runs_haiku_v2` | `09_charts.png` |
+| 3 | 3D view empty / slow, full rerun on every slider move | In-browser viewer adapted from the team's `viewer3d.js`: meshes cached, rotate / lid lift / keep-out toggle without any rerun; first-vs-final side by side; base, lid, assembled | `05_viewer.png` |
+| 4 | Pickers defaulted to a stopped run with 0 versions | ★ print candidate pre-selected on every page; empty runs hidden; `?run=` works | all |
+| 5 | No landing page | Home: 3 sentences, 3 big steps, the best run's numbers, honest status | `01_home.png` |
+| 6 | Internal names and raw JSON | Plain labels ("board can't drop in: a connector hits the wall (4)"), tooltips, raw JSON only in "Details" expanders | `04_story.png`, `06_why.png` |
+| 7 | Contradictory PreForm numbers | Print page tells it in 3 steps: auto-orient 2 warnings (1 cup, 1 collision) → orientation tool (6 orientations) → 0 warnings, 23.0 min, 61.9 ml, one platform; MOCK estimates in Details | `07_print.png` |
+| 8 | No agent view | 4 agent cards (owns, tool, what it did in this run, from the log) + the board as a readable feed | `03_agents.png` |
+| 9 | "Why" showed only the last tiny edit | Story page: whole run as a timeline with a snapshot per step; Why page opens on v3 (Assembly's need → Fit raises the standoffs) and shows the earlier need | `04_story.png`, `06_why.png` |
+| 10 | Downloads unclear | 4 cards: "Formlabs printer / any resin printer / Creality FDM / Onshape", each with badges (REAL PreForm, NOT checked by PreForm, APPROXIMATE) | `08_downloads.png` |
+| 11 | Empty fit test unexplained | Callout: plate not printed yet, measured clearances fall back to the guide | `10_workshop.png` (tab 2) |
+| 13 | Default Streamlit look | Team look: dark panels, mint accent, pills, 12 px cards (`.streamlit/config.toml`, `ui/theme.py`) | all |
+| new | Re-running a run name that already existed failed silently on Windows: the old `board.sqlite` was held open, so `run.py`'s `rmtree` half-deleted the old folder | The UI closes every database handle after reading, moves an old folder aside in one step (`__prev_<time>`, hidden), shows thread errors on the page, and ignores a stale "done" status | `11_run_progress_1.png` |
+
+Load times after (s): see `after/timings.json`; every page 2.6 to 3.5 s including drawing the 3D canvases, first
+cold load 6.4 s. Start the app before the demo.
+
+Remaining known issues (low priority):
+- The canvas viewer sorts triangles (painter's algorithm), so where the see-through lid overlaps the board you can
+  see small jagged edges. Lift the lid or untick it for a clean look.
+- Story snapshots are the renders saved during the run (white background).
+- During my first progress test the old MOCK run `a_pi5_standard__collective__generic__s0__mock` lost 4 files
+  (base STL/.form and two PNGs) because of the bug above. It is a MOCK run, not used anywhere in the submission;
+  rerun it with `run.py --mock` if you want it back (the UI's test rerun replaced it already).

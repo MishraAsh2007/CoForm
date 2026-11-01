@@ -75,7 +75,7 @@ def run_dirs():
         if not r.exists():
             continue
         for d in r.iterdir():
-            if (d / "board.sqlite").exists() and d.name not in seen:
+            if (d / "board.sqlite").exists() and d.name not in seen and "__prev_" not in d.name:
                 seen.add(d.name)
                 out.append(d)
     return sorted(out, key=lambda d: (d.name != BEST, -d.stat().st_mtime))
@@ -114,13 +114,16 @@ def load_run(d, _mtime):
     """Everything the pages need from one run, as plain dicts (cached until the board file changes)."""
     d = Path(d)
     b = board(d)
-    run = b.run(1)
-    vs = b.versions(1)
-    checks = b.checks(1)
-    msgs = b.messages(1)
-    decs = b.decisions(1)
-    arts = b.artifacts(1)
-    usage = b.usage_total(1)
+    try:
+        run = b.run(1)
+        vs = b.versions(1)
+        checks = b.checks(1)
+        msgs = b.messages(1)
+        decs = b.decisions(1)
+        arts = b.artifacts(1)
+        usage = b.usage_total(1)
+    finally:
+        b.db.close()  # never keep the file open: on Windows an open board.sqlite blocks a re-run of the same name
     summ = json.loads((d / "summary.json").read_text(encoding="utf-8")) if (d / "summary.json").exists() else None
     return {"dir": str(d), "name": d.name, "run": run, "versions": vs, "checks": checks, "messages": msgs,
             "decisions": decs, "artifacts": arts, "usage": usage, "summary": summ}

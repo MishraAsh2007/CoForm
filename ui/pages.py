@@ -183,16 +183,35 @@ def run_page():
     if not mock and not _has_key():
         st.warning("No ANTHROPIC_API_KEY found in .env. Turn Mock on, or add a key.")
     if st.button("▶ Start the run", type="primary", disabled=(not mock and not _has_key())):
-        import run as runner
+        import time
         name = f"{info['name']}__{mode}__{clear}__s{seed}{'__mock' if mock else ''}{'' if mock else '__' + model}"
+        out = D.RUNS / name
+        try:
+            if out.exists():  # keep the old run: move it aside in one step (never half-delete it)
+                out.rename(out.with_name(f"{name}__prev_{time.strftime('%Y%m%d_%H%M%S')}"))
+        except OSError as ex:
+            st.error(f"An earlier run with the same name is in use and could not be moved aside ({ex}). Change the "
+                     "seed in Advanced, or restart the app.")
+            st.stop()
         st.session_state["active_run"] = name
-        st.session_state["launched"] = {"name": name, "budget": int(budget)}
+        st.session_state["launched"] = {"name": name, "budget": int(budget), "t": time.time()}
         st.session_state.pop("run_pick", None)
-        threading.Thread(target=runner.run, kwargs=dict(mode=mode, brief_path=str(briefs[b]), budget=int(budget),
-                                                        seed=int(seed), mock=mock, clearances=clear, quiet=True,
-                                                        model=None if mock else model), daemon=True).start()
+        kw = dict(mode=mode, brief_path=str(briefs[b]), budget=int(budget), seed=int(seed), mock=mock,
+                  clearances=clear, quiet=True, model=None if mock else model)
+        threading.Thread(target=_launch, args=(name, kw), daemon=True).start()
     if st.session_state.get("launched"):
         live_progress()
+
+
+RUN_ERRORS = {}
+
+
+def _launch(name, kw):
+    import run as runner
+    try:
+        runner.run(**kw)
+    except Exception as ex:  # noqa: BLE001 - shown on the page
+        RUN_ERRORS[name] = f"{type(ex).__name__}: {ex}"
 
 
 @st.fragment(run_every=2)
@@ -200,10 +219,21 @@ def live_progress():
     L = st.session_state["launched"]
     d = D.RUNS / L["name"]
     st.subheader("Progress")
+    if L["name"] in RUN_ERRORS:
+        st.error("The run stopped with an error: " + RUN_ERRORS[L["name"]])
+        return
     if not (d / "board.sqlite").exists():
         st.info("Starting… (building the naive design)")
         return
     R = D.get_run(d)
+    from datetime import datetime
+    try:
+        started = datetime.fromisoformat(R["run"]["started_at"]).timestamp()
+    except (TypeError, ValueError):
+        started = L["t"]
+    if started < L["t"] - 5:
+        st.info("Starting… (building the naive design)")
+        return
     evals = len(D.evaluated_versions(R))
     done = R["run"]["status"] != "running"
     budget = R["run"]["budget"] or L["budget"]
@@ -219,9 +249,14 @@ def live_progress():
                    f"{s['needs_posted']} needs posted")
     msgs = [m for m in R["messages"] if m["kind"] != "breakdown"][-6:]
     for m in reversed(msgs):
-        st.markdown(f"- **{m['author']}** ({m['kind']}): {m['text'][:180]}")
+        st.markdown(f"- **{m['author']}** ({m['kind']}): {m['text'].split(' | patch')[0].split(' | suggest')[0][:180]}")
     if done:
-        st.success("Done. Open the Story or 3D pages: this run is now selected in the sidebar.")
+        st.success("Done. Show this run on every page, then open Story or 3D.")
+        st.button("Show this run on every page", on_click=_select_run, args=(str(d),), type="primary")
+
+
+def _select_run(path):
+    st.session_state["run_pick"] = path
 
 
 # ---------------- Agents ----------------
