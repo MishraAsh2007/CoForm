@@ -1,0 +1,16 @@
+{
+ "seconds": {
+  "01_run": 8.79,
+  "02_versions_3d": 3.36,
+  "02b_versions_spec_diff": 1.72,
+  "02c_versions_checks": 1.09,
+  "02d_versions_preform": 1.09,
+  "02e_versions_why_this_design": 1.11,
+  "03_downloads": 1.07,
+  "04_charts_default": 1.99,
+  "04b_charts_haiku_v2": 2.1,
+  "05_tools": 1.05,
+  "06_fit_test": 1.08
+ },
+ "console_errors": []
+}
