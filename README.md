@@ -13,12 +13,12 @@ may go to the printer queue. No agent directs the others, and no agent's claim c
 measured it.
 
 <p align="center">
-  <img src="docs/images/backpack-holder-printed.jpg" width="38%" alt="Photo of the printed wall-mounted backpack holder designed by the CoForm agents">
-  <img src="docs/images/bottle-holder-in-use.png" width="58%" alt="The agents' desk-edge water bottle holder clamped on a desk, holding a bottle">
+  <img src="docs/images/bottle-holder-printed.jpg" height="380" alt="Photo of the printed desk-edge water bottle holder clamped on a table edge, holding a full insulated bottle">
+  <img src="docs/images/backpack-holder-printed.jpg" height="380" alt="Photo of the printed wall-mounted backpack holder designed by the CoForm agents">
 </p>
-<p align="center"><sub>Left: the wall-mounted backpack holder our agents designed, printed in resin. Right: the
-desk-edge water bottle holder in CoForm's 3D viewer, clamped on the desk with the bottle in it. The desk
-and bottle are the reference bodies its fit was checked against.</sub></p>
+<p align="center"><sub>Two parts our AI agents designed from one sentence each, printed in resin. Left: the desk-edge
+water bottle holder, clamped on a table edge and holding a full insulated bottle. Right: the wall-mounted
+backpack holder.</sub></p>
 
 This README follows the hackathon's brief: each project must show a **problem**, a
 **functioning system**, a **result** and **validation**. Judging weighs significance (20%),
@@ -163,17 +163,19 @@ has been printed. It has not been load tested yet. This part was drawn freehand 
 before the design-idea step existed, so its wall mounting and load were written as hold and load
 regions rather than checked against a wall body.
 
-### 2. Desk-edge water bottle holder
+### 2. Desk-edge water bottle holder (printed and in use)
 
 > *"build a water bottle holder which can attach to a desk and hold it"*
 
 <p align="center">
-  <img src="docs/images/bottle-holder.png" width="49%" alt="Desk-edge bottle holder: upper and lower clamp jaws with screw hole and nut slot, spine, web and cup">
-  <img src="docs/images/bottle-holder-in-use.png" width="49%" alt="The bottle holder clamped on the desk edge with the bottle standing in the cup">
+  <img src="docs/images/bottle-holder-printed.jpg" height="250" alt="Photo of the printed bottle holder clamped on a table edge, holding a full insulated bottle">
+  <img src="docs/images/bottle-holder.png" height="250" alt="Desk-edge bottle holder in CoForm's 3D viewer: upper and lower clamp jaws with screw hole and nut slot, spine, web and cup">
+  <img src="docs/images/bottle-holder-in-use.png" height="250" alt="The bottle holder in CoForm's 3D viewer, clamped on the desk edge with the bottle standing in the cup">
 </p>
-<p align="center"><sub>Left: upper and lower jaws (thumb-screw hole and slide-in nut slot), spine past the desk
-edge, web and cup. Stress peaks where the web meets the cup. Right: clamped on the 25 mm desk with
-the bottle standing in the cup.</sub></p>
+<p align="center"><sub>Left: the printed part, clamped on a table edge and holding a full insulated bottle. Middle:
+the agents' design in CoForm's 3D viewer, with upper and lower jaws (thumb-screw hole and slide-in nut
+slot), spine past the desk edge, web and cup. Stress peaks where the web meets the cup. Right: the
+virtual desk and bottle its fit was checked against.</sub></p>
 
 Mechanics chose a desk-edge clamp plus a cup, for a 1 L bottle (75 mm across, 200 mm tall, 1 kg) on
 a 25 mm desk. The request gave no sizes, so these were tested defaults, reported as assumptions.
@@ -192,7 +194,9 @@ nut.
 Choosing and reviewing the design idea took 3 model calls and 3,123 tokens. The three agents
 approved the built design. In round 1, mechanics' change won, and eight more rounds found nothing
 lighter. PreForm graded the part WARN (0.5% of the surface unsupported), with an estimate of 1.8 h
-and 157 mL of resin including supports, and the agents voted 3 of 3 to print.
+and 157 mL of resin including supports, and the agents voted 3 of 3 to print. We printed it, and
+it grips a real table edge and holds a full insulated bottle (photo above). Its bend has not been
+measured yet.
 
 ### 3. Wall hook for a backpack (latest run)
 
@@ -269,10 +273,12 @@ clearance for the thread. It was raised as a should-fix and has not been fixed y
   checks: manifold, in bounds, no resin cups, no thin walls.
 
 **Physically demonstrated**
-- The backpack holder has been printed from the agents' design (photo above).
+- The backpack holder and the bottle holder have both been printed from the agents' designs
+  (photos above).
+- The printed bottle holder grips a real table edge and holds a full insulated bottle.
 
 **Not yet established**
-- No printed part has been loaded and measured yet. The measurement loop (measured bend, then a
+- No printed part's bend has been measured yet. The measurement loop (measured bend, then a
   corrected material model, then a recheck) is implemented and tested with simulated numbers.
 - Strength and bend are finite-element predictions using datasheet resin properties. They are not
   certified ratings.
