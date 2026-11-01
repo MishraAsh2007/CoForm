@@ -38,6 +38,10 @@ Branch: `Mo_ver` on https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo
   `scripts/make_submission.py`: titles 31 and 32/32 chars, one-liner 98/100, description 141/150 words, Formlabs
   ~230/250, NVIDIA ~140/250 and marked ONLY IF Nemotron was confirmed).
 
+- Step 8, team material: `results/submission/TEAM_MERGE_GUIDE.md` (slide map, form fields to check, video join
+  command, main-branch steps, who-does-what, timed checklist to 1 PM), `results/submission/MAIN_README.md`
+  (landing page for main), `LICENSE` (MIT) on Mo_ver. I did not touch `main` or `Jash_ver`.
+
 ## Notes
 - You asked me to read `results/benchmark/runs_v2_summary.md`: that file does not exist. I used
   `results/benchmark/runs_haiku_v2_summary.md` (the Haiku v2 set), which matches the numbers you gave.
