@@ -1,0 +1,1167 @@
+{
+  "fingerprint": {
+    "envelope": [
+      40.0,
+      60.0,
+      60.0
+    ],
+    "inner_fillet_radius": 2.0,
+    "rib_fillet_radius": 1.0,
+    "poisson_ratio": 0.35
+  },
+  "rows": [
+    {
+      "params": {
+        "plate_thickness": 2.5,
+        "rib_height": 10.0,
+        "rib_thickness": 2.5
+      },
+      "candidate_id": "gd91ad9c977",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 18.267672072727276,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.09133836036363638,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 162.17025587819592,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 93.96555090382492,
+          "converged": false,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 2.5,
+          "curvature_elements": 8,
+          "elements": 4375,
+          "nodes": 8837,
+          "tip_deflection_mm": 18.16640048192771,
+          "peak_von_mises_mpa": 133.4356898780705,
+          "peak_location_mm": [
+            18.84,
+            11.62,
+            3.22
+          ],
+          "unfiltered_peak_von_mises_mpa": 133.4356898780705,
+          "loaded_face_area_mm2": 50.0,
+          "seconds": 2.03
+        },
+        {
+          "element_size_mm": 1.6666666666666667,
+          "curvature_elements": 12,
+          "elements": 11240,
+          "nodes": 21434,
+          "tip_deflection_mm": 18.244152713178295,
+          "peak_von_mises_mpa": 147.87473636825626,
+          "peak_location_mm": [
+            19.92,
+            12.67,
+            2.44
+          ],
+          "unfiltered_peak_von_mises_mpa": 147.87473636825626,
+          "loaded_face_area_mm2": 50.00000000000001,
+          "seconds": 6.45
+        },
+        {
+          "element_size_mm": 1.1111111111111112,
+          "curvature_elements": 18,
+          "elements": 33698,
+          "nodes": 58840,
+          "tip_deflection_mm": 18.267672072727276,
+          "peak_von_mises_mpa": 162.17025587819592,
+          "peak_location_mm": [
+            19.89,
+            12.6,
+            2.5
+          ],
+          "unfiltered_peak_von_mises_mpa": 162.17025587819592,
+          "loaded_face_area_mm2": 50.00000000000001,
+          "seconds": 25.65
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 3.0,
+        "rib_height": 20.0,
+        "rib_thickness": 3.0
+      },
+      "candidate_id": "g4c1d5fe4fc",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 6.019027454935621,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.030095137274678108,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 89.51206275078651,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 2.6533873506556533,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 3.0,
+          "curvature_elements": 8,
+          "elements": 4866,
+          "nodes": 9566,
+          "tip_deflection_mm": 5.994954369863013,
+          "peak_von_mises_mpa": 76.51971887074292,
+          "peak_location_mm": [
+            18.71,
+            22.8,
+            3.04
+          ],
+          "unfiltered_peak_von_mises_mpa": 76.51971887074292,
+          "loaded_face_area_mm2": 60.00000000000001,
+          "seconds": 2.66
+        },
+        {
+          "element_size_mm": 2.0,
+          "curvature_elements": 12,
+          "elements": 12966,
+          "nodes": 23926,
+          "tip_deflection_mm": 6.011213559633027,
+          "peak_von_mises_mpa": 87.45523796315648,
+          "peak_location_mm": [
+            19.86,
+            23.1,
+            2.96
+          ],
+          "unfiltered_peak_von_mises_mpa": 87.45523796315648,
+          "loaded_face_area_mm2": 60.0,
+          "seconds": 7.02
+        },
+        {
+          "element_size_mm": 1.3333333333333333,
+          "curvature_elements": 18,
+          "elements": 35823,
+          "nodes": 61688,
+          "tip_deflection_mm": 6.019027454935621,
+          "peak_von_mises_mpa": 89.51206275078651,
+          "peak_location_mm": [
+            19.94,
+            23.01,
+            3.02
+          ],
+          "unfiltered_peak_von_mises_mpa": 89.51206275078651,
+          "loaded_face_area_mm2": 60.0,
+          "seconds": 26.92
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 4.0,
+        "rib_height": 30.0,
+        "rib_thickness": 5.0
+      },
+      "candidate_id": "g6dd084db59",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 1.2136248429319372,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.006068124214659686,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 34.597007420470625,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 2.4548450880054165,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 4.0,
+          "curvature_elements": 8,
+          "elements": 5684,
+          "nodes": 10684,
+          "tip_deflection_mm": 1.2073656981132077,
+          "peak_von_mises_mpa": 29.667860190666175,
+          "peak_location_mm": [
+            17.37,
+            33.51,
+            4.33
+          ],
+          "unfiltered_peak_von_mises_mpa": 29.667860190666175,
+          "loaded_face_area_mm2": 80.0,
+          "seconds": 2.11
+        },
+        {
+          "element_size_mm": 2.6666666666666665,
+          "curvature_elements": 12,
+          "elements": 14670,
+          "nodes": 26103,
+          "tip_deflection_mm": 1.211284404494382,
+          "peak_von_mises_mpa": 32.87975517243381,
+          "peak_location_mm": [
+            19.86,
+            34.08,
+            3.93
+          ],
+          "unfiltered_peak_von_mises_mpa": 32.87975517243381,
+          "loaded_face_area_mm2": 80.0,
+          "seconds": 6.15
+        },
+        {
+          "element_size_mm": 1.7777777777777777,
+          "curvature_elements": 18,
+          "elements": 37920,
+          "nodes": 64191,
+          "tip_deflection_mm": 1.2136248429319372,
+          "peak_von_mises_mpa": 34.597007420470625,
+          "peak_location_mm": [
+            19.95,
+            34.27,
+            3.97
+          ],
+          "unfiltered_peak_von_mises_mpa": 34.597007420470625,
+          "loaded_face_area_mm2": 80.0,
+          "seconds": 20.8
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 5.0,
+        "rib_height": 38.0,
+        "rib_thickness": 4.0
+      },
+      "candidate_id": "gee71a384dc",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 0.38228885814977975,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.001911444290748899,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 17.359927088994702,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.39474485476083504,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 4.0,
+          "curvature_elements": 8,
+          "elements": 7135,
+          "nodes": 13306,
+          "tip_deflection_mm": 0.38027529152542383,
+          "peak_von_mises_mpa": 14.704869052237289,
+          "peak_location_mm": [
+            17.64,
+            42.86,
+            5.13
+          ],
+          "unfiltered_peak_von_mises_mpa": 14.704869052237289,
+          "loaded_face_area_mm2": 100.0,
+          "seconds": 3.19
+        },
+        {
+          "element_size_mm": 2.6666666666666665,
+          "curvature_elements": 12,
+          "elements": 18332,
+          "nodes": 32316,
+          "tip_deflection_mm": 0.3818553422680412,
+          "peak_von_mises_mpa": 17.067796355610085,
+          "peak_location_mm": [
+            19.86,
+            43.08,
+            4.95
+          ],
+          "unfiltered_peak_von_mises_mpa": 17.067796355610085,
+          "loaded_face_area_mm2": 100.0,
+          "seconds": 7.91
+        },
+        {
+          "element_size_mm": 1.7777777777777777,
+          "curvature_elements": 18,
+          "elements": 48964,
+          "nodes": 81836,
+          "tip_deflection_mm": 0.38228885814977975,
+          "peak_von_mises_mpa": 17.359927088994702,
+          "peak_location_mm": [
+            19.89,
+            43.16,
+            4.98
+          ],
+          "unfiltered_peak_von_mises_mpa": 17.359927088994702,
+          "loaded_face_area_mm2": 100.0,
+          "seconds": 25.11
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 6.0,
+        "rib_height": 45.0,
+        "rib_thickness": 8.0
+      },
+      "candidate_id": "g5234c14f1c",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 0.09883578214814814,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.0004941789107407407,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 6.56937180947996,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 2.3450052924134157,
+          "converged": false,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 6.0,
+          "curvature_elements": 8,
+          "elements": 6777,
+          "nodes": 12415,
+          "tip_deflection_mm": 0.09812338441860464,
+          "peak_von_mises_mpa": 5.826075537325801,
+          "peak_location_mm": [
+            15.63,
+            50.86,
+            6.13
+          ],
+          "unfiltered_peak_von_mises_mpa": 5.826075537325801,
+          "loaded_face_area_mm2": 120.0,
+          "seconds": 2.65
+        },
+        {
+          "element_size_mm": 4.0,
+          "curvature_elements": 12,
+          "elements": 16269,
+          "nodes": 28425,
+          "tip_deflection_mm": 0.09857980305084746,
+          "peak_von_mises_mpa": 6.607743968130273,
+          "peak_location_mm": [
+            15.86,
+            50.57,
+            6.34
+          ],
+          "unfiltered_peak_von_mises_mpa": 6.607743968130273,
+          "loaded_face_area_mm2": 120.0,
+          "seconds": 6.52
+        },
+        {
+          "element_size_mm": 2.6666666666666665,
+          "curvature_elements": 18,
+          "elements": 42026,
+          "nodes": 70422,
+          "tip_deflection_mm": 0.09883578214814814,
+          "peak_von_mises_mpa": 6.56937180947996,
+          "peak_location_mm": [
+            15.82,
+            50.61,
+            6.33
+          ],
+          "unfiltered_peak_von_mises_mpa": 6.56937180947996,
+          "loaded_face_area_mm2": 120.0,
+          "seconds": 19.23
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 3.7,
+        "rib_height": 49.1,
+        "rib_thickness": 3.2
+      },
+      "candidate_id": "gfa412165c3",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 0.27622448647686837,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.001381122432384342,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 16.174269471958418,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.3636778531852543,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 3.2,
+          "curvature_elements": 8,
+          "elements": 10102,
+          "nodes": 19132,
+          "tip_deflection_mm": 0.27479887341772147,
+          "peak_von_mises_mpa": 14.364673219718505,
+          "peak_location_mm": [
+            18.01,
+            52.66,
+            3.83
+          ],
+          "unfiltered_peak_von_mises_mpa": 14.364673219718505,
+          "loaded_face_area_mm2": 74.00000000000001,
+          "seconds": 3.95
+        },
+        {
+          "element_size_mm": 2.1333333333333333,
+          "curvature_elements": 12,
+          "elements": 27147,
+          "nodes": 48398,
+          "tip_deflection_mm": 0.2762182649572649,
+          "peak_von_mises_mpa": 15.89975367612876,
+          "peak_location_mm": [
+            18.26,
+            52.37,
+            4.04
+          ],
+          "unfiltered_peak_von_mises_mpa": 15.89975367612876,
+          "loaded_face_area_mm2": 74.0,
+          "seconds": 12.58
+        },
+        {
+          "element_size_mm": 1.4222222222222223,
+          "curvature_elements": 18,
+          "elements": 73555,
+          "nodes": 123920,
+          "tip_deflection_mm": 0.27622448647686837,
+          "peak_von_mises_mpa": 16.174269471958418,
+          "peak_location_mm": [
+            18.22,
+            52.41,
+            4.03
+          ],
+          "unfiltered_peak_von_mises_mpa": 16.174269471958418,
+          "loaded_face_area_mm2": 74.0,
+          "seconds": 46.95
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 4.0,
+        "rib_height": 30.0,
+        "rib_thickness": 2.0
+      },
+      "candidate_id": "gdd5a805d87",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 1.5513256564019449,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.007756628282009724,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 41.49064200830491,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 10.724061934832923,
+          "converged": false,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 2.0,
+          "curvature_elements": 8,
+          "elements": 12870,
+          "nodes": 23436,
+          "tip_deflection_mm": 1.5462223931623933,
+          "peak_von_mises_mpa": 36.984879540283366,
+          "peak_location_mm": [
+            19.05,
+            33.11,
+            4.73
+          ],
+          "unfiltered_peak_von_mises_mpa": 36.984879540283366,
+          "loaded_face_area_mm2": 79.99999999999999,
+          "seconds": 5.98
+        },
+        {
+          "element_size_mm": 1.3333333333333333,
+          "curvature_elements": 12,
+          "elements": 38011,
+          "nodes": 64131,
+          "tip_deflection_mm": 1.5502504056939501,
+          "peak_von_mises_mpa": 38.916418942160945,
+          "peak_location_mm": [
+            19.91,
+            33.85,
+            4.08
+          ],
+          "unfiltered_peak_von_mises_mpa": 38.916418942160945,
+          "loaded_face_area_mm2": 79.99999999999999,
+          "seconds": 22.62
+        },
+        {
+          "element_size_mm": 0.8888888888888888,
+          "curvature_elements": 18,
+          "elements": 114984,
+          "nodes": 182289,
+          "tip_deflection_mm": 1.5513256564019449,
+          "peak_von_mises_mpa": 41.49064200830491,
+          "peak_location_mm": [
+            19.89,
+            33.93,
+            4.07
+          ],
+          "unfiltered_peak_von_mises_mpa": 41.49064200830491,
+          "loaded_face_area_mm2": 80.0,
+          "seconds": 89.85
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 3.0,
+        "rib_height": 15.0,
+        "rib_thickness": 8.0
+      },
+      "candidate_id": "ga7cf36432a",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 7.216978815450643,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.03608489407725322,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 81.14509887184842,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 6.405876345875895,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 3.0,
+          "curvature_elements": 8,
+          "elements": 4723,
+          "nodes": 9113,
+          "tip_deflection_mm": 7.187061575342467,
+          "peak_von_mises_mpa": 68.0602589661037,
+          "peak_location_mm": [
+            15.88,
+            17.52,
+            3.33
+          ],
+          "unfiltered_peak_von_mises_mpa": 68.0602589661037,
+          "loaded_face_area_mm2": 60.0,
+          "seconds": 1.89
+        },
+        {
+          "element_size_mm": 2.0,
+          "curvature_elements": 12,
+          "elements": 12130,
+          "nodes": 22103,
+          "tip_deflection_mm": 7.206330366972477,
+          "peak_von_mises_mpa": 76.25824708319665,
+          "peak_location_mm": [
+            19.91,
+            18.15,
+            2.97
+          ],
+          "unfiltered_peak_von_mises_mpa": 76.25824708319665,
+          "loaded_face_area_mm2": 60.0,
+          "seconds": 5.5
+        },
+        {
+          "element_size_mm": 1.3333333333333333,
+          "curvature_elements": 18,
+          "elements": 34869,
+          "nodes": 59035,
+          "tip_deflection_mm": 7.216978815450643,
+          "peak_von_mises_mpa": 81.14509887184842,
+          "peak_location_mm": [
+            19.89,
+            18.1,
+            3.0
+          ],
+          "unfiltered_peak_von_mises_mpa": 81.14509887184842,
+          "loaded_face_area_mm2": 60.0,
+          "seconds": 22.29
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 2.0,
+        "rib_height": 25.0,
+        "rib_thickness": 7.0
+      },
+      "candidate_id": "gc7ee67b06b",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 12.005228927536232,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.06002614463768116,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 134.28076607438132,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 11.502342337348056,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 2.0,
+          "curvature_elements": 8,
+          "elements": 9354,
+          "nodes": 17862,
+          "tip_deflection_mm": 11.934972330097086,
+          "peak_von_mises_mpa": 122.62694781005682,
+          "peak_location_mm": [
+            16.14,
+            26.85,
+            2.13
+          ],
+          "unfiltered_peak_von_mises_mpa": 122.62694781005682,
+          "loaded_face_area_mm2": 40.0,
+          "seconds": 4.47
+        },
+        {
+          "element_size_mm": 1.3333333333333333,
+          "curvature_elements": 12,
+          "elements": 25280,
+          "nodes": 45399,
+          "tip_deflection_mm": 11.983840062893082,
+          "peak_von_mises_mpa": 124.17894218415695,
+          "peak_location_mm": [
+            19.91,
+            26.86,
+            2.09
+          ],
+          "unfiltered_peak_von_mises_mpa": 124.17894218415695,
+          "loaded_face_area_mm2": 39.99999999999999,
+          "seconds": 15.28
+        },
+        {
+          "element_size_mm": 0.8888888888888888,
+          "curvature_elements": 18,
+          "elements": 76811,
+          "nodes": 127727,
+          "tip_deflection_mm": 12.005228927536232,
+          "peak_von_mises_mpa": 134.28076607438132,
+          "peak_location_mm": [
+            19.89,
+            27.09,
+            2.0
+          ],
+          "unfiltered_peak_von_mises_mpa": 134.28076607438132,
+          "loaded_face_area_mm2": 40.0,
+          "seconds": 75.14
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 7.0,
+        "rib_height": 20.0,
+        "rib_thickness": 2.5
+      },
+      "candidate_id": "gaf6d020f5a",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 0.617264102247191,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.003086320511235955,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 17.553643272515853,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.7558687336574954,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 2.5,
+          "curvature_elements": 8,
+          "elements": 9818,
+          "nodes": 17231,
+          "tip_deflection_mm": 0.6149894780645161,
+          "peak_von_mises_mpa": 15.480942106085404,
+          "peak_location_mm": [
+            18.84,
+            26.12,
+            7.72
+          ],
+          "unfiltered_peak_von_mises_mpa": 15.480942106085404,
+          "loaded_face_area_mm2": 140.00000000000003,
+          "seconds": 3.84
+        },
+        {
+          "element_size_mm": 1.6666666666666667,
+          "curvature_elements": 12,
+          "elements": 29471,
+          "nodes": 48073,
+          "tip_deflection_mm": 0.6168078863492064,
+          "peak_von_mises_mpa": 16.883582859073737,
+          "peak_location_mm": [
+            19.92,
+            26.88,
+            7.08
+          ],
+          "unfiltered_peak_von_mises_mpa": 16.883582859073737,
+          "loaded_face_area_mm2": 139.99999999999997,
+          "seconds": 12.76
+        },
+        {
+          "element_size_mm": 1.1111111111111112,
+          "curvature_elements": 18,
+          "elements": 90205,
+          "nodes": 138826,
+          "tip_deflection_mm": 0.617264102247191,
+          "peak_von_mises_mpa": 17.553643272515853,
+          "peak_location_mm": [
+            19.9,
+            26.92,
+            7.06
+          ],
+          "unfiltered_peak_von_mises_mpa": 17.553643272515853,
+          "loaded_face_area_mm2": 140.0,
+          "seconds": 51.18
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 3.2,
+        "rib_height": 50.0,
+        "rib_thickness": 2.5
+      },
+      "candidate_id": "g2b7b1b0bcf",
+      "source": "reference",
+      "l2": {
+        "tip_deflection": {
+          "value": 0.3745260958208956,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.006036324801115378,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 20.856257800745727,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.10428128900372864,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 2.5,
+          "curvature_elements": 8,
+          "elements": 11997,
+          "nodes": 22985,
+          "tip_deflection_mm": 0.37260737640449443,
+          "peak_von_mises_mpa": 19.233759414022263,
+          "peak_location_mm": [
+            18.63,
+            52.71,
+            3.53
+          ],
+          "unfiltered_peak_von_mises_mpa": 19.233759414022263,
+          "loaded_face_area_mm2": 64.0,
+          "seconds": 4.93
+        },
+        {
+          "element_size_mm": 1.6666666666666667,
+          "curvature_elements": 12,
+          "elements": 34407,
+          "nodes": 61143,
+          "tip_deflection_mm": 0.3746194846715329,
+          "peak_von_mises_mpa": 20.788966680272928,
+          "peak_location_mm": [
+            18.62,
+            52.78,
+            3.54
+          ],
+          "unfiltered_peak_von_mises_mpa": 20.788966680272928,
+          "loaded_face_area_mm2": 64.0,
+          "seconds": 17.49
+        },
+        {
+          "element_size_mm": 1.1111111111111112,
+          "curvature_elements": 18,
+          "elements": 95498,
+          "nodes": 160096,
+          "tip_deflection_mm": 0.3745260958208956,
+          "peak_von_mises_mpa": 20.856257800745727,
+          "peak_location_mm": [
+            18.56,
+            52.81,
+            3.53
+          ],
+          "unfiltered_peak_von_mises_mpa": 20.856257800745727,
+          "loaded_face_area_mm2": 64.0,
+          "seconds": 71.23
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 3.3,
+        "rib_height": 49.8,
+        "rib_thickness": 2.7
+      },
+      "candidate_id": "g21ad72ecb7",
+      "source": "experiment",
+      "l2": {
+        "tip_deflection": {
+          "value": 0.34745325804416405,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.0056563734847863145,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 19.478189254566555,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.26704212089324936,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 2.7,
+          "curvature_elements": 8,
+          "elements": 11451,
+          "nodes": 21927,
+          "tip_deflection_mm": 0.3456163078651685,
+          "peak_von_mises_mpa": 17.994606754094878,
+          "peak_location_mm": [
+            18.7,
+            52.21,
+            4.03
+          ],
+          "unfiltered_peak_von_mises_mpa": 17.994606754094878,
+          "loaded_face_area_mm2": 66.0,
+          "seconds": 6.52
+        },
+        {
+          "element_size_mm": 1.8,
+          "curvature_elements": 12,
+          "elements": 31949,
+          "nodes": 56880,
+          "tip_deflection_mm": 0.3475017656934306,
+          "peak_von_mises_mpa": 19.272776363855417,
+          "peak_location_mm": [
+            18.49,
+            52.67,
+            3.64
+          ],
+          "unfiltered_peak_von_mises_mpa": 19.272776363855417,
+          "loaded_face_area_mm2": 66.0,
+          "seconds": 21.52
+        },
+        {
+          "element_size_mm": 1.2000000000000002,
+          "curvature_elements": 18,
+          "elements": 87770,
+          "nodes": 147802,
+          "tip_deflection_mm": 0.34745325804416405,
+          "peak_von_mises_mpa": 19.478189254566555,
+          "peak_location_mm": [
+            18.47,
+            52.71,
+            3.63
+          ],
+          "unfiltered_peak_von_mises_mpa": 19.478189254566555,
+          "loaded_face_area_mm2": 66.0,
+          "seconds": 78.87
+        }
+      ]
+    },
+    {
+      "params": {
+        "plate_thickness": 3.1,
+        "rib_height": 49.8,
+        "rib_thickness": 3.2
+      },
+      "candidate_id": "g83f0df02d8",
+      "source": "experiment",
+      "l2": {
+        "tip_deflection": {
+          "value": 0.36154901139240503,
+          "unit": "mm",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.001807745056962025,
+          "converged": true,
+          "validated": null,
+          "error": null
+        },
+        "max_stress": {
+          "value": 22.09536700689396,
+          "unit": "MPa",
+          "source": "fea",
+          "status": "completed",
+          "uncertainty": 0.6336438239430053,
+          "converged": true,
+          "validated": null,
+          "error": null
+        }
+      },
+      "levels": [
+        {
+          "element_size_mm": 3.1,
+          "curvature_elements": 8,
+          "elements": 9738,
+          "nodes": 18802,
+          "tip_deflection_mm": 0.3589837958904109,
+          "peak_von_mises_mpa": 19.32681013961937,
+          "peak_location_mm": [
+            18.01,
+            52.76,
+            3.23
+          ],
+          "unfiltered_peak_von_mises_mpa": 19.32681013961937,
+          "loaded_face_area_mm2": 62.0,
+          "seconds": 5.57
+        },
+        {
+          "element_size_mm": 2.066666666666667,
+          "curvature_elements": 12,
+          "elements": 26880,
+          "nodes": 48392,
+          "tip_deflection_mm": 0.3614363651376146,
+          "peak_von_mises_mpa": 21.618520674043033,
+          "peak_location_mm": [
+            18.26,
+            52.47,
+            3.44
+          ],
+          "unfiltered_peak_von_mises_mpa": 21.618520674043033,
+          "loaded_face_area_mm2": 61.99999999999999,
+          "seconds": 17.04
+        },
+        {
+          "element_size_mm": 1.3777777777777778,
+          "curvature_elements": 18,
+          "elements": 72671,
+          "nodes": 123726,
+          "tip_deflection_mm": 0.36154901139240503,
+          "peak_von_mises_mpa": 22.09536700689396,
+          "peak_location_mm": [
+            18.22,
+            52.51,
+            3.43
+          ],
+          "unfiltered_peak_von_mises_mpa": 22.09536700689396,
+          "loaded_face_area_mm2": 62.0,
+          "seconds": 63.33
+        }
+      ]
+    }
+  ],
+  "fits": {
+    "tip_deflection": {
+      "features": [
+        "depth_ratio"
+      ],
+      "coef": [
+        -0.12078038276280534,
+        0.5968357974473805
+      ],
+      "xtx_inv": [
+        [
+          0.5940367843757866,
+          -0.7823338475177367
+        ],
+        [
+          -0.7823338475177367,
+          1.1835815607883058
+        ]
+      ],
+      "scatter": 0.04202115734545837,
+      "numerical": 0.007843606530196676,
+      "loo_rmse": 0.0468302023830677,
+      "n": 13,
+      "ranges": {
+        "depth_ratio": [
+          0.21739130434782608,
+          0.9444444444444444
+        ]
+      },
+      "designs": [
+        "gd91ad9c977",
+        "g4c1d5fe4fc",
+        "g6dd084db59",
+        "gee71a384dc",
+        "g5234c14f1c",
+        "gfa412165c3",
+        "gdd5a805d87",
+        "ga7cf36432a",
+        "gc7ee67b06b",
+        "gaf6d020f5a",
+        "g2b7b1b0bcf",
+        "g21ad72ecb7",
+        "g83f0df02d8"
+      ]
+    },
+    "max_stress": {
+      "features": [
+        "depth_ratio",
+        "rib_slenderness"
+      ],
+      "coef": [
+        0.6097256390727193,
+        0.33043282347092995,
+        -0.10819659169161364
+      ],
+      "xtx_inv": [
+        [
+          0.9847726242756459,
+          -0.5189390432558522,
+          -0.24904908771088735
+        ],
+        [
+          -0.5189390432558542,
+          10.886483849817074,
+          -3.2429604993565744
+        ],
+        [
+          -0.2490490877108867,
+          -3.242960499356575,
+          1.1554768336748529
+        ]
+      ],
+      "scatter": 0.046843733728042354,
+      "numerical": 0.048368470804241316,
+      "loo_rmse": 0.05037983489297166,
+      "n": 10,
+      "ranges": {
+        "depth_ratio": [
+          0.3157894736842105,
+          0.9378330373001778
+        ],
+        "rib_slenderness": [
+          0.6286086594223741,
+          2.995732273553991
+        ]
+      },
+      "designs": [
+        "g4c1d5fe4fc",
+        "g6dd084db59",
+        "gee71a384dc",
+        "gfa412165c3",
+        "ga7cf36432a",
+        "gc7ee67b06b",
+        "gaf6d020f5a",
+        "g2b7b1b0bcf",
+        "g21ad72ecb7",
+        "g83f0df02d8"
+      ]
+    }
+  }
+}

@@ -1,0 +1,22 @@
+# Numerics: analytical mechanics, optimization, calibration
+numpy
+scipy
+scikit-learn
+
+# Claude agents
+anthropic
+
+# Tests
+pytest
+
+# Load credentials and settings from .env
+python-dotenv
+
+# Validate agent proposals and evaluation results
+pydantic
+
+# Formlabs SDK for the PreForm API
+formlabs-sdk @ git+https://github.com/Formlabs/formlabs-api-python
+
+# CAD geometry comes from FreeCAD, which is NOT pip-installable. Install FreeCAD
+# separately and set FREECAD_PYTHON in .env to its bundled bin\python.exe.

@@ -1,0 +1,13 @@
+{
+    "autodeskProduct": "Fusion360",
+    "type": "addin",
+    "id": "f05ba65f-99bb-448f-8d32-cd5a6270f078",
+    "author": "ScienceClaw",
+    "description": {
+        "": "Watches the Bracket Collective runs/ folder and imports each new candidate STEP file for viewing."
+    },
+    "version": "0.1.0",
+    "runOnStartup": false,
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}
