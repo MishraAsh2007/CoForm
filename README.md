@@ -1,11 +1,58 @@
-# Agents that design and physically validate small SLA assemblies
+# ScienceClaw · Enclosure agents: AI agents that design print-ready parts
 
-First test case: a two-piece Raspberry Pi 5 + Active Cooler enclosure (base + lid, M2.5 lid screws,
-robot mounting tabs, port cutouts, cable access), printed on a **Formlabs Form Studio 1 in Alpha Fast resin**.
+Four specialist AI agents (Design, Assembly, Manufacturing, Fit) design a 3D-printed Raspberry Pi 5 + Active Cooler
+case together, **with no boss**. Each agent owns one real tool (CadQuery, an assembly check, Formlabs PreForm, fit
+rules) and only its own part of the design spec; a fix in someone else's part becomes a request to that owner, and
+plain code keeps an edit only if no check gets worse. Every decision is logged and traceable.
+
+![Demo: the 3D page of the app](results/submission/demo.gif)
+
+**Best run** (`a_pi5_standard__collective__generic__s0__claude-sonnet-5-5`, 4 agents, Claude Sonnet): local check
+failures **20 → 0**. Real PreForm with its own auto-orient still found **1 resin-trapping cup**; the print job, with
+the orientation chosen by the Manufacturing agent's orientation tool, has **0 warnings, 23.0 min, 61.9 ml** on one
+Form Studio 1 platform (Alpha Fast V1, 0.15 mm). **Benchmark** (Claude Haiku, brief a, 3 seeds per mode): mean
+failures left team 4, one generalist 6, one shot 20; no run passed every check, and the team costs more per run.
+The Sonnet benchmark is incomplete (4 of 18 runs), so we make no Sonnet benchmark claims.
+
+| Home | Story | 3D |
+|---|---|---|
+| ![Home](results/ui_audit/after/01_home.png) | ![Story](results/ui_audit/after/04_story.png) | ![3D](results/ui_audit/after/05_viewer.png) |
+
+Part of the team project ScienceClaw (MIT ScienceClaw hackathon 2026): this branch (`Mo_ver`) holds the
+enclosure agents; `Jash_ver` holds the bracket designer with CalculiX simulation.
+
+## Where everything is
+
+| you want | go to |
+|---|---|
+| the app | `app.py` (new UI, pages in `ui/`); the previous UI is `app_classic.py` |
+| files to print | `results/print/README.md` (Formlabs .form, SLA STL, FDM STL, STEP for Onshape) |
+| before printing | `results/print/RISK_CHECK.md` (unverified sizes, ruler checks), `results/print/ASSEMBLY.md` (screws, steps) |
+| submission material | `results/submission/`: `slides.pptx`, `slides.pdf`, `demo.mp4`, `SUBMISSION.md`, `images/`, `TEAM_MERGE_GUIDE.md` |
+| the 3-minute demo script | `DEMO.md` (IF PRINTED / IF NOT PRINTED versions, backup plan) |
+| benchmark tables | `results/benchmark/sonnet_vs_haiku.md`, `runs_haiku_v2_summary.md` |
+| the best run's log | `results/demo_run/<run>/log.md` (a copy of the run, so the app works on a fresh clone) |
+| UI audit | `results/ui_audit/UI_AUDIT.md` (before / after screenshots) |
+
+Labels are kept everywhere: **MOCK** (stand-in model or estimate), **UNVERIFIED** (size from a drawing or a typical
+part, not measured), **EXPERIMENTAL** (free-form part family).
+
+## Quick start (no API key needed)
+
+    py -3.13 -m venv .venv
+    .venv\Scripts\python.exe -m pip install -r requirements.txt
+    .venv\Scripts\python.exe -m streamlit run app.py
+
+The app opens on Home with the best real run pre-selected. On the **Run** page, **Mock** is on by default: a
+rule-based stand-in model (labelled MOCK) runs the full loop with no API cost. For real models, copy `.env.example`
+to `.env` and put your `ANTHROPIC_API_KEY` there (never committed), then turn Mock off.
+Real PreForm checks need PreFormServer (next section); without it, PreForm results fall back to a labelled MOCK
+estimate, and the saved real results are still shown.
+
+## Setup details (Windows PowerShell)
+
 Printer, material and layer thickness are ONE setting (`print:` in `config.yaml`) used for every print and
 recorded in every output (`PRINT_SETTINGS.json`) and run log. The fit-test results only apply to that combination.
-
-## Setup (Windows PowerShell)
 
     py -3.13 -m venv .venv
     .venv\Scripts\python.exe -m pip install -r requirements.txt
@@ -34,7 +81,7 @@ If the server is down, every PreForm result falls back to a MOCK that is labelle
 | `core/` | `board.py` (SQLite shared board), `protocol.py` (ALL coordination rules), `llm.py`, `evaluate.py`, `report.py` |
 | `agents/` | `design`, `assembly`, `manufacturing`, `fit`, `generalist`, plus `mock_policy.py` (rule-based fake model) |
 | `benchmark/` | `briefs/` (a-d), `run_benchmark.py`, `metrics.py` |
-| `run.py`, `app.py` | one design run; web UI |
+| `run.py`, `app.py`, `ui/` | one design run; web UI (`app_classic.py` = previous UI) |
 
 ## Commands
 
@@ -47,7 +94,10 @@ If the server is down, every PreForm result falls back to a MOCK that is labelle
     .venv\Scripts\python.exe -m benchmark.run_benchmark --briefs a --seeds 3 --workers 2 --resume [--mock] [--out runs_sonnet]
     .venv\Scripts\python.exe -m benchmark.metrics results\benchmark\runs_sonnet   # table + charts from the logs
     .venv\Scripts\python.exe -m streamlit run app.py
-    .venv\Scripts\python.exe -m pytest checks core families
+    .venv\Scripts\python.exe -m pytest checks core families tests   # tests\ = Streamlit AppTest of every page
+    .venv\Scripts\python.exe scripts\make_submission_images.py      # renders + charts from the logs
+    .venv\Scripts\python.exe scripts\make_slides.py                 # slides.pptx + slides.pdf
+    .venv\Scripts\python.exe scripts\record_demo.py                 # demo.mp4 + demo.gif
 
 ## Fair comparison
 

@@ -1,15 +1,15 @@
 {
  "seconds": {
-  "home": 6.42,
+  "home": 7.35,
   "run": 3.25,
-  "agents": 3.23,
-  "story": 2.67,
-  "viewer": 2.66,
-  "why": 2.65,
+  "agents": 3.22,
+  "story": 2.69,
+  "viewer": 2.63,
+  "why": 2.7,
   "print": 2.65,
   "downloads": 2.66,
   "charts": 2.65,
-  "workshop": 3.48
+  "workshop": 2.67
  },
  "console_errors": [
   "Failed to load resource: the server responded with a status of 404 (Not Found)",

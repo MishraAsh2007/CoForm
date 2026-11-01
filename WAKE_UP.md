@@ -1,8 +1,31 @@
-# WAKE UP: overnight status (updated after every step)
+# WAKE UP: overnight status (final)
 
-Branch: `Mo_ver` on https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo_ver (pushed with `git push team master:Mo_ver`, no force).
+Everything is committed and pushed to **`Mo_ver`**: https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo_ver
+(`git push team master:Mo_ver`, never forced; `main` and `Jash_ver` untouched). API money spent tonight: **$0**
+(no agent runs; the only run was a free MOCK run to test the Run page). Full test suite: **74 passed**
+(`pytest checks core families tests`).
 
-## Done
+## Your morning to-do (under 10 minutes)
+
+1. (2 min) Decide **IF PRINTED or IF NOT PRINTED**. Then: in `results/submission/slides.pptx` delete slide 7 or 6;
+   in `SUBMISSION.md` "Additional info" keep one line (fill the checklist result if printed); use Script A or B in
+   `DEMO.md`.
+2. (1 min) Send `results/submission/TEAM_MERGE_GUIDE.md` to the team (slide map, form fields, who does what,
+   timed checklist to the 1 PM deadline). Ask Jash the Nemotron question (decides the NVIDIA answer).
+3. (2 min) Watch `results/submission/demo.mp4` (2:50) once. Optional: upload it to YouTube (unlisted) and swap the
+   link in `SUBMISSION.md` / slide 14; the GitHub link works as is.
+4. (3 min) Paste `results/submission/SUBMISSION.md` into the form, field by field (limits already checked).
+5. (1 min) Start the app once to be sure: `.venv\Scripts\python.exe -m streamlit run app.py` (Home → Story → 3D).
+   Fallback: `streamlit run app_classic.py`.
+
+## Links (all on Mo_ver)
+- Slides: https://github.com/MishraAsh2007/ScienceClaw_Project/blob/Mo_ver/results/submission/slides.pdf (editable: `slides.pptx`)
+- Demo video: https://github.com/MishraAsh2007/ScienceClaw_Project/blob/Mo_ver/results/submission/demo.mp4 (GIF in the README)
+- Form answers: https://github.com/MishraAsh2007/ScienceClaw_Project/blob/Mo_ver/results/submission/SUBMISSION.md
+- Team guide: https://github.com/MishraAsh2007/ScienceClaw_Project/blob/Mo_ver/results/submission/TEAM_MERGE_GUIDE.md · landing page for main: `results/submission/MAIN_README.md`
+- Images: `results/submission/images/` · UI audit: `results/ui_audit/UI_AUDIT.md` · demo script: `DEMO.md`
+
+## Done (step by step)
 - Step 1, UI audit (before): `results/ui_audit/UI_AUDIT.md`, screenshots in `results/ui_audit/before/`.
   Found a real crash: Charts page `KeyError: 'rank'` on the `runs_haiku_v2` set (the one DEMO.md uses).
 
@@ -42,6 +65,34 @@ Branch: `Mo_ver` on https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo
   command, main-branch steps, who-does-what, timed checklist to 1 PM), `results/submission/MAIN_README.md`
   (landing page for main), `LICENSE` (MIT) on Mo_ver. I did not touch `main` or `Jash_ver`.
 
+## Failed, skipped or worth knowing
+- Nothing was skipped. Steps 1-9 all done.
+- **Bug found and fixed:** re-running a run name that already existed from the UI failed silently on Windows (an
+  open `board.sqlite` blocked `run.py`'s `rmtree`). My first test of the Run page half-deleted the old MOCK run
+  `results/runs/a_pi5_standard__collective__generic__s0__mock` (it was replaced by a fresh MOCK run; the damaged
+  copy is `...__mock__prev_20261101_052539`, hidden in the app, safe to delete). Not used anywhere in the submission.
+- **Bug found and fixed:** the classic app's Charts page crashed (`KeyError: 'rank'`) on `runs_haiku_v2`.
+- The canvas 3D viewer drew the floor over the board; the viewer now uses WebGL with a depth buffer (canvas
+  fallback kept).
+- Opening "Write AI summary" on the real run saves a labelled MOCK summary into
+  `results/runs/<print candidate>/board.sqlite` (old behaviour, not in git). The committed copy in
+  `results/demo_run/` is unchanged.
+- The print-candidate run has **no formal objections** (only a decline by Fit with numbers); slide 5 says so.
+- The slide deck has 14 slides: one of 6/7 must be deleted and 11-12 are teammate placeholders.
+
+## Still MOCK, UNVERIFIED or EXPERIMENTAL
+- MOCK: the in-loop PreForm check is a local estimate in every run (the final PreForm and the print job are real);
+  the Mock model on the Run page; the AI summary without an API key (MOCK template); PreForm tools when
+  PreFormServer is off.
+- UNVERIFIED: USB-A / USB-C / HDMI / Ethernet plug sizes (typical), Active Cooler footprint and height (scaled from
+  the drawing, ±1 mm), cooler push-pin tips, fan position, GPIO ribbon width, M2.5 pilot hole grip, screw head size
+  (full list with margins: `results/print/RISK_CHECK.md`). Top risk: wide USB-A plug in the upper pair, 0.07 mm.
+- Not measured: the tolerance plate is not printed, so "measured" clearances fall back to the Formlabs design guide
+  (the print candidate's v8 switched to "measured", which therefore still used guide values).
+- Not PreForm-checked: the FDM version (`results/print/fdm/`).
+- Incomplete: Sonnet benchmark (4/18 runs, no team run): no Sonnet benchmark claims anywhere.
+- EXPERIMENTAL: the free-form part family (`families/freeform.py`).
+
 ## Notes
 - You asked me to read `results/benchmark/runs_v2_summary.md`: that file does not exist. I used
   `results/benchmark/runs_haiku_v2_summary.md` (the Haiku v2 set), which matches the numbers you gave.
@@ -49,8 +100,3 @@ Branch: `Mo_ver` on https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo
   still empty, so every measured clearance falls back to the generic value (by design in `checks/fit_rules.py`).
   Docs keep calling it "generic clearances", which is what was actually used.
 
-## Failed / skipped
-(none yet)
-
-## Left for you
-(filled in at the end)
