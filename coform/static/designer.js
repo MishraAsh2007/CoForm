@@ -118,7 +118,14 @@ async function showTest(id) {
   const t = state.tests.find(t => t.id === id); if (!t) return;
   const r = t.results;
   $('checks-title').textContent = `${t.iteration === 0 ? 'First draft' : 'Round ' + t.iteration + ', ' + t.agent + "'s proposal"}: ${r.passed ? 'passes every check' : 'fails'}`;
-  $('checks').innerHTML = r.checks.map(c => `<tr class="${c.passed ? '' : 'failed'}"><td>${c.passed ? '✓' : c.status === 'unverified' ? '?' : '✗'} ${esc(c.label)}${!c.passed && c.detail ? `<br><small class="muted">${esc(c.detail)}</small>` : ''}</td><td>${c.status === 'unverified' ? 'unverified' : `${num(c.value, 3)} ${esc(c.unit)}`}</td></tr>`).join('')
+  // Bend, stress and mass also say how close they are to their limit, so a narrow pass is visible.
+  const value = c => {
+    if (c.status === 'unverified') return 'unverified';
+    const unit = c.unit ?? (c.limit === 0 ? 'problems' : '');
+    const share = ['deflection', 'stress', 'mass'].includes(c.name) && c.limit ? c.value / c.limit : null;
+    return `${num(c.value, 3)} ${esc(unit)}${share == null ? '' : `<small class="${share > 0.9 && share <= 1 ? 'near' : ''}">${num(share * 100, 0)}% of the ${num(c.limit, 3)} ${esc(unit)} limit</small>`}`;
+  };
+  $('checks').innerHTML = r.checks.map(c => `<tr class="${c.passed ? '' : 'failed'}"><td>${c.passed ? '✓' : c.status === 'unverified' ? '?' : '✗'} ${esc(c.label)}${!c.passed && c.detail ? `<br><small class="muted">${esc(c.detail)}</small>` : ''}</td><td>${value(c)}</td></tr>`).join('')
     + (r.scene || []).map(worldRow).join('')
     + `<tr><td>Mass</td><td>${num(r.mass_g, 2)} g</td></tr><tr><td>Size</td><td>${r.extents_mm.map(v => num(v, 1)).join(' × ')} mm</td></tr>`;
   $('test-meta').textContent = `${Object.entries(t.changes).length ? 'Changed: ' + Object.entries(t.changes).map(([k, v]) => `${k} → ${num(v, 2)}`).join(', ') + '. ' : ''}${t.reason || ''} · ${r.solver}, ${num(r.nodes, 0)} nodes, ${num(r.mesh_mm, 1)} mm elements, ${r.seconds} s.`;
@@ -140,13 +147,34 @@ function renderSpec(spec) {
   if (!spec) { $('spec-summary').textContent = 'The drafting agent is reading the request…'; return; }
   $('spec-summary').textContent = spec.summary;
   $('assumptions').innerHTML = (rec.assumptions || []).map(a => `<li>${esc(a)}</li>`).join('');
-  const values = (state.best || state.tests.filter(t => t.chosen).at(-1))?.values || {};
-  $('params').innerHTML = Object.entries(spec.parameters).map(([n, p]) => `<tr><td>${esc(n.replaceAll('_', ' '))}</td><td>${num(values[n] ?? p.value, 2)} mm</td><td>${num(p.min, 1)}–${num(p.max, 1)}</td><td>${esc(p.role)}</td></tr>`).join('');
-  const sev = {must_fix: 'must fix', should_fix: 'should fix', note: 'note'};
-  $('spec-reviews').innerHTML = (rec.reviews || []).map(r => `<div class="tl-prop ${r.verdict === 'approve' ? '' : 'invalid'}"><div><b>${esc(r.agent)}</b> <span class="vote ${r.verdict === 'approve' ? 'yes' : 'no'}">${r.verdict === 'approve' ? '✓ approves' : r.verdict === 'revise' ? '✗ asks for changes' : 'no reply'}</span></div>
-    ${r.note ? `<small>${esc(r.note)}</small>` : ''}${r.issues.map(i => `<small class="${i.severity === 'must_fix' ? 'bad' : ''}"><b>${esc(sev[i.severity])}${i.feature ? ' · ' + esc(i.feature) : ''}:</b> ${esc(i.problem)}${i.fix ? ' → ' + esc(i.fix) : ''}</small>`).join('')}</div>`).join('') || '<p class="muted">No review recorded for this part.</p>';
+  const shown = state.best || state.tests.filter(t => t.chosen).at(-1);
+  const values = shown?.values || {};
+  // Parameter names carry their unit: bottle_kg is a mass, everything else a length.
+  const unit = n => n.endsWith('_kg') ? 'kg' : n.endsWith('_n') ? 'N' : 'mm';
+  $('params').innerHTML = Object.entries(spec.parameters).map(([n, p]) => `<tr><td>${esc(n.replaceAll('_', ' '))}</td><td>${num(values[n] ?? p.value, 2)} ${unit(n)}</td><td>${p.role === 'fixed' || p.min === p.max ? '<span class="muted">set by the request</span>' : `${num(p.min, 1)}–${num(p.max, 1)}`}</td><td>${esc(p.role)}</td></tr>`).join('');
+  $('spec-reviews').innerHTML = renderReviews(rec.reviews || []);
   const req = spec.requirements;
-  $('spec-meta').textContent = `Requirements: bend ≤ ${req.max_displacement_mm} mm, safety factor ${req.safety_factor}${req.max_mass_g ? ', mass ≤ ' + req.max_mass_g + ' g' : ''}. Loads: ${spec.loads.map(l => `${l.name} ${num(Math.hypot(...l.force_n), 3)} N`).join('; ')}. Drafted by ${rec.source === 'llm' ? 'the drafting agent (live AI)' : 'the built-in template (rule-based mode)'}.`;
+  // Designs built around reference bodies carry their load on the payload, so read it from the tested result.
+  const loads = (shown?.results.loads || spec.loads || []).filter(l => l.force_n).map(l => `${l.name} ${num(Math.hypot(...l.force_n), 3)} N`);
+  $('spec-meta').textContent = `Requirements: bend ≤ ${req.max_displacement_mm} mm, safety factor ${req.safety_factor}${req.max_mass_g ? ', mass ≤ ' + req.max_mass_g + ' g' : ''}.${loads.length ? ' Loads: ' + loads.join(', ') + '.' : ''} Drafted by ${rec.source === 'llm' ? 'the AI agents (live)' : 'the built-in template (rule-based mode)'}.`;
+}
+// One card per specialist: verdict pill, then each issue with its severity, what it is about and the suggested fix.
+function renderReviews(reviews) {
+  const verdict = {approve: ['yes', '✓ approves'], revise: ['no', '✗ asks for changes'], needs_evidence: ['no', '? needs evidence'], no_reply: ['no', 'no reply']};
+  const sev = {must_fix: 'Must fix', should_fix: 'Should fix', note: 'Note'};
+  const checked = {verified: ['bad', 'verified by code'], contradicts_check: ['', 'contradicted by code'],
+                   overruled_by_measurement: ['', 'overruled: code measured otherwise'], unverified: ['bad', 'not verified yet']};
+  const issue = i => {
+    const tag = (i.severity === 'must_fix' || i.overruled) && checked[i.verification];
+    return `<li><div class="issue-head"><span class="sev ${esc(i.severity)}">${esc(sev[i.severity] || i.severity)}</span>${i.feature ? `<b>${esc(i.feature)}</b>` : ''}${tag ? `<span class="check-tag ${tag[0]}">${esc(tag[1])}</span>` : ''}</div>
+      <p>${esc(i.problem)}</p>${i.fix ? `<p class="fix"><b>Suggested:</b> ${esc(i.fix)}</p>` : ''}</li>`;
+  };
+  return reviews.length ? `<div class="review-list">${reviews.map(r => {
+    const [cls, label] = verdict[r.verdict] || ['no', r.verdict];
+    return `<div class="review-card ${reviewOpen(r) ? 'open' : ''}"><div class="review-head"><b>${esc(r.agent)}</b><span class="vote ${cls}">${esc(label)}</span></div>
+      ${r.note ? `<p class="review-note">${esc(r.note)}</p>` : ''}
+      ${r.issues.length ? `<ul class="review-issues">${r.issues.map(issue).join('')}</ul>` : '<p class="review-note">No issues raised.</p>'}</div>`;
+  }).join('')}</div>` : '<p class="muted">No review recorded for this part.</p>';
 }
 function renderRounds() {
   $('rounds').innerHTML = state.rounds.slice().reverse().map(r => {
@@ -218,8 +246,8 @@ function renderPrint() {
       ${est ? `<tr><td>Estimate</td><td>${esc(est)}</td></tr>` : ''}
     </tbody></table>
     <h4>Specialist votes</h4>
-    <div class="vote-list">${votes.map(v => `<div class="vote ${voteState(v)}"><div class="vote-head"><b>${esc(v.agent)}</b><span>${said[voteState(v)] || esc(voteState(v))}</span></div>
-      <p>${esc(v.reason || '')}</p>
+    <div class="vote-list">${votes.map(v => `<div class="print-vote ${voteState(v)}"><div class="print-vote-head"><b>${esc(v.agent)}</b><span>${said[voteState(v)] || esc(voteState(v))}</span></div>
+      <p>${esc(v.reason || '')}${(v.reason || '').length === 400 ? '…' : ''}</p>
       ${(v.suggestions || []).length ? `<small class="muted">Suggestions</small><ul>${v.suggestions.map(s => `<li>${esc(s)}</li>`).join('')}</ul>` : ''}</div>`).join('')}</div>
     ${(review.unresolved_review_issues || []).length ? `<p>Open review issues: repair and review the design before printing.</p><ul>${review.unresolved_review_issues.map(i => `<li><b>${esc(i.agent)}</b>${i.feature ? ' · ' + esc(i.feature) : ''}: ${esc(i.problem)}${i.fix ? ' <span class="muted">→ ' + esc(i.fix) + '</span>' : ''}</li>`).join('')}</ul>` : ''}
   </div>`;

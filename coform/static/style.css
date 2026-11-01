@@ -141,8 +141,11 @@ label.check{flex-direction:row;align-items:center;gap:6px;font-size:12px}label.c
 
 a.button.disabled{opacity:.4;pointer-events:none}
 .viewer-wrap{position:relative}.zoom{position:absolute;right:10px;top:10px;display:flex;gap:4px}.zoom button{min-width:32px;padding:4px 8px;background:#191f22cc}
-/* Check tables stay readable on a wide card: values sit near their labels, body facts read left to right. */
-.facts-table{max-width:820px}.facts-table td:last-child{padding-left:16px}
+/* Check tables stay readable on a wide card: values sit near their labels, body facts read left to right.
+   Labels wrap (the global table rule is nowrap) so the table never grows past its card. */
+.facts-table{max-width:820px;white-space:normal}.facts-table td:last-child{padding-left:16px;white-space:nowrap}
+.facts-table td:last-child small{display:block;font-size:10.5px;color:var(--muted)}.facts-table td:last-child small.near{color:var(--warn)}
+.designer-grid{align-items:start}
 .facts-table tr.world-row td{text-align:left;padding-left:0}.facts-table tr.world-row small{display:block;margin-top:2px;color:var(--muted)}
 .facts-table tr.world-row small.bad{color:var(--bad)}.facts-table small.warn{color:var(--warn)}
 .fact-label{display:inline-block;min-width:92px;color:#c9d6d2}
@@ -155,7 +158,21 @@ a.button.disabled{opacity:.4;pointer-events:none}
 .print-why{margin:8px 0;padding:8px 12px;border-radius:6px;background:#3a2620;color:#f2c9b8}.print-why ul{margin:4px 0;padding-left:18px}
 .print-checks{margin:8px 0}
 .vote-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.vote{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--panel-2)}.vote p{margin:6px 0}.vote ul{margin:4px 0;padding-left:18px}
-.vote.approves{border-color:#4f6d61}.vote.objects{border-color:var(--bad)}.vote.no_reply{border-style:dashed}
-.vote-head{display:flex;justify-content:space-between;gap:8px}.vote.approves .vote-head span{color:var(--mint)}.vote.objects .vote-head span{color:var(--bad)}.vote.no_reply .vote-head span{color:var(--warn)}
+/* Its own class: ".vote" is the small yes/no pill used in the design review and the rounds. */
+.print-vote{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--panel-2)}.print-vote p{margin:6px 0}.print-vote ul{margin:4px 0;padding-left:18px}
+.print-vote.approves{border-color:#4f6d61}.print-vote.objects{border-color:var(--bad)}.print-vote.no_reply{border-style:dashed}
+.print-vote-head{display:flex;justify-content:space-between;gap:8px}.print-vote.approves .print-vote-head span{color:var(--mint)}.print-vote.objects .print-vote-head span{color:var(--bad)}.print-vote.no_reply .print-vote-head span{color:var(--warn)}
 @media(max-width:900px){.vote-list{grid-template-columns:1fr}}
+/* Design review: one card per specialist, a verdict pill, then each issue with its severity and suggested fix. */
+.review-list{display:grid;gap:8px}
+.review-card{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--panel-2)}
+.review-card.open{border-color:#6b4a3f}
+.review-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.review-head b{font-size:13px;text-transform:capitalize}
+.review-note{margin:6px 0 0;font-size:12px;color:var(--muted)}
+.review-issues{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.review-issues li{border-top:1px solid var(--line);padding-top:8px;font-size:12.5px;line-height:1.5}
+.review-issues p{margin:3px 0 0}.review-issues .fix{color:var(--muted)}.review-issues .fix b{color:#c9d6d2;font-weight:600}
+.issue-head{display:flex;align-items:center;flex-wrap:wrap;gap:6px}.issue-head b{font-size:12.5px}
+.sev{font-size:10.5px;font-weight:600;letter-spacing:.02em;border-radius:10px;padding:1px 8px;border:1px solid var(--line);color:var(--muted)}
+.sev.must_fix{color:var(--bad);border-color:#6b4a3f}.sev.should_fix{color:var(--warn);border-color:#6d5a46}
+.check-tag{font-size:10.5px;color:var(--muted)}.check-tag.bad{color:var(--bad)}

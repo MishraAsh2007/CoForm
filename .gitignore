@@ -11,3 +11,5 @@ data/
 build/
 dist/
 .pytest_tmp/
+presentation/.build-judge/*/
+presentation/.build-judge/text-fit.json

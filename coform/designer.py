@@ -254,7 +254,7 @@ def _print_vote(role, data, failure):
     given = data.get("suggestions")
     suggestions = [str(x).strip()[:240] for x in given if isinstance(x, str) and x.strip()][:3] if isinstance(given, list) else []
     return {"agent": role, "support": data["support"], "status": "approves" if data["support"] else "objects",
-            "reason": str(data.get("reason") or "")[:400], "suggestions": suggestions}
+            "reason": str(data.get("reason") or "")[:800], "suggestions": suggestions}
 
 
 def _overrule_contradicted(review):

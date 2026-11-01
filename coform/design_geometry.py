@@ -38,7 +38,7 @@ def relationship_check(spec, values):
             failures.append(f"'{relation.left_feature}' {relation.left_bound}.{relation.axis}={left:g} must be "
                             f"{relation.op} '{relation.right_feature}' {relation.right_bound}.{relation.axis} + offset={right:g} mm")
     return {"name": "relationships", "label": "Component face relationships preserved", "passed": not failures,
-            "value": len(failures), "limit": 0, "owner": "mechanics", **({"detail": "; ".join(failures)} if failures else {})}
+            "value": len(failures), "limit": 0, "unit": "problems", "owner": "mechanics", **({"detail": "; ".join(failures)} if failures else {})}
 
 
 def axial_span(spec, cut_index, solid_index, axis):
