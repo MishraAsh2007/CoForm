@@ -28,6 +28,12 @@ Branch: `Mo_ver` on https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo
   (IF NOT PRINTED, uses the Onshape fit check), backup plan. The 3D viewer now uses WebGL with a depth buffer
   (the canvas painter version drew the floor over the board); canvas stays as a fallback.
 
+- Step 6, slides: `results/submission/slides.pptx` (editable, speaker notes on every slide, passes the OOXML
+  validator) and `slides.pdf` (same layout, rendered from HTML with Playwright), made by `scripts/make_slides.py`.
+  14 slides: slides 6 (IF PRINTED) and 7 (IF NOT PRINTED) are alternatives, delete one; slides 11-12 are marked
+  "TEAMMATES: replace this". Slide 5 note: the print-candidate run had no formal objections, so the exchange shows
+  Fit's decline with numbers instead (said so on the slide).
+
 ## Notes
 - You asked me to read `results/benchmark/runs_v2_summary.md`: that file does not exist. I used
   `results/benchmark/runs_haiku_v2_summary.md` (the Haiku v2 set), which matches the numbers you gave.
