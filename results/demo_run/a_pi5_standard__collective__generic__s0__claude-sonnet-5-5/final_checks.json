@@ -1,0 +1,77 @@
+{
+ "assembly": {
+  "name": "assembly",
+  "passed": true,
+  "failures": [],
+  "metrics": {
+   "board_edge_gap_mm": {
+    "-x": 0.5,
+    "+x": 0.5,
+    "-y": 0.5,
+    "+y": 0.5
+   },
+   "lid_gap_above_tallest_part_mm": 0.8,
+   "plugs_clear": "8/8",
+   "mount_tabs": 4,
+   "outer_size_mm": [
+    93.5,
+    75.4,
+    25.3
+   ],
+   "fan_intake_vented_fraction": 0.53
+  }
+ },
+ "printability": {
+  "name": "printability",
+  "passed": true,
+  "failures": [],
+  "metrics": {
+   "min_wall_rule_mm": 0.6,
+   "rule_source": "generic",
+   "mesh_thickness_p1_mm": {
+    "base": 1.199,
+    "lid": 1.299
+   }
+  }
+ },
+ "preform": {
+  "name": "preform",
+  "passed": false,
+  "failures": [
+   {
+    "code": "cups",
+    "msg": "base: 1 cup(s) that trap resin",
+    "amount_mm": 0.0
+   }
+  ],
+  "mocked": false,
+  "mock_reason": null,
+  "print_settings": {
+   "printer": "Form Studio 1",
+   "machine_type": "CLRK-1-2",
+   "material": "Alpha Fast V1",
+   "material_code": "FLAPFA01",
+   "layer_thickness_mm": 0.15,
+   "print_setting": "DEFAULT"
+  },
+  "form_paths": {
+   "base": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\5184065d5c43ddbb\\base.form",
+   "lid": "C:\\Users\\rkhmh\\Downloads\\Apidaengineers1\\results\\cache\\5184065d5c43ddbb\\lid.form"
+  },
+  "metrics": {
+   "print_time_s": 5597,
+   "volume_ml": 61.61,
+   "warnings": 1,
+   "mocked": false
+  }
+ },
+ "fit": {
+  "name": "fit",
+  "passed": true,
+  "failures": [],
+  "metrics": {
+   "rule_source": "generic",
+   "fallbacks": []
+  }
+ }
+}

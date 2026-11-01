@@ -18,3 +18,6 @@ config.yaml.tmp
 results/print/onshape/rpi5_board_official.step
 results/print/onshape_step.zip
 results/print/_mesh/
+
+# the committed demo copy of the print-candidate run (results/demo_run) has no .form files (they are in results/print)
+results/demo_run/**/*.form

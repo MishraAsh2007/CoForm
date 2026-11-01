@@ -1,0 +1,201 @@
+{
+ "box": {
+  "gap": {
+   "+x": 0.5,
+   "+y": 0.5,
+   "-x": 0.5,
+   "-y": 0.5
+  },
+  "inner_top": 18.4
+ },
+ "bundle": "rpi5_cooler",
+ "cable_slots": [
+  {
+   "enabled": false,
+   "extra": 0.0,
+   "name": "pcie_ffc",
+   "open_top": false
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "gpio_ribbon",
+   "open_top": false
+  },
+  {
+   "enabled": false,
+   "extra": 0.0,
+   "name": "gpio_power_lead",
+   "open_top": false
+  },
+  {
+   "enabled": false,
+   "extra": 0.0,
+   "name": "cam_disp_ffc",
+   "open_top": false
+  }
+ ],
+ "clearance_source": "measured",
+ "clearances": {
+  "board_gap": 0.6,
+  "lid_fit": 0.6,
+  "nut_pocket_af": 6.0,
+  "nut_pocket_depth": 2.2,
+  "pilot_hole": 2.1,
+  "port": 0.6,
+  "screw_hole": 2.9
+ },
+ "drain_holes": {
+  "diameter": 3.5,
+  "positions": []
+ },
+ "fasteners": {
+  "board": "pilot",
+  "lid": "pilot",
+  "screw": "M2.5"
+ },
+ "lid": {
+  "lip_height": 3.0,
+  "lip_width": 1.5,
+  "notch_fillers": false
+ },
+ "lid_screws": {
+  "boss_diameter": 5.5,
+  "positions": [
+   [
+    -1.5,
+    -1.5
+   ],
+   [
+    86.5,
+    -1.5
+   ],
+   [
+    -1.5,
+    57.5
+   ],
+   [
+    86.5,
+    57.5
+   ]
+  ]
+ },
+ "mount_tabs": [
+  {
+   "hole": 3.4,
+   "length": 8.0,
+   "offset": 8.0,
+   "side": "+y",
+   "thickness": 3.0,
+   "width": 10.0
+  },
+  {
+   "hole": 3.4,
+   "length": 8.0,
+   "offset": 67.0,
+   "side": "+y",
+   "thickness": 3.0,
+   "width": 10.0
+  },
+  {
+   "hole": 3.4,
+   "length": 8.0,
+   "offset": 24.0,
+   "side": "+y",
+   "thickness": 3.0,
+   "width": 10.0
+  },
+  {
+   "hole": 3.4,
+   "length": 8.0,
+   "offset": 67.0,
+   "side": "-y",
+   "thickness": 3.0,
+   "width": 10.0
+  }
+ ],
+ "name": "rpi5_cooler_naive_v0",
+ "ports": [
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "usb_c_power",
+   "open_top": true
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "hdmi0",
+   "open_top": true
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "hdmi1",
+   "open_top": true
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "ethernet",
+   "open_top": true
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "usb_a_lower",
+   "open_top": true
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "usb_a_upper",
+   "open_top": true
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "power_button",
+   "open_top": false
+  },
+  {
+   "enabled": true,
+   "extra": 0.0,
+   "name": "status_leds",
+   "open_top": false
+  },
+  {
+   "enabled": true,
+   "extra": 0.3,
+   "name": "microsd",
+   "open_top": false
+  }
+ ],
+ "ribs": [],
+ "standoffs": {
+  "diameter": 5.5,
+  "height": 2.9
+ },
+ "vents": [
+  {
+   "along": "u",
+   "centre": [
+    42.2,
+    33.3
+   ],
+   "face": "lid",
+   "pitch": 4.0,
+   "size": [
+    23.5,
+    23.5
+   ],
+   "slot_width": 2.0
+  }
+ ],
+ "walls": {
+  "floor": 2.0,
+  "lid": 2.0,
+  "outer_fillet": 1.0,
+  "wall": 1.2
+ }
+}

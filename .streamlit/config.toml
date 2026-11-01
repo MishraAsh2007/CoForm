@@ -1,0 +1,14 @@
+# Colours, font and spacing follow the team's ScienceClaw web UI (Jash_ver: scienceclaw/static/style.css).
+[theme]
+base = "dark"
+primaryColor = "#bbefd5"
+backgroundColor = "#101416"
+secondaryBackgroundColor = "#191f22"
+textColor = "#edf4f1"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"
+
+[browser]
+gatherUsageStats = false

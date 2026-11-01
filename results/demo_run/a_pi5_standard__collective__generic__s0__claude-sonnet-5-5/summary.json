@@ -1,0 +1,49 @@
+{
+ "run": "a_pi5_standard__collective__generic__s0__claude-sonnet-5-5",
+ "family": "enclosure",
+ "experimental": false,
+ "print_settings": {
+  "printer": "Form Studio 1",
+  "machine_type": "CLRK-1-2",
+  "material": "Alpha Fast V1",
+  "material_code": "FLAPFA01",
+  "layer_thickness_mm": 0.15,
+  "print_setting": "DEFAULT"
+ },
+ "mode": "collective",
+ "brief": "a_pi5_standard",
+ "seed": 0,
+ "clearances": "generic",
+ "clearance_fallbacks": [],
+ "model": "claude-sonnet-5-5",
+ "mocked_llm": false,
+ "mocked_preform": false,
+ "budget": 16,
+ "start_spec": "naive",
+ "evaluations_used": 11,
+ "preform_requests_used": 3,
+ "stop_reason": "no agent proposed an edit for 2 rounds",
+ "seconds": 731.3,
+ "final_failures": {
+  "assembly": 0,
+  "printability": 0,
+  "preform": 1,
+  "fit": 0
+ },
+ "final_passed": false,
+ "quality": {
+  "score": 50.82,
+  "volume_ml": 29.16,
+  "print_height_mm": 112.0,
+  "preform_warnings": 1,
+  "clearance_margin_mm": 0.1,
+  "assembly_margin_mm": 0.2,
+  "extra_features": 0
+ },
+ "usage": {
+  "input_tokens": 377503,
+  "output_tokens": 6984,
+  "cost_usd": 0.8248
+ },
+ "final_version": 11
+}
