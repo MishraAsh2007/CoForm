@@ -1,0 +1,755 @@
+{
+  "description": "Captured offline regression: backpack holder, 2026-10-31. Only CAD specs and repair contents; no provider credentials or transcripts.",
+  "initial_spec": {
+    "features": [
+      {
+        "at": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axis": "z",
+        "label": "wall_plate",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "plate_thick",
+          "plate_width",
+          "plate_height"
+        ]
+      },
+      {
+        "at": [
+          0.0,
+          0.0,
+          "plate_thick"
+        ],
+        "axis": "z",
+        "label": "hook_arm",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "arm_length",
+          "arm_width",
+          "arm_thick"
+        ]
+      },
+      {
+        "at": [
+          "arm_length - lip_depth",
+          "arm_width",
+          "plate_thick"
+        ],
+        "axis": "z",
+        "label": "return_lip",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "lip_depth",
+          "lip_height",
+          "arm_thick"
+        ]
+      },
+      {
+        "at": [
+          "plate_thick",
+          "arm_width/2 - arm_thick/2",
+          "plate_thick + arm_thick"
+        ],
+        "axis": "z",
+        "label": "gusset",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": {
+          "axis": "y",
+          "degrees": -45.0
+        },
+        "shape": "box",
+        "size": [
+          "arm_length - plate_thick",
+          "arm_thick",
+          "arm_thick"
+        ]
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 - hole_pattern/2",
+          "plate_height/2 - hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_1",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 + hole_pattern/2",
+          "plate_height/2 - hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_2",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 - hole_pattern/2",
+          "plate_height/2 + hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_3",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 + hole_pattern/2",
+          "plate_height/2 + hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_4",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          "0",
+          "0",
+          "plate_thick"
+        ],
+        "axis": "z",
+        "label": "drain_slot",
+        "length": null,
+        "op": "subtract",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "plate_thick",
+          "drain_slot_w",
+          "drain_slot_h"
+        ]
+      }
+    ],
+    "loads": [
+      {
+        "force_n": [
+          0.0,
+          0.0,
+          -78.5
+        ],
+        "max": [
+          "arm_length",
+          "arm_width + lip_height",
+          "plate_thick + arm_thick + 0.01"
+        ],
+        "min": [
+          "arm_length - 10",
+          "arm_width",
+          "plate_thick + arm_thick - 0.01"
+        ],
+        "name": "backpack_weight"
+      }
+    ],
+    "name": "Backpack Wall Hook",
+    "parameters": {
+      "arm_length": {
+        "max": 160.0,
+        "min": 80.0,
+        "note": "Projection from wall to strap contact",
+        "role": "size",
+        "value": 120.0
+      },
+      "arm_thick": {
+        "max": 16.0,
+        "min": 6.0,
+        "note": "Arm web thickness (z)",
+        "role": "thickness",
+        "value": 10.0
+      },
+      "arm_width": {
+        "max": 60.0,
+        "min": 30.0,
+        "note": "Arm width along wall (y)",
+        "role": "size",
+        "value": 40.0
+      },
+      "drain_slot_h": {
+        "max": 4.0,
+        "min": 1.5,
+        "note": "Drain slot height (z)",
+        "role": "thickness",
+        "value": 2.0
+      },
+      "drain_slot_w": {
+        "max": 15.0,
+        "min": 6.0,
+        "note": "Drain slot width along y at wall junction",
+        "role": "size",
+        "value": 10.0
+      },
+      "fillet_r": {
+        "max": 15.0,
+        "min": 4.0,
+        "note": "Junction fillet radius (approximated by tapered gusset)",
+        "role": "size",
+        "value": 8.0
+      },
+      "hole_dia": {
+        "max": 5.0,
+        "min": 4.2,
+        "note": "M4 clearance hole diameter",
+        "role": "size",
+        "value": 4.5
+      },
+      "hole_pattern": {
+        "max": 80.0,
+        "min": 40.0,
+        "note": "Square pattern spacing for 4 holes",
+        "role": "position",
+        "value": 60.0
+      },
+      "lip_depth": {
+        "max": 50.0,
+        "min": 20.0,
+        "note": "Return lip depth at arm tip (+y)",
+        "role": "size",
+        "value": 35.0
+      },
+      "lip_height": {
+        "max": 20.0,
+        "min": 8.0,
+        "note": "Lip vertical height (z)",
+        "role": "thickness",
+        "value": 12.0
+      },
+      "plate_height": {
+        "max": 100.0,
+        "min": 60.0,
+        "note": "Plate height (z)",
+        "role": "size",
+        "value": 80.0
+      },
+      "plate_thick": {
+        "max": 8.0,
+        "min": 3.0,
+        "note": "Wall plate thickness (x)",
+        "role": "thickness",
+        "value": 4.0
+      },
+      "plate_width": {
+        "max": 100.0,
+        "min": 60.0,
+        "note": "Plate width (y)",
+        "role": "size",
+        "value": 80.0
+      }
+    },
+    "requirements": {
+      "max_displacement_mm": 1.5,
+      "max_mass_g": 120.0,
+      "safety_factor": 2.0
+    },
+    "summary": "Single-hook backpack holder screwed to a wall. A 120 mm arm with a 35 mm return lip supports the strap; a 4 mm wall plate with four M4 clearance holes transfers load. An open drain slot at the arm base prevents trapped resin.",
+    "supports": [
+      {
+        "max": [
+          0.01,
+          "plate_width",
+          "plate_height"
+        ],
+        "min": [
+          -0.01,
+          0.0,
+          0.0
+        ],
+        "name": "wall_mount"
+      }
+    ]
+  },
+  "patch": {
+    "features": [
+      {
+        "changes": {
+          "size": [
+            "plate_thick",
+            "plate_width",
+            "plate_height"
+          ]
+        },
+        "index": 0
+      },
+      {
+        "changes": {
+          "at": [
+            0.0,
+            0.0,
+            "plate_thick"
+          ],
+          "size": [
+            "arm_length",
+            "arm_width",
+            "arm_thick"
+          ]
+        },
+        "index": 1
+      },
+      {
+        "changes": {
+          "at": [
+            "arm_length - lip_depth",
+            "arm_width",
+            "plate_thick"
+          ],
+          "size": [
+            "lip_depth",
+            "lip_height",
+            "arm_thick"
+          ]
+        },
+        "index": 2
+      },
+      {
+        "changes": {
+          "at": [
+            "plate_thick",
+            "arm_width/2 - fillet_r/2",
+            "plate_thick + arm_thick"
+          ],
+          "rotate": {
+            "axis": "y",
+            "degrees": -45.0
+          },
+          "size": [
+            "arm_length - plate_thick",
+            "fillet_r",
+            "fillet_r"
+          ]
+        },
+        "index": 3
+      },
+      {
+        "changes": {
+          "at": [
+            "-1",
+            "plate_width/2 - hole_pattern/2",
+            "plate_height/2 - hole_pattern/2"
+          ]
+        },
+        "index": 4
+      },
+      {
+        "changes": {
+          "at": [
+            "-1",
+            "plate_width/2 + hole_pattern/2",
+            "plate_height/2 - hole_pattern/2"
+          ]
+        },
+        "index": 5
+      },
+      {
+        "changes": {
+          "at": [
+            "-1",
+            "plate_width/2 - hole_pattern/2",
+            "plate_height/2 + hole_pattern/2"
+          ]
+        },
+        "index": 6
+      },
+      {
+        "changes": {
+          "at": [
+            "-1",
+            "plate_width/2 + hole_pattern/2",
+            "plate_height/2 + hole_pattern/2"
+          ]
+        },
+        "index": 7
+      },
+      {
+        "changes": {
+          "at": [
+            0,
+            0,
+            "plate_thick"
+          ],
+          "size": [
+            "plate_thick",
+            "drain_slot_w",
+            "drain_slot_h"
+          ]
+        },
+        "index": 8
+      }
+    ],
+    "loads": [
+      {
+        "changes": {
+          "max": [
+            "arm_length",
+            "arm_width + lip_height",
+            "plate_thick + arm_thick + 0.01"
+          ],
+          "min": [
+            "arm_length - 10",
+            "arm_width",
+            "plate_thick + arm_thick - 0.01"
+          ]
+        },
+        "index": 0
+      }
+    ],
+    "parameters": {
+      "arm_thick": 12.0,
+      "arm_width": 50.0,
+      "fillet_r": 12.0,
+      "plate_thick": 6.0
+    },
+    "supports": [
+      {
+        "changes": {
+          "max": [
+            0.01,
+            "plate_width",
+            "plate_height"
+          ],
+          "min": [
+            -0.01,
+            0.0,
+            0.0
+          ]
+        },
+        "index": 0
+      }
+    ]
+  },
+  "replacement_spec": {
+    "features": [
+      {
+        "at": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "axis": "z",
+        "label": "wall_plate",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "plate_thick",
+          "plate_width",
+          "plate_height"
+        ]
+      },
+      {
+        "at": [
+          0.0,
+          0.0,
+          "plate_thick"
+        ],
+        "axis": "z",
+        "label": "hook_arm",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "arm_length",
+          "arm_width",
+          "arm_thick"
+        ]
+      },
+      {
+        "at": [
+          "arm_length - lip_depth",
+          "arm_width",
+          "plate_thick"
+        ],
+        "axis": "z",
+        "label": "return_lip",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "lip_depth",
+          "lip_height",
+          "arm_thick"
+        ]
+      },
+      {
+        "at": [
+          "plate_thick",
+          "arm_width/2 - fillet_r/2",
+          "plate_thick + arm_thick"
+        ],
+        "axis": "z",
+        "label": "gusset",
+        "length": null,
+        "op": "add",
+        "radius": null,
+        "rotate": {
+          "axis": "y",
+          "degrees": -45.0
+        },
+        "shape": "box",
+        "size": [
+          "arm_length - plate_thick",
+          "fillet_r",
+          "fillet_r"
+        ]
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 - hole_pattern/2",
+          "plate_height/2 - hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_1",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 + hole_pattern/2",
+          "plate_height/2 - hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_2",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 - hole_pattern/2",
+          "plate_height/2 + hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_3",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          "-1",
+          "plate_width/2 + hole_pattern/2",
+          "plate_height/2 + hole_pattern/2"
+        ],
+        "axis": "x",
+        "label": "screw_hole_4",
+        "length": "plate_thick + 2",
+        "op": "subtract",
+        "radius": "hole_dia/2",
+        "rotate": null,
+        "shape": "cylinder",
+        "size": null
+      },
+      {
+        "at": [
+          0,
+          0,
+          "plate_thick"
+        ],
+        "axis": "z",
+        "label": "drain_slot",
+        "length": null,
+        "op": "subtract",
+        "radius": null,
+        "rotate": null,
+        "shape": "box",
+        "size": [
+          "plate_thick",
+          "drain_slot_w",
+          "drain_slot_h"
+        ]
+      }
+    ],
+    "loads": [
+      {
+        "force_n": [
+          0.0,
+          0.0,
+          -78.5
+        ],
+        "max": [
+          "arm_length",
+          "arm_width + lip_height",
+          "plate_thick + arm_thick + 0.01"
+        ],
+        "min": [
+          "arm_length - 10",
+          "arm_width",
+          "plate_thick + arm_thick - 0.01"
+        ],
+        "name": "backpack_weight"
+      }
+    ],
+    "name": "Backpack Wall Hook",
+    "parameters": {
+      "arm_length": {
+        "max": 160.0,
+        "min": 80.0,
+        "note": "Projection from wall to strap contact",
+        "role": "size",
+        "value": 120.0
+      },
+      "arm_thick": {
+        "max": 16.0,
+        "min": 6.0,
+        "note": "Arm web thickness (z)",
+        "role": "thickness",
+        "value": 12.0
+      },
+      "arm_width": {
+        "max": 60.0,
+        "min": 30.0,
+        "note": "Arm width along wall (y)",
+        "role": "size",
+        "value": 50.0
+      },
+      "drain_slot_h": {
+        "max": 4.0,
+        "min": 1.5,
+        "note": "Drain slot height (z)",
+        "role": "thickness",
+        "value": 2.0
+      },
+      "drain_slot_w": {
+        "max": 15.0,
+        "min": 6.0,
+        "note": "Drain slot width along y at wall junction",
+        "role": "size",
+        "value": 10.0
+      },
+      "fillet_r": {
+        "max": 15.0,
+        "min": 4.0,
+        "note": "Junction fillet radius (approximated by tapered gusset)",
+        "role": "size",
+        "value": 12.0
+      },
+      "hole_dia": {
+        "max": 5.0,
+        "min": 4.2,
+        "note": "M4 clearance hole diameter",
+        "role": "size",
+        "value": 4.5
+      },
+      "hole_pattern": {
+        "max": 80.0,
+        "min": 40.0,
+        "note": "Square pattern spacing for 4 holes",
+        "role": "position",
+        "value": 60.0
+      },
+      "lip_depth": {
+        "max": 50.0,
+        "min": 20.0,
+        "note": "Return lip depth at arm tip (+y)",
+        "role": "size",
+        "value": 35.0
+      },
+      "lip_height": {
+        "max": 20.0,
+        "min": 8.0,
+        "note": "Lip vertical height (z)",
+        "role": "thickness",
+        "value": 12.0
+      },
+      "plate_height": {
+        "max": 100.0,
+        "min": 60.0,
+        "note": "Plate height (z)",
+        "role": "size",
+        "value": 80.0
+      },
+      "plate_thick": {
+        "max": 8.0,
+        "min": 3.0,
+        "note": "Wall plate thickness (x)",
+        "role": "thickness",
+        "value": 6.0
+      },
+      "plate_width": {
+        "max": 100.0,
+        "min": 60.0,
+        "note": "Plate width (y)",
+        "role": "size",
+        "value": 80.0
+      }
+    },
+    "requirements": {
+      "max_displacement_mm": 1.5,
+      "max_mass_g": 120.0,
+      "safety_factor": 2.0
+    },
+    "summary": "Wall-mounted hook to hold a backpack by one strap. A 120 mm arm with a 35 mm return lip supports the strap; a 4 mm wall plate with four M4 clearance holes transfers load. An open drain slot at the arm base prevents trapped resin.",
+    "supports": [
+      {
+        "max": [
+          0.01,
+          "plate_width",
+          "plate_height"
+        ],
+        "min": [
+          -0.01,
+          0.0,
+          0.0
+        ],
+        "name": "wall_mount"
+      }
+    ]
+  }
+}

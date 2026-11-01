@@ -9,17 +9,25 @@
 
   function Viewer(canvas, legend) {
     const ctx = canvas.getContext('2d');
-    let field = null, overlay = {supports: [], loads: []}, yaw = -0.7, pitch = 0.45, zoom = 1, colorBy = 'stress', exaggerate = true;
+    let field = null, overlay = {supports: [], loads: []}, yaw = -0.7, pitch = 0.45, zoom = 1, colorBy = 'stress', exaggerate = false;
     let center = [0, 0, 0], size = 1, scale = 1, maxValue = 1, values = [], limits = {};
 
     // limits: {stress: allowable MPa, bend: allowed mm}. Colours then mean the same thing for every
     // design (share of the limit), and anything over the limit turns orange.
     function setField(f, o, l) {
+      const vector = p => Array.isArray(p) && p.length >= 3 && p.slice(0, 3).every(Number.isFinite);
+      if (!f || !Array.isArray(f.positions) || !f.positions.length || !f.positions.every(vector)
+          || !Array.isArray(f.displacement) || f.displacement.length !== f.positions.length || !f.displacement.every(vector)
+          || !Array.isArray(f.stress) || f.stress.length !== f.positions.length || !f.stress.every(Number.isFinite)
+          || !Array.isArray(f.triangles) || !f.triangles.length || !f.triangles.every(t => Array.isArray(t) && t.length === 3
+            && t.every(i => Number.isInteger(i) && i >= 0 && i < f.positions.length))) {
+        throw new Error('The 3D result is incomplete or invalid. Re-run this test to regenerate its mesh.');
+      }
       field = f; overlay = o || overlay; limits = l || limits;
       const P = f.positions, lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
       for (const p of P) for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], p[k]); hi[k] = Math.max(hi[k], p[k]); }
       center = lo.map((v, k) => (v + hi[k]) / 2); size = Math.max(...hi.map((v, k) => v - lo[k])) || 1;
-      const umax = Math.max(1e-12, ...f.displacement.map(u => Math.hypot(u[0], u[1], u[2])));
+      const umax = f.displacement.reduce((m, u) => Math.max(m, Math.hypot(u[0], u[1], u[2])), 1e-12);
       scale = exaggerate ? 0.12 * size / umax : 1;
       recolor(); draw();
     }
@@ -47,12 +55,21 @@
     }
     function draw() {
       const ratio = window.devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight;
+      if (!w || !h) return; // ResizeObserver draws after the hidden project becomes visible.
       canvas.width = w * ratio; canvas.height = h * ratio; ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       ctx.fillStyle = '#141a1c'; ctx.fillRect(0, 0, w, h);
       if (!field) return;
-      const k = zoom * 0.8 * Math.min(w, h) / size, ox = w / 2, oy = h / 2;
       const S = field.positions.map((p, i) => { const u = field.displacement[i];
         return rotate([p[0] + scale * u[0], p[1] + scale * u[1], p[2] + scale * u[2]]); });
+      // Fit the projected, deformed geometry, including load arrows, at every orientation.
+      const fit = S.slice();
+      for (const l of overlay.loads) {
+        const mid = l.min.map((v, i) => (v + l.max[i]) / 2), fl = Math.hypot(...l.force_n) || 1;
+        fit.push(rotate(mid), rotate(mid.map((v, i) => v - l.force_n[i] / fl * size * 0.25)));
+      }
+      const bounds = fit.reduce((b, p) => [Math.min(b[0], p[0]), Math.max(b[1], p[0]), Math.min(b[2], p[2]), Math.max(b[3], p[2])], [Infinity, -Infinity, Infinity, -Infinity]);
+      const k = zoom * 0.82 * Math.min(w / Math.max(bounds[1] - bounds[0], 1e-6), h / Math.max(bounds[3] - bounds[2], 1e-6));
+      const ox = w / 2 - k * (bounds[0] + bounds[1]) / 2, oy = h / 2 + k * (bounds[2] + bounds[3]) / 2;
       const order = field.triangles.map((t, i) => [i, (S[t[0]][1] + S[t[1]][1] + S[t[2]][1]) / 3]).sort((a, b) => b[1] - a[1]);
       const light = [0.35, -0.6, 0.72];
       for (const [i] of order) {
@@ -60,7 +77,7 @@
         const u = [B[0] - A[0], B[1] - A[1], B[2] - A[2]], v = [C[0] - A[0], C[1] - A[1], C[2] - A[2]];
         const n = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
         const len = Math.hypot(...n) || 1;
-        if (n[1] / len > 0.02) continue;  // back face (normals point toward the viewer along -depth)
+        // Draw both sides: older exports can have mixed winding. Depth sorting still puts near surfaces last.
         const shade = 0.45 + 0.55 * Math.abs((n[0] * light[0] + n[1] * light[1] + n[2] * light[2]) / len);
         const value = (values[a] + values[b] + values[c]) / 3 / maxValue;
         const rgb = value > 1 && limits[colorBy] ? OVER_RGB : RGB[Math.max(0, Math.min(RGB.length - 1, Math.round(value * (RGB.length - 1))))];
@@ -98,17 +115,31 @@
       const p = rotate(at); ctx.fillStyle = color; ctx.font = '12px system-ui'; ctx.fillText(text, ox + k * p[0] + 6, oy - k * p[2] - 6);
     }
     let drag = null;
-    canvas.addEventListener('pointerdown', e => { drag = [e.clientX, e.clientY, yaw, pitch]; canvas.setPointerCapture(e.pointerId); });
+    let engaged = false;  // the wheel zooms only after a click on the view (or with Ctrl); otherwise the page scrolls
+    canvas.addEventListener('pointerdown', e => { engaged = true; drag = [e.clientX, e.clientY, yaw, pitch]; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener('pointerleave', () => { if (!drag) engaged = false; });
     canvas.addEventListener('pointermove', e => { if (!drag) return;
       yaw = drag[2] + (e.clientX - drag[0]) * 0.01; pitch = Math.max(-1.5, Math.min(1.5, drag[3] + (e.clientY - drag[1]) * 0.01)); draw(); });
     canvas.addEventListener('pointerup', () => { drag = null; });
-    canvas.addEventListener('wheel', e => { e.preventDefault(); zoom = Math.max(0.3, Math.min(6, zoom * (e.deltaY < 0 ? 1.12 : 0.89))); draw(); }, {passive: false});
+    canvas.addEventListener('pointercancel', () => { drag = null; });
+    canvas.addEventListener('wheel', e => {
+      if (!engaged && !e.ctrlKey && !e.metaKey) return;  // let the page scroll
+      e.preventDefault(); zoomBy(e.deltaY < 0 ? 1.12 : 0.89);
+    }, {passive: false});
+    function zoomBy(f) { zoom = Math.max(0.3, Math.min(6, zoom * f)); draw(); }
     window.addEventListener('resize', draw);
+    if (typeof ResizeObserver !== 'undefined') new ResizeObserver(draw).observe(canvas);
     return {
       setField,
       setColorBy(mode) { colorBy = mode; recolor(); draw(); },
       setExaggerate(on) { exaggerate = on; if (field) setField(field, overlay, limits); },
       reset() { yaw = -0.7; pitch = 0.45; zoom = 1; draw(); },
+      zoomIn() { zoomBy(1.25); }, zoomOut() { zoomBy(0.8); },
+      clear(message) {
+        field = null; overlay = {supports: [], loads: []}; draw();
+        if (legend) legend.textContent = message || '';
+        if (message) { const w = canvas.clientWidth, h = canvas.clientHeight; ctx.fillStyle = '#99abae'; ctx.font = '14px system-ui'; ctx.textAlign = 'center'; ctx.fillText(message, w / 2, h / 2); ctx.textAlign = 'start'; }
+      },
     };
   }
   window.Viewer3D = Viewer;

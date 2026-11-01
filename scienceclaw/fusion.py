@@ -47,7 +47,8 @@ class FusionLink:
         self.directory = self.store.directory / "fusion"
         self.directory.mkdir(exist_ok=True)
         self.lock = threading.RLock()
-        self.claimed, self.results, self.done = set(), {}, {}
+        self.claimed, self.done = set(), {}
+        self.results = {r["job_id"]: r for r in self.store.list(None, "fusion_result")}
         self.last_poll, self.addin = 0.0, {}
 
     # ---- add-in side -----------------------------------------------------------------
@@ -58,6 +59,9 @@ class FusionLink:
                 self.addin = {k: str(v)[:200] for k, v in addin.items()}
             for job in self.store.list("fusion", "fusion_job"):
                 if job["id"] not in self.claimed and job["id"] not in self.results:
+                    if job.get("kind") == "view_step" and not self._can_view_step():
+                        self.submit_result(job["id"], {"error": "Reload the ScienceClaw add-in in Fusion; this version cannot open STEP jobs"})
+                        continue
                     self.claimed.add(job["id"])
                     return job
             return None
@@ -71,6 +75,8 @@ class FusionLink:
             if payload.get("error"):
                 raise ValueError(f"Fusion reported: {str(payload['error'])[:500]}")
             if job.get("kind") == "view_step":
+                if not isinstance(payload.get("document"), str) or not payload["document"].strip():
+                    raise ValueError("Fusion did not confirm an imported document")
                 outcome = {"status": "done", "document": str(payload.get("document") or "")[:200]}
             else:
                 revision = self._revision(job["run_id"], job["candidate_id"], payload, origin="agent_build")
@@ -125,13 +131,35 @@ class FusionLink:
             age = time.monotonic() - self.last_poll if self.last_poll else None
             pending = [j["id"] for j in self.store.list("fusion", "fusion_job") if j["id"] not in self.results]
         return {"connected": age is not None and age < POLL_FRESH_S, "seconds_since_poll": age,
-                "addin": self.addin, "pending_jobs": len(pending)}
+                "addin": self.addin, "pending_jobs": len(pending), "supports_view_step": self._can_view_step()}
+
+    def _can_view_step(self):
+        if "view_step" in str(self.addin.get("capabilities", "")).split(","):
+            return True
+        try:
+            return tuple(int(n) for n in self.addin.get("addin_version", "").split(".")) >= (0, 2, 0)
+        except ValueError:
+            return False
+
+    def job_status(self, job_id):
+        job = self.store.get(job_id, "fusion_job")
+        with self.lock:
+            return {"id": job_id, "kind": job.get("kind", "build"),
+                    "status": self.results.get(job_id, {}).get("status", "running" if job_id in self.claimed else "queued"),
+                    "result": self.results.get(job_id)}
 
     def request_view(self, name: str, step_url: str) -> dict:
         """Ask the add-in to open a STEP (a designer part) in a new Fusion document for viewing."""
         if not self.status()["connected"]:
             raise ValueError("Fusion add-in is not connected. In Fusion: Utilities > Add-Ins > ScienceClaw > Run.")
-        return self.store.put("fusion_job", "fusion", {"id": identifier("fusion_job"), "kind": "view_step", "run_id": "designer",
+        if not self._can_view_step():
+            raise ValueError(f"Fusion is running ScienceClaw {self.addin.get('addin_version', 'unknown')}, which cannot open STEP jobs. "
+                             "In Fusion: Utilities > Add-Ins > Scripts and Add-Ins > ScienceClaw > Stop, then Run to load the updated add-in.")
+        with self.lock:
+            for job in self.store.list("fusion", "fusion_job"):
+                if job.get("kind") == "view_step" and job.get("step_url") == step_url and job["id"] not in self.results:
+                    return job  # repeated clicks follow the same import instead of opening many documents
+            return self.store.put("fusion_job", "fusion", {"id": identifier("fusion_job"), "kind": "view_step", "run_id": "designer",
                                                         "name": name[:80], "step_url": step_url, "created_at": utc_now()})
 
     def request_build(self, run_id: str, candidate_id: str) -> dict:

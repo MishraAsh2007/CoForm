@@ -24,7 +24,7 @@ import adsk.core
 import adsk.fusion
 
 SERVER = os.environ.get("SCIENCECLAW_URL", "http://127.0.0.1:8000").rstrip("/")
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 EVENT_ID = "ScienceClawJob"
 PANEL_ID = "SolidScriptsAddinsPanel"
 PARAMS = ("sc_length", "sc_base_width", "sc_wall_height", "sc_thickness")
@@ -35,6 +35,7 @@ ui = None
 handlers = []
 stopping = threading.Event()
 busy = threading.Lock()
+poll_metadata = {}
 
 
 # ---------------------------------------------------------------- HTTP helpers
@@ -51,14 +52,21 @@ def _poll():
         if busy.locked():
             continue
         try:
-            document = app.activeDocument.name if app.activeDocument else ""
-            query = urllib.parse.urlencode({"addin_version": VERSION, "fusion_version": app.version, "document": document})
+            query = urllib.parse.urlencode(poll_metadata)
             job = _request("GET", "/api/fusion/jobs/next?" + query).get("job")
         except Exception:
             continue  # ScienceClaw not running; try again quietly.
         if job:
             busy.acquire()
-            app.fireCustomEvent(EVENT_ID, json.dumps(job))
+            try:
+                if not app.fireCustomEvent(EVENT_ID, json.dumps(job)):
+                    raise RuntimeError("Fusion could not dispatch the import event; reload the add-in")
+            except Exception as exc:
+                busy.release()
+                try:
+                    _request("POST", f"/api/fusion/jobs/{job['id']}/result", {"error": str(exc)})
+                except Exception:
+                    pass
 
 
 # ---------------------------------------------------------------- design helpers
@@ -223,7 +231,9 @@ def _open_step(job):
         handle.write(response.read())
     options = app.importManager.createSTEPImportOptions(path)
     document = app.importManager.importToNewDocument(options)
-    return {"document": document.name if document else job.get("name")}
+    if not document:
+        raise RuntimeError("Fusion did not create a document from the STEP file")
+    return {"document": document.name}
 
 
 class JobHandler(adsk.core.CustomEventHandler):
@@ -231,15 +241,18 @@ class JobHandler(adsk.core.CustomEventHandler):
         job = None
         try:
             job = json.loads(args.additionalInfo)
+            poll_metadata["document"] = app.activeDocument.name if app.activeDocument else ""
             if job.get("kind") == "view_step":
                 payload = _open_step(job)  # Designer part: open it for viewing; nothing is exported back.
-            else:
+            elif job.get("kind", "build") == "build":
                 design = _design()
                 if design.userParameters.itemByName("sc_length") is None:
                     _setup(design, job["parameters"], job.get("family", "u_channel"))
                 _set_parameters(design, job["parameters"])
                 _link(design, job["run_id"], job["candidate_id"])
                 payload = _export(design)
+            else:
+                raise RuntimeError("Unsupported ScienceClaw job kind: " + str(job.get("kind")))
         except Exception:
             payload = {"error": traceback.format_exc()[-800:]}
         finally:
@@ -327,6 +340,8 @@ def run(context):
     try:
         app = adsk.core.Application.get()
         ui = app.userInterface
+        poll_metadata.update(addin_version=VERSION, fusion_version=app.version,
+                             document=app.activeDocument.name if app.activeDocument else "", capabilities="build,view_step")
         event = app.registerCustomEvent(EVENT_ID)
         job_handler = JobHandler()
         event.add(job_handler)

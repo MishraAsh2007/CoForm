@@ -29,6 +29,17 @@ Fusion from this workspace. ScienceClaw's side is tested against a simulated add
 
 ## Install (once, about 5 minutes)
 
+For **Part designer → Open in Fusion**, use add-in **0.3.0** from this repository.
+If Fusion is already running an older copy: **Utilities → Scripts and Add-Ins → Add-Ins →
+ScienceClaw → Stop**, then **Run**. The page now identifies incompatible versions before
+queueing a job. This action imports the selected generated STEP into a new document; it does
+not use the predefined study template or require **ScienceClaw: set up**.
+
+The page waits for Fusion's actual completion result and displays import errors. Repeated
+clicks reuse a pending job, and completed jobs are not replayed after a server restart.
+The import helper requires an actual Document return value, as documented by Autodesk:
+[ImportManager.importToNewDocument](https://help.autodesk.com/cloudhelp/ENU/Fusion-360-API/files/core_ImportManager_importToNewDocument.htm).
+
 1. Start ScienceClaw: `.\.venv\Scripts\python.exe -m scienceclaw.cli serve`.
 2. In Fusion: **Utilities → Add-Ins → Scripts and Add-Ins** (Shift+S) → **Add-Ins**
    tab → **+** (or the green plus) → select the folder `ScienceClaw\fusion\ScienceClaw`

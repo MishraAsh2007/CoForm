@@ -6,7 +6,7 @@
 	"description": {
 		"": "Connects a parametric support-arm design to the local ScienceClaw lab: agents set sc_* parameters; you can send your own edits back."
 	},
-	"version": "0.1.0",
+	"version": "0.3.0",
 	"runOnStartup": false,
 	"supportedOS": "windows|mac",
 	"editEnabled": true

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XAO version="1.0" author="Gmsh">
+  <geometry name="other">
+    <shape format="BREP"><![CDATA[
+CASCADE Topology V1, (c) Matra-Datavision
+Locations 0
+Curve2ds 24
+1 0 0 1 0 
+1 0 0 1 0 
+1 12 0 0 -1 
+1 0 0 0 1 
+1 0 -30 1 0 
+1 0 0 1 0 
+1 0 0 0 -1 
+1 0 0 0 1 
+1 0 0 1 0 
+1 0 160 1 0 
+1 12 0 0 -1 
+1 160 0 0 1 
+1 0 -30 1 0 
+1 0 160 1 0 
+1 0 0 0 -1 
+1 160 0 0 1 
+1 0 0 0 1 
+1 0 0 1 0 
+1 12 0 0 1 
+1 0 0 1 0 
+1 0 0 0 1 
+1 0 30 1 0 
+1 12 0 0 1 
+1 0 30 1 0 
+Curves 12
+1 0 0 0 0 0 1 
+1 0 0 12 -0 1 0 
+1 0 30 0 0 0 1 
+1 0 0 0 -0 1 0 
+1 160 0 0 0 0 1 
+1 160 0 12 -0 1 0 
+1 160 30 0 0 0 1 
+1 160 0 0 -0 1 0 
+1 0 0 0 1 0 -0 
+1 0 0 12 1 0 -0 
+1 0 30 0 1 0 -0 
+1 0 30 12 1 0 -0 
+Polygon3D 0
+PolygonOnTriangulations 0
+Surfaces 6
+1 0 0 0 1 0 -0 0 0 1 0 -1 0 
+1 0 0 0 -0 1 0 0 0 1 1 0 -0 
+1 0 0 12 0 0 1 1 0 -0 -0 1 0 
+1 0 30 0 -0 1 0 0 0 1 1 0 -0 
+1 0 0 0 0 0 1 1 0 -0 -0 1 0 
+1 160 0 0 1 0 -0 0 0 1 0 -1 0 
+Triangulations 0
+
+TShapes 35
+Ve
+1e-07
+0 0 12
+0 0
+
+0101101
+*
+Ve
+1e-07
+0 0 0
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  1 0 0 12
+2  1 1 0 0 12
+2  2 2 0 0 12
+0
+
+0101000
+-35 0 +34 0 *
+Ve
+1e-07
+0 30 12
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  2 0 0 30
+2  3 1 0 0 30
+2  4 3 0 0 30
+0
+
+0101000
+-32 0 +35 0 *
+Ve
+1e-07
+0 30 0
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  3 0 0 12
+2  5 1 0 0 12
+2  6 4 0 0 12
+0
+
+0101000
+-32 0 +30 0 *
+Ed
+ 1e-07 1 1 0
+1  4 0 0 30
+2  7 1 0 0 30
+2  8 5 0 0 30
+0
+
+0101000
+-30 0 +34 0 *
+Wi
+
+0101100
+-33 0 -31 0 +29 0 +28 0 *
+Fa
+0  1e-07 1 0
+
+0101000
++27 0 *
+Ve
+1e-07
+160 0 12
+0 0
+
+0101101
+*
+Ve
+1e-07
+160 0 0
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  5 0 0 12
+2  9 6 0 0 12
+2  10 2 0 0 12
+0
+
+0101000
+-25 0 +24 0 *
+Ve
+1e-07
+160 30 12
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  6 0 0 30
+2  11 6 0 0 30
+2  12 3 0 0 30
+0
+
+0101000
+-22 0 +25 0 *
+Ve
+1e-07
+160 30 0
+0 0
+
+0101101
+*
+Ed
+ 1e-07 1 1 0
+1  7 0 0 12
+2  13 6 0 0 12
+2  14 4 0 0 12
+0
+
+0101000
+-22 0 +20 0 *
+Ed
+ 1e-07 1 1 0
+1  8 0 0 30
+2  15 6 0 0 30
+2  16 5 0 0 30
+0
+
+0101000
+-20 0 +24 0 *
+Wi
+
+0101100
+-23 0 -21 0 +19 0 +18 0 *
+Fa
+0  1e-07 6 0
+
+0101000
++17 0 *
+Ed
+ 1e-07 1 1 0
+1  9 0 0 160
+2  17 2 0 0 160
+2  18 5 0 0 160
+0
+
+0101000
+-24 0 +34 0 *
+Ed
+ 1e-07 1 1 0
+1  10 0 0 160
+2  19 2 0 0 160
+2  20 3 0 0 160
+0
+
+0101000
+-25 0 +35 0 *
+Wi
+
+0101100
+-15 0 -23 0 +14 0 +33 0 *
+Fa
+0  1e-07 2 0
+
+0101000
++13 0 *
+Ed
+ 1e-07 1 1 0
+1  11 0 0 160
+2  21 4 0 0 160
+2  22 5 0 0 160
+0
+
+0101000
+-20 0 +30 0 *
+Ed
+ 1e-07 1 1 0
+1  12 0 0 160
+2  23 4 0 0 160
+2  24 3 0 0 160
+0
+
+0101000
+-22 0 +32 0 *
+Wi
+
+0101100
+-11 0 -19 0 +10 0 +29 0 *
+Fa
+0  1e-07 4 0
+
+0101000
++9 0 *
+Wi
+
+0101100
+-28 0 -11 0 +18 0 +15 0 *
+Fa
+0  1e-07 5 0
+
+0101000
++7 0 *
+Wi
+
+0101100
+-31 0 -10 0 +21 0 +14 0 *
+Fa
+0  1e-07 3 0
+
+0101000
++5 0 *
+Sh
+
+0101100
+-26 0 +16 0 -12 0 +8 0 -6 0 +4 0 *
+So
+
+0100000
++3 0 *
+Co
+
+1100000
++2 0 *
+
++1 0 ]]></shape>
+    <topology>
+      <vertices count="8">
+        <vertex index="0" name="" reference="7"/>
+        <vertex index="1" name="" reference="8"/>
+        <vertex index="2" name="" reference="10"/>
+        <vertex index="3" name="" reference="12"/>
+        <vertex index="4" name="" reference="17"/>
+        <vertex index="5" name="" reference="18"/>
+        <vertex index="6" name="" reference="20"/>
+        <vertex index="7" name="" reference="22"/>
+      </vertices>
+      <edges count="12">
+        <edge index="0" name="" reference="6"/>
+        <edge index="1" name="" reference="9"/>
+        <edge index="2" name="" reference="11"/>
+        <edge index="3" name="" reference="13"/>
+        <edge index="4" name="" reference="16"/>
+        <edge index="5" name="" reference="19"/>
+        <edge index="6" name="" reference="21"/>
+        <edge index="7" name="" reference="23"/>
+        <edge index="8" name="" reference="26"/>
+        <edge index="9" name="" reference="27"/>
+        <edge index="10" name="" reference="30"/>
+        <edge index="11" name="" reference="31"/>
+      </edges>
+      <faces count="6">
+        <face index="0" name="" reference="4"/>
+        <face index="1" name="" reference="14"/>
+        <face index="2" name="" reference="24"/>
+        <face index="3" name="" reference="28"/>
+        <face index="4" name="" reference="32"/>
+        <face index="5" name="" reference="34"/>
+      </faces>
+      <solids count="1">
+        <solid index="0" name="" reference="2"/>
+      </solids>
+    </topology>
+  </geometry>
+  <groups count="0">
+  </groups>
+  <fields count="0"/>
+</XAO>

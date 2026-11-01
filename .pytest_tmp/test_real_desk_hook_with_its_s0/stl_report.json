@@ -1,0 +1,1 @@
+{"triangles": 23506, "shells": 2, "cavity_volumes_mm3": [-297.5], "cavity_boxes": [{"min_mm": [35.0, 10.75, 69.0], "max_mm": [42.0, 19.25, 74.0]}], "triangles_flipped": 42, "open_or_nonmanifold_edges": 0, "bad_edge_box": null, "volume_mm3": 68034.89475161154}

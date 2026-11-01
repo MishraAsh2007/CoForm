@@ -1,0 +1,1 @@
+{"compliance_m_per_n": {"0.06": 8.00357811875e-05, "0.12": 0.000490487991875}, "nodes": 32570, "fixed_nodes": 1660, "geometry_source": "generated_section", "fixture": "rubber_lined", "modulus_pa": 2500000000.0, "poisson": 0.35, "mesh_mm": 2.0, "solver": "Gmsh + CalculiX (quadratic tetrahedra, linear elastic)", "seconds": 6.91}

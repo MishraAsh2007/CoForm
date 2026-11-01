@@ -1,0 +1,297 @@
+{
+ "source": "Live Nemotron draft, 2026-10-31, prompt: 'A desk hook which can hold a backpack' (round 1 design, the STL the user found broken)",
+ "spec": {
+  "features": [
+   {
+    "at": [
+     0.0,
+     0.0,
+     0.0
+    ],
+    "axis": "z",
+    "label": "back_plate",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "plate_thick",
+     "width",
+     "hook_height"
+    ]
+   },
+   {
+    "at": [
+     "plate_thick",
+     0.0,
+     "hook_height - desk_thickness - plate_thick"
+    ],
+    "axis": "z",
+    "label": "top_jaw",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "clamp_depth",
+     "width",
+     "plate_thick"
+    ]
+   },
+   {
+    "at": [
+     "plate_thick",
+     0.0,
+     0.0
+    ],
+    "axis": "z",
+    "label": "bottom_jaw",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "clamp_depth",
+     "width",
+     "plate_thick"
+    ]
+   },
+   {
+    "at": [
+     "plate_thick",
+     0.0,
+     "hook_height - plate_thick"
+    ],
+    "axis": "z",
+    "label": "arm",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "arm_length",
+     "width",
+     "plate_thick"
+    ]
+   },
+   {
+    "at": [
+     "plate_thick",
+     "width/2 - rib_thick/2",
+     "hook_height - plate_thick - (arm_length*0.7071)"
+    ],
+    "axis": "z",
+    "label": "gusset",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": {
+     "axis": "y",
+     "degrees": -45.0
+    },
+    "shape": "box",
+    "size": [
+     "arm_length*0.7071",
+     "rib_thick",
+     "arm_length*0.7071 + plate_thick"
+    ]
+   },
+   {
+    "at": [
+     "clamp_depth/2",
+     "width/2",
+     "-1"
+    ],
+    "axis": "z",
+    "label": "screw_clearance_hole",
+    "length": "hook_height + 2",
+    "op": "subtract",
+    "radius": "screw_clearance/2",
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null
+   },
+   {
+    "at": [
+     "clamp_depth - nut_trap_depth",
+     "width/2 - nut_trap_width/2",
+     "hook_height - desk_thickness - plate_thick + (plate_thick - nut_trap_depth)/2"
+    ],
+    "axis": "z",
+    "label": "nut_trap",
+    "length": null,
+    "op": "subtract",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "nut_trap_depth",
+     "nut_trap_width",
+     "nut_trap_depth"
+    ]
+   },
+   {
+    "at": [
+     "clamp_depth",
+     "width/2 - nut_trap_width/2",
+     "hook_height - desk_thickness - plate_thick + (plate_thick - nut_trap_depth)/2"
+    ],
+    "axis": "z",
+    "label": "nut_trap_access",
+    "length": null,
+    "op": "subtract",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     2.0,
+     "nut_trap_width",
+     "nut_trap_depth"
+    ]
+   }
+  ],
+  "loads": [
+   {
+    "force_n": [
+     0.0,
+     0.0,
+     -49.05
+    ],
+    "max": [
+     "plate_thick + arm_length",
+     "width",
+     "hook_height + 0.01"
+    ],
+    "min": [
+     "plate_thick + arm_length - 10",
+     0.0,
+     "hook_height - 0.01"
+    ],
+    "name": "backpack_weight_at_tip"
+   }
+  ],
+  "name": "Desk Hook for Backpack",
+  "parameters": {
+   "arm_length": {
+    "max": 120.0,
+    "min": 50.0,
+    "note": "Horizontal projection of the hook arm",
+    "role": "size",
+    "value": 80.0
+   },
+   "clamp_depth": {
+    "max": 60.0,
+    "min": 30.0,
+    "note": "How far the clamp reaches under the desk",
+    "role": "size",
+    "value": 40.0
+   },
+   "desk_thickness": {
+    "max": 50.0,
+    "min": 10.0,
+    "note": "Thickness of the desk top",
+    "role": "size",
+    "value": 25.0
+   },
+   "hook_height": {
+    "max": 150.0,
+    "min": 60.0,
+    "note": "Vertical height of the back plate above desk surface",
+    "role": "size",
+    "value": 100.0
+   },
+   "nut_trap_depth": {
+    "max": 6.0,
+    "min": 4.0,
+    "note": "Depth of M5 hex nut trap",
+    "role": "size",
+    "value": 5.0
+   },
+   "nut_trap_width": {
+    "max": 10.0,
+    "min": 8.0,
+    "note": "Width of M5 hex nut trap",
+    "role": "size",
+    "value": 8.5
+   },
+   "plate_thick": {
+    "max": 12.0,
+    "min": 1.5,
+    "note": "Thickness of back plate and arm",
+    "role": "thickness",
+    "value": 5.0
+   },
+   "rib_thick": {
+    "max": 10.0,
+    "min": 1.5,
+    "note": "Thickness of the reinforcing gusset",
+    "role": "thickness",
+    "value": 4.0
+   },
+   "screw_clearance": {
+    "max": 8.0,
+    "min": 5.0,
+    "note": "Clearance hole diameter for M5 thumb screw",
+    "role": "size",
+    "value": 6.0
+   },
+   "width": {
+    "max": 50.0,
+    "min": 20.0,
+    "note": "Width of the hook (along desk edge)",
+    "role": "size",
+    "value": 30.0
+   }
+  },
+  "requirements": {
+   "max_displacement_mm": 2.0,
+   "max_mass_g": 100.0,
+   "safety_factor": 2.0
+  },
+  "summary": "A hook that clamps onto a desk edge using a thumb screw. The vertical back plate is clamped against the desk side, and the horizontal arm extends outward to hold a backpack by its strap. Load is applied downward at the arm tip.",
+  "supports": [
+   {
+    "max": [
+     "plate_thick + clamp_depth",
+     "width",
+     "hook_height - desk_thickness - plate_thick + 0.01"
+    ],
+    "min": [
+     "plate_thick",
+     0.0,
+     "hook_height - desk_thickness - plate_thick - 0.01"
+    ],
+    "name": "clamped_to_desk_top"
+   },
+   {
+    "max": [
+     "plate_thick + clamp_depth",
+     "width",
+     "0.01"
+    ],
+    "min": [
+     "plate_thick",
+     0.0,
+     "-0.01"
+    ],
+    "name": "clamped_to_desk_bottom"
+   }
+  ]
+ },
+ "values": {
+  "arm_length": 80.0,
+  "clamp_depth": 40.0,
+  "desk_thickness": 25.0,
+  "hook_height": 100.0,
+  "nut_trap_depth": 5.0,
+  "nut_trap_width": 8.5,
+  "plate_thick": 7.0,
+  "rib_thick": 5.5,
+  "screw_clearance": 6.0,
+  "width": 30.0
+ }
+}

@@ -134,6 +134,10 @@ main.designer{max-width:1500px}
 .row.tight{margin:0;gap:8px}.row.tight select{width:auto}
 label.check{flex-direction:row;align-items:center;gap:6px;font-size:12px}label.check input{width:auto}
 .charts-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.charts-3>div{min-width:0}.charts-3 svg{width:100%;height:auto;overflow:hidden}.charts-3 [data-test]{cursor:pointer}.charts-3 [data-test]:focus{stroke:#edf4f1;stroke-width:3}
 .log{max-height:220px;overflow:auto;font-size:12px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--panel-2)}.log p{margin:3px 0;color:var(--ink)}.log time{color:var(--muted);margin-right:6px}
 .bad{color:var(--bad)}
 @media(max-width:1100px){.designer-grid,.charts-3{grid-template-columns:1fr}}
+
+a.button.disabled{opacity:.4;pointer-events:none}
+.viewer-wrap{position:relative}.zoom{position:absolute;right:10px;top:10px;display:flex;gap:4px}.zoom button{min-width:32px;padding:4px 8px;background:#191f22cc}

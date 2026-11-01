@@ -1,0 +1,306 @@
+{
+ "source": "Live Nemotron draft, 2026-10-31, prompt: 'Generate a hook which can hold a backpack'",
+ "spec": {
+  "features": [
+   {
+    "at": [
+     0.0,
+     "-base_width/2",
+     0.0
+    ],
+    "axis": "z",
+    "label": "base_plate",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "base_thickness",
+     "base_width",
+     "base_height"
+    ]
+   },
+   {
+    "at": [
+     "base_thickness",
+     "-arm_width/2",
+     "base_height - arm_thickness"
+    ],
+    "axis": "z",
+    "label": "arm_main",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "arm_length - tip_curl_radius",
+     "arm_width",
+     "arm_thickness"
+    ]
+   },
+   {
+    "at": [
+     "base_thickness + arm_length - tip_curl_radius",
+     "-arm_width/2",
+     "base_height - arm_thickness"
+    ],
+    "axis": "z",
+    "label": "tip_vertical",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "tip_curl_radius",
+     "arm_width",
+     "tip_curl_radius"
+    ]
+   },
+   {
+    "at": [
+     "base_thickness + arm_length - tip_curl_radius",
+     0.0,
+     "base_height - arm_thickness + tip_curl_radius"
+    ],
+    "axis": "y",
+    "label": "tip_curl_quarter",
+    "length": "arm_width",
+    "op": "add",
+    "radius": "tip_curl_radius",
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null
+   },
+   {
+    "at": [
+     "base_thickness + arm_length - tip_curl_radius",
+     "-arm_width/2",
+     "base_height - arm_thickness + tip_curl_radius"
+    ],
+    "axis": "z",
+    "label": "tip_curl_cut",
+    "length": null,
+    "op": "subtract",
+    "radius": null,
+    "rotate": null,
+    "shape": "box",
+    "size": [
+     "tip_curl_radius",
+     "arm_width",
+     "tip_curl_radius"
+    ]
+   },
+   {
+    "at": [
+     0.0,
+     "-gusset_thickness/2",
+     "base_height - arm_thickness - gusset_height"
+    ],
+    "axis": "z",
+    "label": "gusset",
+    "length": null,
+    "op": "add",
+    "radius": null,
+    "rotate": {
+     "axis": "y",
+     "degrees": -45.0
+    },
+    "shape": "box",
+    "size": [
+     "base_thickness + arm_length - tip_curl_radius",
+     "gusset_thickness",
+     "gusset_height"
+    ]
+   },
+   {
+    "at": [
+     0.0,
+     "-base_width/4",
+     "base_height/3"
+    ],
+    "axis": "x",
+    "label": "screw_hole_1",
+    "length": "base_thickness + 2",
+    "op": "subtract",
+    "radius": "screw_hole_radius",
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null
+   },
+   {
+    "at": [
+     0.0,
+     "base_width/4",
+     "base_height/3"
+    ],
+    "axis": "x",
+    "label": "screw_hole_2",
+    "length": "base_thickness + 2",
+    "op": "subtract",
+    "radius": "screw_hole_radius",
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null
+   },
+   {
+    "at": [
+     0.0,
+     "-base_width/4",
+     "2*base_height/3"
+    ],
+    "axis": "x",
+    "label": "screw_hole_3",
+    "length": "base_thickness + 2",
+    "op": "subtract",
+    "radius": "screw_hole_radius",
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null
+   },
+   {
+    "at": [
+     0.0,
+     "base_width/4",
+     "2*base_height/3"
+    ],
+    "axis": "x",
+    "label": "screw_hole_4",
+    "length": "base_thickness + 2",
+    "op": "subtract",
+    "radius": "screw_hole_radius",
+    "rotate": null,
+    "shape": "cylinder",
+    "size": null
+   }
+  ],
+  "loads": [
+   {
+    "force_n": [
+     0.0,
+     0.0,
+     -98.1
+    ],
+    "max": [
+     "base_thickness + arm_length",
+     "arm_width/2",
+     "base_height - arm_thickness + tip_curl_radius + 0.01"
+    ],
+    "min": [
+     "base_thickness + arm_length - 10",
+     "-arm_width/2",
+     "base_height - arm_thickness + tip_curl_radius - 0.01"
+    ],
+    "name": "backpack_weight"
+   }
+  ],
+  "name": "Backpack Hook",
+  "parameters": {
+   "arm_length": {
+    "max": 120.0,
+    "min": 50.0,
+    "note": "Horizontal reach of the hook arm from wall",
+    "role": "size",
+    "value": 80.0
+   },
+   "arm_thickness": {
+    "max": 15.0,
+    "min": 4.0,
+    "note": "Thickness of hook arm along Z (vertical)",
+    "role": "thickness",
+    "value": 8.0
+   },
+   "arm_width": {
+    "max": 40.0,
+    "min": 15.0,
+    "note": "Width of hook arm along Y",
+    "role": "size",
+    "value": 25.0
+   },
+   "base_height": {
+    "max": 100.0,
+    "min": 40.0,
+    "note": "Height of the base plate along Z",
+    "role": "size",
+    "value": 60.0
+   },
+   "base_thickness": {
+    "max": 12.0,
+    "min": 4.0,
+    "note": "Thickness of base plate along X (wall-normal)",
+    "role": "thickness",
+    "value": 6.0
+   },
+   "base_width": {
+    "max": 60.0,
+    "min": 30.0,
+    "note": "Width of the rectangular base plate along Y",
+    "role": "size",
+    "value": 40.0
+   },
+   "gusset_height": {
+    "max": 60.0,
+    "min": 20.0,
+    "note": "Height of triangular gusset reinforcing arm-base junction",
+    "role": "size",
+    "value": 40.0
+   },
+   "gusset_thickness": {
+    "max": 10.0,
+    "min": 3.0,
+    "note": "Thickness of gusset along X",
+    "role": "thickness",
+    "value": 5.0
+   },
+   "screw_hole_radius": {
+    "max": 5.0,
+    "min": 2.5,
+    "note": "Radius of countersunk screw holes",
+    "role": "size",
+    "value": 3.0
+   },
+   "tip_curl_radius": {
+    "max": 20.0,
+    "min": 8.0,
+    "note": "Radius of the tip curl (quarter circle)",
+    "role": "size",
+    "value": 12.0
+   }
+  },
+  "requirements": {
+   "max_displacement_mm": 2.0,
+   "max_mass_g": 150.0,
+   "safety_factor": 2.0
+  },
+  "summary": "A wall-mounted hook with a curved arm to hold a backpack by its strap. The base plate is screwed to the wall (supports), and the backpack weight pulls down on the hook tip (load).",
+  "supports": [
+   {
+    "max": [
+     0.01,
+     "base_width/2",
+     "base_height"
+    ],
+    "min": [
+     -0.01,
+     "-base_width/2",
+     0.0
+    ],
+    "name": "wall_mount"
+   }
+  ]
+ },
+ "values": {
+  "arm_length": 80.0,
+  "arm_thickness": 6.0,
+  "arm_width": 25.0,
+  "base_height": 60.0,
+  "base_thickness": 5.0,
+  "base_width": 35.0,
+  "gusset_height": 40.0,
+  "gusset_thickness": 4.0,
+  "screw_hole_radius": 3.0,
+  "tip_curl_radius": 12.0
+ }
+}

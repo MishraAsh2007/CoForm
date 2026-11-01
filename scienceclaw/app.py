@@ -20,6 +20,7 @@ from .service import ScienceClaw
 from .formlabs import Manufacturing, PrintProfile, MAX_STL_BYTES
 from .cad import CADLink, FreeCADLink, build_cad, print_pipeline
 from .fusion import FusionLink
+from .designer_limits import MAX_CONFIGURED_ITERATIONS
 
 
 class RunRequest(Record):
@@ -100,13 +101,14 @@ class DesignRequest(Record):
 
 class DesignRunRequest(Record):
     live: bool = False
-    rounds: int = Field(default=6, ge=1, le=12)
+    rounds: int | None = Field(default=None, ge=1, le=MAX_CONFIGURED_ITERATIONS)
 
 
 class DesignPrintRequest(Record):
     test_id: str
     profile: PrintProfile
     live: bool = False
+    accept_review_issues: bool = False
 
 
 class DesignQueueRequest(Record):
@@ -258,7 +260,8 @@ def create_app(data_dir=None):
 
     @app.post("/api/designer/projects/{project_id}/print")
     def designer_print(project_id: str, body: DesignPrintRequest):
-        return designer.prepare_print(project_id, body.test_id, body.profile, live=body.live)
+        return designer.prepare_print(project_id, body.test_id, body.profile, live=body.live,
+                                      accept_review_issues=body.accept_review_issues)
 
     @app.post("/api/designer/projects/{project_id}/queue")
     def designer_queue(project_id: str, body: DesignQueueRequest):
@@ -335,9 +338,15 @@ def create_app(data_dir=None):
         return fusion.status()
 
     @app.get("/api/fusion/jobs/next")
-    def fusion_next(addin_version: str | None = None, fusion_version: str | None = None, document: str | None = None):
+    def fusion_next(addin_version: str | None = None, fusion_version: str | None = None, document: str | None = None,
+                    capabilities: str | None = None):
         # Polled by the Fusion add-in; returns {"job": null} when idle.
-        return {"job": fusion.next_job({"addin_version": addin_version, "fusion_version": fusion_version, "document": document})}
+        return {"job": fusion.next_job({"addin_version": addin_version, "fusion_version": fusion_version,
+                                       "document": document, "capabilities": capabilities})}
+
+    @app.get("/api/fusion/jobs/{job_id}")
+    def fusion_job_status(job_id: str):
+        return fusion.job_status(job_id)
 
     @app.post("/api/fusion/jobs/{job_id}/result")
     async def fusion_result(job_id: str, request: Request):

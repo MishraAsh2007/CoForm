@@ -1,0 +1,1 @@
+{"compliance_m_per_n": {"0.06": 5.0831346625e-05, "0.12": 0.00037705498625}, "nodes": 28654, "fixed_nodes": 5007, "geometry_source": "cad_step", "fixture": "rigid_vise", "modulus_pa": 2500000000.0, "poisson": 0.35, "mesh_mm": 2.0, "solver": "Gmsh + CalculiX (quadratic tetrahedra, linear elastic)", "seconds": 6.75}

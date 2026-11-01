@@ -1,6 +1,6 @@
 {
   "comparison": "adaptive vs collective vs single_agent vs independent (offline rule-based agents)",
-  "created_at": "2026-10-31T19:42:06.828219+00:00",
+  "created_at": "2026-10-31T23:12:15.180109+00:00",
   "limits": [
     "No API calls or real LLM decisions occur in this comparison.",
     "This checks software policies and accounting; it cannot establish an advantage from LLM coordination.",
@@ -72,22 +72,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.00157139259494981,
-          "id": "obs_cf7081a860594d71",
-          "specimen_id": "final-1-candidate_b06942cc2921436d",
+          "id": "obs_35178dc63414483a",
+          "specimen_id": "final-1-candidate_1991a9b261024e19",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0015513171762010652,
-          "id": "obs_999c6bb372234701",
-          "specimen_id": "final-2-candidate_b06942cc2921436d",
+          "id": "obs_9ee469c4d5ac4228",
+          "specimen_id": "final-2-candidate_1991a9b261024e19",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0014974833186899143,
-          "id": "obs_dcf1980035524daa",
-          "specimen_id": "final-3-candidate_b06942cc2921436d",
+          "id": "obs_a47d5ab1d0d548ac",
+          "specimen_id": "final-3-candidate_1991a9b261024e19",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         }
@@ -101,15 +101,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_b06942cc2921436d",
+      "candidate_id": "candidate_1991a9b261024e19",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "adaptive_numerical"
       ],
       "discussion_rounds": 0,
-      "elapsed_s": 0.11616350011900067,
+      "elapsed_s": 0.07876810012385249,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_20931c82aafa4a52.zip",
+      "evidence_archive": "evidence\\run_c76a0323d65b4fc5.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -128,13 +128,13 @@
       "reserved_predictions": [
         {
           "absolute_error_m": 3.2144715306038044e-05,
-          "model_id": "model_72eaadb1041349b3",
-          "observation_id": "obs_8bc4cc1f0e6745ee",
+          "model_id": "model_4b4b4cc8af2a4440",
+          "observation_id": "obs_15d4da9d207b406b",
           "observed_m": 0.0007093945321193757,
           "predicted_m": 0.0006772498168133377
         }
       ],
-      "run_id": "run_20931c82aafa4a52",
+      "run_id": "run_c76a0323d65b4fc5",
       "scenario": "nominal",
       "search_cycles_to_first_pass": 3,
       "seed": 7,
@@ -145,22 +145,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.00157139259494981,
-          "id": "obs_62ec48ce0512432f",
-          "specimen_id": "final-1-candidate_7324aaafe09140cc",
+          "id": "obs_68d3d2d54fe348e2",
+          "specimen_id": "final-1-candidate_d48f029317434eaa",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0015513171762010652,
-          "id": "obs_e5e79b1d19624acc",
-          "specimen_id": "final-2-candidate_7324aaafe09140cc",
+          "id": "obs_ec873897c4244ad3",
+          "specimen_id": "final-2-candidate_d48f029317434eaa",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0014974833186899143,
-          "id": "obs_21d3f81edf614c05",
-          "specimen_id": "final-3-candidate_7324aaafe09140cc",
+          "id": "obs_f344d0f741814c4d",
+          "specimen_id": "final-3-candidate_d48f029317434eaa",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         }
@@ -174,15 +174,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_7324aaafe09140cc",
+      "candidate_id": "candidate_d48f029317434eaa",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "rule_based_specialist_demo"
       ],
       "discussion_rounds": 7,
-      "elapsed_s": 0.1284662000834942,
+      "elapsed_s": 0.08019010000862181,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_eeb65c41e05c4336.zip",
+      "evidence_archive": "evidence\\run_e9495c49d5d94549.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -201,13 +201,13 @@
       "reserved_predictions": [
         {
           "absolute_error_m": 3.2144715306038044e-05,
-          "model_id": "model_4462b32c788c4a44",
-          "observation_id": "obs_efc1f9ea6cdb4bea",
+          "model_id": "model_0fa7c30c09364361",
+          "observation_id": "obs_818a8a1b25c249b5",
           "observed_m": 0.0007093945321193757,
           "predicted_m": 0.0006772498168133377
         }
       ],
-      "run_id": "run_eeb65c41e05c4336",
+      "run_id": "run_e9495c49d5d94549",
       "scenario": "nominal",
       "search_cycles_to_first_pass": 3,
       "seed": 7,
@@ -218,22 +218,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.00157139259494981,
-          "id": "obs_d658f22395bb4fc4",
-          "specimen_id": "final-1-candidate_28aeb1f2c3cd4cea",
+          "id": "obs_819fda183ada489a",
+          "specimen_id": "final-1-candidate_740fbc8a10b54c37",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0015513171762010652,
-          "id": "obs_d2cff58cef3b4bbb",
-          "specimen_id": "final-2-candidate_28aeb1f2c3cd4cea",
+          "id": "obs_02f10f63842f47a4",
+          "specimen_id": "final-2-candidate_740fbc8a10b54c37",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0014974833186899143,
-          "id": "obs_a92884649f774272",
-          "specimen_id": "final-3-candidate_28aeb1f2c3cd4cea",
+          "id": "obs_42888f08c2434a35",
+          "specimen_id": "final-3-candidate_740fbc8a10b54c37",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         }
@@ -247,15 +247,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_28aeb1f2c3cd4cea",
+      "candidate_id": "candidate_740fbc8a10b54c37",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "rule_based_single_agent"
       ],
       "discussion_rounds": 7,
-      "elapsed_s": 0.1134124998934567,
+      "elapsed_s": 0.07206019992008805,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_86db34c24bfe48a5.zip",
+      "evidence_archive": "evidence\\run_17b4d206a0604c70.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -274,13 +274,13 @@
       "reserved_predictions": [
         {
           "absolute_error_m": 3.2144715306038044e-05,
-          "model_id": "model_28ee98fdf7af4467",
-          "observation_id": "obs_d9a1b944f76c43b7",
+          "model_id": "model_c83fac81c0b64651",
+          "observation_id": "obs_48e8f77f15754723",
           "observed_m": 0.0007093945321193757,
           "predicted_m": 0.0006772498168133377
         }
       ],
-      "run_id": "run_86db34c24bfe48a5",
+      "run_id": "run_17b4d206a0604c70",
       "scenario": "nominal",
       "search_cycles_to_first_pass": 3,
       "seed": 7,
@@ -291,22 +291,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.00157139259494981,
-          "id": "obs_c6efa6ccb1944896",
-          "specimen_id": "final-1-candidate_27285fe08c144d55",
+          "id": "obs_2ac9d371a03a436b",
+          "specimen_id": "final-1-candidate_279b67c2568b4c00",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0015513171762010652,
-          "id": "obs_2e5e7e75668c4d2c",
-          "specimen_id": "final-2-candidate_27285fe08c144d55",
+          "id": "obs_602acb1c4cb7412f",
+          "specimen_id": "final-2-candidate_279b67c2568b4c00",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         },
         {
           "displacement_m": 0.0014974833186899143,
-          "id": "obs_08e81c2262bb418b",
-          "specimen_id": "final-3-candidate_27285fe08c144d55",
+          "id": "obs_1235c0db02e64402",
+          "specimen_id": "final-3-candidate_279b67c2568b4c00",
           "status": "simulated_pass",
           "uncertainty_m": 1.5e-05
         }
@@ -320,15 +320,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_27285fe08c144d55",
+      "candidate_id": "candidate_279b67c2568b4c00",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "rule_based_independent_specialists"
       ],
       "discussion_rounds": 7,
-      "elapsed_s": 0.11928099999204278,
+      "elapsed_s": 0.0726668001152575,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_4044259ec720464b.zip",
+      "evidence_archive": "evidence\\run_1b17e242570f4f5e.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -347,13 +347,13 @@
       "reserved_predictions": [
         {
           "absolute_error_m": 3.2144715306038044e-05,
-          "model_id": "model_822c6e8f55bb4c73",
-          "observation_id": "obs_126fbf0b2a60460c",
+          "model_id": "model_d9ecd82e3d534c2f",
+          "observation_id": "obs_89a79cad584048bf",
           "observed_m": 0.0007093945321193757,
           "predicted_m": 0.0006772498168133377
         }
       ],
-      "run_id": "run_4044259ec720464b",
+      "run_id": "run_1b17e242570f4f5e",
       "scenario": "nominal",
       "search_cycles_to_first_pass": 3,
       "seed": 7,
@@ -364,22 +364,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.0021204395499176344,
-          "id": "obs_08af91596a1e440f",
-          "specimen_id": "final-1-candidate_74212b342a994e9a",
+          "id": "obs_fdddccc7d27c4c41",
+          "specimen_id": "final-1-candidate_67aeee8edf9f4eeb",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.002083784036045341,
-          "id": "obs_5c08c7af21cb4581",
-          "specimen_id": "final-2-candidate_74212b342a994e9a",
+          "id": "obs_57e7664a4d72433d",
+          "specimen_id": "final-2-candidate_67aeee8edf9f4eeb",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.001983556301127312,
-          "id": "obs_fa988df9710c453b",
-          "specimen_id": "final-3-candidate_74212b342a994e9a",
+          "id": "obs_087aea2258044238",
+          "specimen_id": "final-3-candidate_67aeee8edf9f4eeb",
           "status": "uncertain",
           "uncertainty_m": 3e-05
         }
@@ -393,15 +393,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_74212b342a994e9a",
+      "candidate_id": "candidate_67aeee8edf9f4eeb",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "adaptive_numerical"
       ],
       "discussion_rounds": 0,
-      "elapsed_s": 0.09863159991800785,
+      "elapsed_s": 0.07340180012397468,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_37c9c4f7ccf742ec.zip",
+      "evidence_archive": "evidence\\run_918231e6a0134c33.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -418,7 +418,7 @@
       "reported_tokens": 0,
       "reserved_mean_absolute_error_m": null,
       "reserved_predictions": [],
-      "run_id": "run_37c9c4f7ccf742ec",
+      "run_id": "run_918231e6a0134c33",
       "scenario": "stiff_material_loose_mount",
       "search_cycles_to_first_pass": null,
       "seed": 7,
@@ -429,22 +429,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.0021204395499176344,
-          "id": "obs_800d19d9bc174eb7",
-          "specimen_id": "final-1-candidate_d60bba3299cb476c",
+          "id": "obs_759dd4747651443c",
+          "specimen_id": "final-1-candidate_7f9b173a9d4c485b",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.002083784036045341,
-          "id": "obs_263660ba24de4af8",
-          "specimen_id": "final-2-candidate_d60bba3299cb476c",
+          "id": "obs_9f224db02ec541a8",
+          "specimen_id": "final-2-candidate_7f9b173a9d4c485b",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.001983556301127312,
-          "id": "obs_cc4b664b97974132",
-          "specimen_id": "final-3-candidate_d60bba3299cb476c",
+          "id": "obs_60a692fc7f1a4ff5",
+          "specimen_id": "final-3-candidate_7f9b173a9d4c485b",
           "status": "uncertain",
           "uncertainty_m": 3e-05
         }
@@ -458,15 +458,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_d60bba3299cb476c",
+      "candidate_id": "candidate_7f9b173a9d4c485b",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "rule_based_specialist_demo"
       ],
       "discussion_rounds": 8,
-      "elapsed_s": 0.13562810001894832,
+      "elapsed_s": 0.09526129998266697,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_7b523c794a824663.zip",
+      "evidence_archive": "evidence\\run_9fbbfea9de4f41b3.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -483,7 +483,7 @@
       "reported_tokens": 0,
       "reserved_mean_absolute_error_m": null,
       "reserved_predictions": [],
-      "run_id": "run_7b523c794a824663",
+      "run_id": "run_9fbbfea9de4f41b3",
       "scenario": "stiff_material_loose_mount",
       "search_cycles_to_first_pass": null,
       "seed": 7,
@@ -494,22 +494,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.0021204395499176344,
-          "id": "obs_35d94a5dc6284c0c",
-          "specimen_id": "final-1-candidate_d0d553ba918143a7",
+          "id": "obs_071b581ae92a44c1",
+          "specimen_id": "final-1-candidate_39f3bdda8b314d12",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.002083784036045341,
-          "id": "obs_a0a7deabefa74601",
-          "specimen_id": "final-2-candidate_d0d553ba918143a7",
+          "id": "obs_dead8d8032304c61",
+          "specimen_id": "final-2-candidate_39f3bdda8b314d12",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.001983556301127312,
-          "id": "obs_dede802fd23a4ddf",
-          "specimen_id": "final-3-candidate_d0d553ba918143a7",
+          "id": "obs_5b28131891f7457d",
+          "specimen_id": "final-3-candidate_39f3bdda8b314d12",
           "status": "uncertain",
           "uncertainty_m": 3e-05
         }
@@ -523,15 +523,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_d0d553ba918143a7",
+      "candidate_id": "candidate_39f3bdda8b314d12",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "rule_based_single_agent"
       ],
       "discussion_rounds": 8,
-      "elapsed_s": 0.12083450006321073,
+      "elapsed_s": 0.07987609994597733,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_bc4088bc52604bdb.zip",
+      "evidence_archive": "evidence\\run_7998cb03cfcf4fbc.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -548,7 +548,7 @@
       "reported_tokens": 0,
       "reserved_mean_absolute_error_m": null,
       "reserved_predictions": [],
-      "run_id": "run_bc4088bc52604bdb",
+      "run_id": "run_7998cb03cfcf4fbc",
       "scenario": "stiff_material_loose_mount",
       "search_cycles_to_first_pass": null,
       "seed": 7,
@@ -559,22 +559,22 @@
       "acceptance_observations": [
         {
           "displacement_m": 0.0021204395499176344,
-          "id": "obs_c3fe40e69c33438b",
-          "specimen_id": "final-1-candidate_9c4fd82ba4624ae4",
+          "id": "obs_c7934929f6e948fc",
+          "specimen_id": "final-1-candidate_68ce59fc120f4281",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.002083784036045341,
-          "id": "obs_0ac4385d860a4513",
-          "specimen_id": "final-2-candidate_9c4fd82ba4624ae4",
+          "id": "obs_c996139546f446d7",
+          "specimen_id": "final-2-candidate_68ce59fc120f4281",
           "status": "fail",
           "uncertainty_m": 3e-05
         },
         {
           "displacement_m": 0.001983556301127312,
-          "id": "obs_2403b2d8765a44fb",
-          "specimen_id": "final-3-candidate_9c4fd82ba4624ae4",
+          "id": "obs_b7f7283fa6924044",
+          "specimen_id": "final-3-candidate_68ce59fc120f4281",
           "status": "uncertain",
           "uncertainty_m": 3e-05
         }
@@ -588,15 +588,15 @@
         "tokens_remaining": 200000,
         "tokens_used": 0
       },
-      "candidate_id": "candidate_9c4fd82ba4624ae4",
+      "candidate_id": "candidate_68ce59fc120f4281",
       "charged_or_reserved_tokens": 0,
       "decision_policies": [
         "rule_based_independent_specialists"
       ],
       "discussion_rounds": 8,
-      "elapsed_s": 0.12320679984986782,
+      "elapsed_s": 0.08063270011916757,
       "event_chain_verified": true,
-      "evidence_archive": "evidence\\run_67431891c5f54a69.zip",
+      "evidence_archive": "evidence\\run_ca24b1fc954847b6.zip",
       "human_fabrication_time_s": 0,
       "independent_specimens_tested": 3,
       "material_metric": "nominal_geometry_volume_m3",
@@ -613,7 +613,7 @@
       "reported_tokens": 0,
       "reserved_mean_absolute_error_m": null,
       "reserved_predictions": [],
-      "run_id": "run_67431891c5f54a69",
+      "run_id": "run_ca24b1fc954847b6",
       "scenario": "stiff_material_loose_mount",
       "search_cycles_to_first_pass": null,
       "seed": 7,

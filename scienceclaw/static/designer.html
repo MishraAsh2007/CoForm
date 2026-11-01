@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ScienceClaw · Part designer</title><link rel="stylesheet" href="/static/style.css"><script src="/static/viewer3d.js" defer></script><script src="/static/designer.js" defer></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ScienceClaw · Part designer</title><link rel="stylesheet" href="/static/style.css"><script src="/static/viewer3d.js" defer></script><script src="/static/designer_charts.js" defer></script><script src="/static/designer.js" defer></script></head>
 <body>
 <header class="top">
   <a class="brand" href="/designer">◈ <span>SCIENCECLAW</span></a>
@@ -42,11 +42,12 @@
         <div class="card-top"><h3>Test results in 3D</h3>
           <div class="row tight"><label class="inline">Design<select id="test-picker"></select></label>
             <select id="color-by" aria-label="Colour by"><option value="stress">Colour by stress</option><option value="bend">Colour by bend</option></select>
-            <label class="check"><input type="checkbox" id="exaggerate" checked> Exaggerate bend</label>
+            <label class="check"><input type="checkbox" id="exaggerate"> Exaggerate bend</label>
             <label class="check" title="Show each new design as the agents test it"><input type="checkbox" id="follow" checked> Follow the agents</label></div></div>
-        <canvas id="viewer" class="viewer"></canvas>
+        <div class="viewer-wrap"><canvas id="viewer" class="viewer"></canvas>
+          <div class="zoom"><button class="secondary small" id="zoom-in" title="Zoom in">+</button><button class="secondary small" id="zoom-out" title="Zoom out">−</button><button class="secondary small" id="zoom-reset" title="Reset view">⟲</button></div></div>
         <div id="viewer-legend" class="ramp-legend"></div>
-        <p class="muted">Drag to rotate, scroll to zoom. Grey dashed boxes are where the part is held; orange arrows are the loads. Colours are a share of the limit, so designs compare directly; orange areas are over it.</p>
+        <p class="muted">Drag to rotate. Zoom with the buttons, Ctrl + scroll, or click the view and scroll. Grey dashed boxes are where the part is held; orange arrows are the loads. Colours are a share of the limit, so designs compare directly; orange areas are over it.</p>
       </div>
       <div class="card">
         <h3 id="checks-title">Checks</h3>
@@ -59,15 +60,17 @@
 
     <section class="card">
       <h3>How the design evolved</h3>
-      <p class="sub">Every tested proposal is a dot; the line follows the design the team adopted each round.</p>
+      <p class="sub">Every tested proposal has its own dot. The line shows the adopted design, held steady when a proposal is rejected. Click a dot to view that test.</p>
       <div class="charts-3"><div><h4>Mass (g)</h4><div id="chart-mass" class="chart"></div></div><div><h4>Bend at the load (mm)</h4><div id="chart-bend" class="chart"></div></div><div><h4>Peak stress (MPa)</h4><div id="chart-stress" class="chart"></div></div></div>
     </section>
 
     <div class="designer-grid">
-      <section class="card"><h3>What the agents did</h3><div id="log" class="log"></div><div class="actions"><button id="run-more" class="secondary">Let the agents keep improving it</button></div><div id="rounds" class="timeline"></div></section>
+      <section class="card"><h3>What the agents did</h3><div id="log" class="log"></div><div class="actions"><button id="run-more" class="secondary">Let the agents keep improving it</button></div><details><summary>Saved drafting attempts</summary><div id="draft-attempts"></div></details><div id="rounds" class="timeline"></div></section>
       <section class="card"><h3>What the agents understood</h3><p id="spec-summary"></p><ul id="assumptions" class="muted"></ul>
+        <div id="design-intent"></div>
         <table><thead><tr><th>Parameter</th><th>Best value</th><th>Allowed</th><th>Kind</th></tr></thead><tbody id="params"></tbody></table>
-        <p class="muted" id="spec-meta"></p></section>
+        <p class="muted" id="spec-meta"></p>
+        <h4>Design review by the specialists</h4><div id="spec-reviews"></div></section>
     </div>
 
     <section class="card" id="print-card">
