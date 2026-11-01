@@ -34,6 +34,10 @@ Branch: `Mo_ver` on https://github.com/MishraAsh2007/ScienceClaw_Project/tree/Mo
   "TEAMMATES: replace this". Slide 5 note: the print-candidate run had no formal objections, so the exchange shows
   Fit's decline with numbers instead (said so on the slide).
 
+- Step 7, form answers: `results/submission/SUBMISSION.md` (every field; limits checked by
+  `scripts/make_submission.py`: titles 31 and 32/32 chars, one-liner 98/100, description 141/150 words, Formlabs
+  ~230/250, NVIDIA ~140/250 and marked ONLY IF Nemotron was confirmed).
+
 ## Notes
 - You asked me to read `results/benchmark/runs_v2_summary.md`: that file does not exist. I used
   `results/benchmark/runs_haiku_v2_summary.md` (the Haiku v2 set), which matches the numbers you gave.
